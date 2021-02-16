@@ -5,10 +5,7 @@ from jax import random
 import jax.numpy as jnp
 import numpyro
 import numpyro.distributions as dist
-
-import numpy as np
-from numpy.random import default_rng
-rng = default_rng(1080)
+from jax.ops import index, index_update
 
 
 # https://stackoverflow.com/a/37755413
@@ -20,11 +17,12 @@ class Store_as_array(argparse._StoreAction):
 def mask_renorm(B):
     # remove mutations impossible in the context and normalize
     S, C, M = B.shape
-    c_mask = np.tile(np.array([False, False, False, True, True, True]), (S, C//2 ,1))
-    t_mask = np.tile(np.array([True, True, True, False, False, False]), (S, C//2 ,1))
-    m = np.concatenate([c_mask, t_mask], axis = 1)
-    B[m] = 0
-    return B/B.sum(2)[:, :, np.newaxis]
+    c_mask = jnp.tile(jnp.array([False, False, False, True, True, True]), (S, C//2, 1))
+    t_mask = jnp.tile(jnp.array([True, True, True, False, False, False]), (S, C//2, 1))
+    m = jnp.concatenate([c_mask, t_mask], axis = 1)
+    B = index_update(B, index[m], 0.)
+    return B/B.sum(2)[:, :, jnp.newaxis]
+
 
 def generate_data(args, key):
     key, *subkeys = random.split(key, 9)
@@ -36,16 +34,17 @@ def generate_data(args, key):
     etaT = dist.Dirichlet(args.betaT).sample(subkeys[4], (args.K,))
     eta = jnp.concatenate([etaC, etaT], axis = 1)
 
+    etaC = jnp.concatenate([dist.Dirichlet(args.betaC).sample(subkeys[3], (args.K,)), jnp.full((args.K, args.M//2), 0)], axis = 1)
+    etaT = jnp.concatenate([jnp.full((args.K, args.M//2), 0), dist.Dirichlet(args.betaT).sample(subkeys[4], (args.K,))], axis = 1)
+    
     # for each sample get count of damage contexts drawn from each damage context signature
-    #X = np.array([rng.multinomial(*x) for x in zip(args.N, np.dot(theta, phi), np.full((args.S,), 1))]).squeeze()
     X = dist.MultinomialProbs(jnp.dot(theta, phi), args.N).sample(subkeys[5], (1,)).squeeze()
 
     # get transition probabilities
-    B = mask_renorm(np.dot(phi.T, np.dot(A, eta)).swapaxes(0,1))
-    
+    B = mask_renorm(jnp.dot(phi.T, jnp.dot(A, eta)).swapaxes(0,1))
+
     # for each damage context, get count of misrepair
     Y = dist.MultinomialProbs(B, X).sample(subkeys[6], (1,)).squeeze()
-
 
     return Y
 
@@ -73,7 +72,6 @@ def get_betas(args):
         return jnp.array([args.bprime[0],args.bprime[2],args.bprime[3]]), \
                jnp.array([args.bprime[0],args.bprime[1],args.bprime[2],])
 
-
 def validate_args(parser):
     # validate passed arguments
     args = parser.parse_args()
@@ -93,7 +91,6 @@ def validate_args(parser):
     vars(args)['betaC'], vars(args)['betaT'] = get_betas(args)
 
     return args
-
 
 def main():
 
@@ -124,6 +121,7 @@ def main():
     key = random.PRNGKey(args.seed)
     data = generate_data(args, key)
 
-    print(data[0].sum(), data[1].sum(), data[2].sum())
+    jnp.savez('sim_data.npz', data = data, args = args)
+
 if __name__ == '__main__':
     main()
