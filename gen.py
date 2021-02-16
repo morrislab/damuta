@@ -38,10 +38,11 @@ def generate_data(args, key):
 
     # for each sample get count of damage contexts drawn from each damage context signature
     #X = np.array([rng.multinomial(*x) for x in zip(args.N, np.dot(theta, phi), np.full((args.S,), 1))]).squeeze()
-    X_p = dist.MultinomialProbs(jnp.dot(theta, phi), args.N)
-    X = X_p.sample(subkeys[5], (1,)).squeeze()  
+    X = dist.MultinomialProbs(jnp.dot(theta, phi), args.N).sample(subkeys[5], (1,)).squeeze()
+
     # get transition probabilities
     B = mask_renorm(np.dot(phi.T, np.dot(A, eta)).swapaxes(0,1))
+    
     # for each damage context, get count of misrepair
     Y = dist.MultinomialProbs(B, X).sample(subkeys[6], (1,)).squeeze()
 
