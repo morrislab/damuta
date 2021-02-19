@@ -3,10 +3,12 @@
 import argparse
 from jax import random
 import jax.numpy as jnp
+from jax.ops import index, index_update
 import numpyro
 import numpyro.distributions as dist
-from jax.ops import index, index_update
-
+from numpyro.distributions import constraints
+from numpyro.infer import SVI, Trace_ELBO
+numpyro.set_platform('gpu')
 
 # https://stackoverflow.com/a/37755413
 class Store_as_array(argparse._StoreAction):
@@ -23,30 +25,81 @@ def mask_renorm(B):
     B = index_update(B, index[m], 0.)
     return B/B.sum(2)[:, :, jnp.newaxis]
 
+def generate_data(args, key, perturb = 0):
+    key, *subkeys = random.split(key, 15)
 
-def generate_data(args, key):
-    key, *subkeys = random.split(key, 9)
+    theta = dist.Dirichlet(args.psi + perturb).sample(subkeys[0], (args.S,))
+    A = dist.Dirichlet(args.gamma + perturb).sample(subkeys[1], (args.S, args.J))
+    phi = dist.Dirichlet(args.alpha + perturb).sample(subkeys[2], (args.J,))
+    etaC = dist.Dirichlet(args.betaC + perturb).sample(subkeys[3], (args.K,))
+    etaT = dist.Dirichlet(args.betaT + perturb).sample(subkeys[3], (args.K,))
+    #eta = jnp.concatenate([etaC, etaT], axis = 1)
 
-    theta = dist.Dirichlet(args.psi).sample(subkeys[0], (args.S,))
-    A = dist.Dirichlet(args.gamma).sample(subkeys[1], (args.S, args.J))
-    phi = dist.Dirichlet(args.alpha).sample(subkeys[2], (args.J,))
-    etaC = dist.Dirichlet(args.betaC).sample(subkeys[3], (args.K,))
-    etaT = dist.Dirichlet(args.betaT).sample(subkeys[4], (args.K,))
-    eta = jnp.concatenate([etaC, etaT], axis = 1)
-
-    etaC = jnp.concatenate([dist.Dirichlet(args.betaC).sample(subkeys[3], (args.K,)), jnp.full((args.K, args.M//2), 0)], axis = 1)
-    etaT = jnp.concatenate([jnp.full((args.K, args.M//2), 0), dist.Dirichlet(args.betaT).sample(subkeys[4], (args.K,))], axis = 1)
+    #etaC = jnp.concatenate([dist.Dirichlet(args.betaC).sample(subkeys[5], (args.K,)), jnp.full((args.K, args.M//2), 0)], axis = 1)
+    #etaT = jnp.concatenate([jnp.full((args.K, args.M//2), 0), dist.Dirichlet(args.betaT).sample(subkeys[6], (args.K,))], axis = 1)
     
     # for each sample get count of damage contexts drawn from each damage context signature
-    X = dist.MultinomialProbs(jnp.dot(theta, phi), args.N).sample(subkeys[5], (1,)).squeeze()
+    X = dist.MultinomialProbs(theta @ phi, args.N).sample(subkeys[7], (1,)).squeeze()
 
     # get transition probabilities
-    B = mask_renorm(jnp.dot(phi.T, jnp.dot(A, eta)).swapaxes(0,1))
+    #B = mask_renorm(phi.T @ A @ eta).swapaxes(0,1)
 
     # for each damage context, get count of misrepair
-    Y = dist.MultinomialProbs(B, X).sample(subkeys[6], (1,)).squeeze()
+    #Y = dist.MultinomialProbs(B, X).sample(subkeys[8], (1,)).squeeze()
 
-    return Y
+
+    #C_mask = jnp.arange(16)
+    #T_mask = jnp.arange(16, 32)
+
+    #phiC = phi[:,C_mask]
+    #BC = (phiC.T @ A @ etaC)[:,C_mask,:]
+    #BC = BC/BC.sum(2)[:, :, jnp.newaxis]
+    #YC = dist.MultinomialProbs(BC, X[:,C_mask]).sample(subkeys[9], (1,)).squeeze()
+
+    #phiT = phi[:,T_mask]
+    #BT = (phiT.T @ A @ etaT)[:,T_mask,:]
+    #BT = BT/BT.sum(2)[:, :, jnp.newaxis]
+    #YT = dist.MultinomialProbs(BT, X[:,T_mask]).sample(subkeys[10], (1,)).squeeze()
+
+    #YC[0].sum()
+    #YT[0].sum()
+
+
+    return X
+
+def model(data, args):
+    with numpyro.plate("J", args.J):
+        phi = numpyro.sample("context_defs", dist.Dirichlet(args.alpha))
+
+    with numpyro.plate("S", args.S):
+        theta = numpyro.sample("context_activities", dist.Dirichlet(args.psi))
+    
+    X = numpyro.sample("context_type", dist.MultinomialProbs(theta @ phi, 1000), obs=data)
+
+        
+    #return X    
+
+def guide(data, args):
+    # posterior approximation q(z|x)
+    # here args are used as prior
+    alpha_q = numpyro.param("context_type_bias", args.alpha, constraint=constraints.positive)
+    psi_q = numpyro.param("context_sig_bias", args.psi, constraint=constraints.positive)
+    
+    with numpyro.plate("J", args.J):
+        phi_q = numpyro.sample("context_defs", dist.Dirichlet(alpha_q))
+
+    with numpyro.plate("S", args.S) as s_idx:
+        theta_q = numpyro.sample("context_activities", dist.Dirichlet(psi_q))
+    
+    numpyro.sample("context_type", dist.MultinomialProbs(theta_q @ phi_q, 1000), obs=data)
+
+
+def run_inference(data, args):
+    optimizer = numpyro.optim.Adam(step_size=0.0005)
+    svi = SVI(model, guide, optimizer, loss=Trace_ELBO())
+    svi_result = svi.run(random.PRNGKey(0), args.nsteps, data, args)
+    params = svi_result.params
+    
 
 def get_betas(args):
     # calculate betaC and betaT from passed arguments. beta takes priority over bprime.
@@ -114,14 +167,17 @@ def main():
     group.add_argument('-bprime', type=float, default = jnp.array([0.1]), nargs='+', action=Store_as_array,
                         help='beta prime hyperparameter that defines betaC and betaT via each base')
     parser.add_argument('-seed', type=int, default = 0, help='rng seed')
+    parser.add_argument('-nsteps', type=int, default = 100, help='inference iterations')
 
-    subparsers = parser.add_subparsers(help='help for subcommand')
     
     args = validate_args(parser)
     key = random.PRNGKey(args.seed)
-    data = generate_data(args, key)
-
-    jnp.savez('sim_data.npz', data = data, args = args)
+    data = generate_data(args, key, perturb = 1.4)
+    #jnp.savez('sim_data.npz', data = data, args = args)
+    #with jnp.load('sim_data.npz', allow_pickle = True) as f:
+    #    data = f['data']
+    run_inference(data, args)
+    
 
 if __name__ == '__main__':
     main()
