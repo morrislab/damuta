@@ -29,14 +29,14 @@ def mask_renorm(B):
     B = index_update(B, index[m], 0.)
     return B/B.sum(2)[:, :, jnp.newaxis]
 
-def generate_data(args, key, perturb = 0):
+def generate_data(args, key):
     key, *subkeys = random.split(key, 15)
 
-    theta = dist.Dirichlet(args.psi + perturb).sample(subkeys[0], (args.S,))
-    A = dist.Dirichlet(args.gamma + perturb).sample(subkeys[1], (args.S, args.J))
-    phi = dist.Dirichlet(args.alpha + perturb).sample(subkeys[2], (args.J,))
-    etaC = dist.Dirichlet(args.betaC + perturb).sample(subkeys[3], (args.K,))
-    etaT = dist.Dirichlet(args.betaT + perturb).sample(subkeys[3], (args.K,))
+    theta = dist.Dirichlet(args.psi + args.perturb).sample(subkeys[0], (args.S,))
+    A = dist.Dirichlet(args.gamma + args.perturb).sample(subkeys[1], (args.S, args.J))
+    phi = dist.Dirichlet(args.alpha + args.perturb).sample(subkeys[2], (args.J,))
+    etaC = dist.Dirichlet(args.betaC + args.perturb).sample(subkeys[3], (args.K,))
+    etaT = dist.Dirichlet(args.betaT + args.perturb).sample(subkeys[3], (args.K,))
     #eta = jnp.concatenate([etaC, etaT], axis = 1)
 
     #etaC = jnp.concatenate([dist.Dirichlet(args.betaC).sample(subkeys[5], (args.K,)), jnp.full((args.K, args.M//2), 0)], axis = 1)
@@ -86,8 +86,8 @@ def model(data, args):
 def guide(data, args):
     # posterior approximation q(z|x)
     # here args are used as prior
-    alpha_q = numpyro.param("context_type_bias", args.alpha, constraint=constraints.positive)
-    psi_q = numpyro.param("context_sig_bias", args.psi, constraint=constraints.positive)
+    alpha_q = numpyro.param("context_type_bias", jnp.zeros((args.C,))+1, constraint=constraints.positive)
+    psi_q = numpyro.param("context_sig_bias", jnp.zeros((args.J,))+0.5, constraint=constraints.positive)
     
     with numpyro.plate("J", args.J):
         phi_q = numpyro.sample("context_defs", dist.Dirichlet(alpha_q))
@@ -97,6 +97,11 @@ def guide(data, args):
     
     numpyro.sample("context_type", dist.MultinomialProbs(theta_q @ phi_q, 1000), obs=data)
 
+def param_dist(param, name):
+    labels = [f'name_{i}' for i in range(param.shape[0])]
+    data = [[label, val] for (label, val) in zip(labels, param)]
+    table = wandb.Table(data=data, columns = ["label", "value"])
+    return table
 
 def run_inference(data, args, key):
     key, *subkeys = random.split(key, 2)
@@ -110,13 +115,21 @@ def run_inference(data, args, key):
 
 
     svi_state = svi.init(subkeys[0], data, args)
+
     for i in range(1, args.nsteps + 1):
-                    svi_state, loss = jit(body_fn)(svi_state)
-                    mean_alpha = svi.get_params(svi_state)['context_type_bias'].mean()
-                    mean_psi = svi.get_params(svi_state)['context_sig_bias'].mean()
-                    wandb.log({"losses": float(loss), 
-                               "mean psi": float(mean_psi),
-                               "mean alpha": float(mean_alpha)})
+        svi_state, loss = jit(body_fn)(svi_state)
+
+        mean_psi = svi.get_params(svi_state)['context_sig_bias'].mean()
+        psi_hat = param_dist(svi.get_params(svi_state)['context_sig_bias'], 'psi_p')
+        mean_alpha = svi.get_params(svi_state)['context_type_bias'].mean()
+        alpha_hat = param_dist(svi.get_params(svi_state)['context_type_bias'], 'alpha_p')
+
+        wandb.log({"losses": float(loss), 
+                   "mean psi": float(mean_psi),
+                   "mean alpha": float(mean_alpha),
+                   "alpha hat" : wandb.plot.bar(alpha_hat, "label", "value", title="Estimated alpha values"),
+                   "psi hat" : wandb.plot.bar(psi_hat, "label", "value", title="Estimated psi values")
+                   })
     
 
 def get_betas(args):
@@ -186,12 +199,13 @@ def main():
                         help='beta prime hyperparameter that defines betaC and betaT via each base (1xM)')
     parser.add_argument('-seed', type=int, default = 0, help='rng seed')
     parser.add_argument('-nsteps', type=int, default = 100, help='inference iterations')
+    parser.add_argument('-perturb', type=float, default = 0, help='just mess with the data a little')
 
     
     args = validate_args(parser)
     wandb.config.update(args)
     key = random.PRNGKey(args.seed)
-    data = generate_data(args, key, perturb = 0)
+    data = generate_data(args, key)
     #jnp.savez('sim_data.npz', data = data, args = args)
     #with jnp.load('sim_data.npz', allow_pickle = True) as f:
     #    data = f['data']
