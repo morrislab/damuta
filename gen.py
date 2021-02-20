@@ -1,13 +1,17 @@
 # gen.py 
 # generative process for substitution mutations in cancer
 import argparse
-from jax import random
+from jax import random, jit
 import jax.numpy as jnp
 from jax.ops import index, index_update
 import numpyro
 import numpyro.distributions as dist
 from numpyro.distributions import constraints
 from numpyro.infer import SVI, Trace_ELBO
+import wandb
+wandb.init(project="damut")
+import os
+os.environ['WANDB_MODE'] = 'dryrun'
 numpyro.set_platform('gpu')
 
 # https://stackoverflow.com/a/37755413
@@ -94,11 +98,25 @@ def guide(data, args):
     numpyro.sample("context_type", dist.MultinomialProbs(theta_q @ phi_q, 1000), obs=data)
 
 
-def run_inference(data, args):
+def run_inference(data, args, key):
+    key, *subkeys = random.split(key, 2)
     optimizer = numpyro.optim.Adam(step_size=0.0005)
     svi = SVI(model, guide, optimizer, loss=Trace_ELBO())
-    svi_result = svi.run(random.PRNGKey(0), args.nsteps, data, args)
-    params = svi_result.params
+    #svi_result = svi.run(random.PRNGKey(0), args.nsteps, data, args)
+    
+    def body_fn(svi_state, carry=None):
+            svi_state, loss = svi.update(svi_state, data, args)
+            return svi_state, loss
+
+
+    svi_state = svi.init(subkeys[0], data, args)
+    for i in range(1, args.nsteps + 1):
+                    svi_state, loss = jit(body_fn)(svi_state)
+                    mean_alpha = svi.get_params(svi_state)['context_type_bias'].mean()
+                    mean_psi = svi.get_params(svi_state)['context_sig_bias'].mean()
+                    wandb.log({"losses": float(loss), 
+                               "mean psi": float(mean_psi),
+                               "mean alpha": float(mean_alpha)})
     
 
 def get_betas(args):
@@ -150,33 +168,34 @@ def main():
     parser = argparse.ArgumentParser(description='damut generative model')
     parser.add_argument("-S", type=int, default = 100, help = "number of samples")
     parser.add_argument('-N', type=int, default = jnp.array([1000]), nargs='+', 
-                        action=Store_as_array, help = "number of mutations per sample")
+                        action=Store_as_array, help = "number of mutations per sample (1xS)")
     parser.add_argument('-C', type=int, default = 32, help = "number of damage context types")
     parser.add_argument('-M', type=int, default = 6, help = "number of misrepair types")
     parser.add_argument('-J', type=int, default = 10, help = "number of damage context signatures")
     parser.add_argument('-K', type=int, default = 10, help = "number of misrepair signatures")
     parser.add_argument('-psi', type=float, default = jnp.array([1.0]), nargs='+', action=Store_as_array,
-                        help='psi parameter for selecting sample-wise damage context signature activities')
+                        help='psi parameter for selecting sample-wise damage context signature activities (1xJ)')
     parser.add_argument('-gamma', type=float, default = jnp.array([0.1]), nargs='+', action=Store_as_array,
-                        help='gamma parameter for selecting sample-wise misrepair signature activities')
+                        help='gamma parameter for selecting sample-wise misrepair signature activities (1xK)')
     parser.add_argument('-alpha', type=float, default = jnp.array([0.1]), nargs='+', action=Store_as_array,
-                        help='alpha parameter for damage context signature')
+                        help='alpha parameter for damage context signature (1xC)')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-beta', type=float, nargs='+', action=Store_as_array,
-                        help='beta parameter for misrepair signature; explicitly set betaC and betaT')
+                        help='beta parameter for misrepair signature; explicitly set betaC and betaT (1x6)')
     group.add_argument('-bprime', type=float, default = jnp.array([0.1]), nargs='+', action=Store_as_array,
-                        help='beta prime hyperparameter that defines betaC and betaT via each base')
+                        help='beta prime hyperparameter that defines betaC and betaT via each base (1xM)')
     parser.add_argument('-seed', type=int, default = 0, help='rng seed')
     parser.add_argument('-nsteps', type=int, default = 100, help='inference iterations')
 
     
     args = validate_args(parser)
+    wandb.config.update(args)
     key = random.PRNGKey(args.seed)
-    data = generate_data(args, key, perturb = 1.4)
+    data = generate_data(args, key, perturb = 0)
     #jnp.savez('sim_data.npz', data = data, args = args)
     #with jnp.load('sim_data.npz', allow_pickle = True) as f:
     #    data = f['data']
-    run_inference(data, args)
+    run_inference(data, args, key)
     
 
 if __name__ == '__main__':
