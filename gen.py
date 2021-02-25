@@ -8,11 +8,17 @@ import numpyro
 import numpyro.distributions as dist
 from numpyro.distributions import constraints
 from numpyro.infer import SVI, Trace_ELBO
-import wandb
-wandb.init(project="damut")
-import os
-os.environ['WANDB_MODE'] = 'dryrun'
+from numpyro.diagnostics import print_summary
+from numpyro.infer import autoguide
 numpyro.set_platform('gpu')
+
+plot = True
+if plot:
+    import wandb
+    wandb.init(project="damut")
+    import os
+    os.environ['WANDB_MODE'] = 'dryrun'
+
 
 # https://stackoverflow.com/a/37755413
 class Store_as_array(argparse._StoreAction):
@@ -25,19 +31,19 @@ def mask_renorm(B):
     S, C, M = B.shape
     c_mask = jnp.tile(jnp.array([False, False, False, True, True, True]), (S, C//2, 1))
     t_mask = jnp.tile(jnp.array([True, True, True, False, False, False]), (S, C//2, 1))
-    m = jnp.concatenate([c_mask, t_mask], axis = 1)
-    B = index_update(B, index[m], 0.)
-    return B/B.sum(2)[:, :, jnp.newaxis]
+    sel = jnp.concatenate([c_mask, t_mask], axis = 1)
+    B = index_update(B, index[sel], 0.)
+    return (B/B.sum(-1)[:,:, jnp.newaxis])
 
 def generate_data(args, key):
     key, *subkeys = random.split(key, 15)
 
-    theta = dist.Dirichlet(args.psi + args.perturb).sample(subkeys[0], (args.S,))
-    A = dist.Dirichlet(args.gamma + args.perturb).sample(subkeys[1], (args.S, args.J))
-    phi = dist.Dirichlet(args.alpha + args.perturb).sample(subkeys[2], (args.J,))
-    etaC = dist.Dirichlet(args.betaC + args.perturb).sample(subkeys[3], (args.K,))
-    etaT = dist.Dirichlet(args.betaT + args.perturb).sample(subkeys[3], (args.K,))
-    #eta = jnp.concatenate([etaC, etaT], axis = 1)
+    theta = dist.Dirichlet(args.psi).sample(subkeys[0], (args.S,))
+    A = dist.Dirichlet(args.gamma).sample(subkeys[1], (args.S, args.J))
+    phi = dist.Dirichlet(args.alpha).sample(subkeys[2], (args.J,))
+    etaC = dist.Dirichlet(args.betaC).sample(subkeys[3], (args.K,))
+    etaT = dist.Dirichlet(args.betaT).sample(subkeys[3], (args.K,))
+    eta = jnp.concatenate([etaC, etaT], axis = 1)
 
     #etaC = jnp.concatenate([dist.Dirichlet(args.betaC).sample(subkeys[5], (args.K,)), jnp.full((args.K, args.M//2), 0)], axis = 1)
     #etaT = jnp.concatenate([jnp.full((args.K, args.M//2), 0), dist.Dirichlet(args.betaT).sample(subkeys[6], (args.K,))], axis = 1)
@@ -46,10 +52,10 @@ def generate_data(args, key):
     X = dist.MultinomialProbs(theta @ phi, args.N).sample(subkeys[7], (1,)).squeeze()
 
     # get transition probabilities
-    #B = mask_renorm(phi.T @ A @ eta).swapaxes(0,1)
+    B = mask_renorm(phi.T @ A @ eta)
 
     # for each damage context, get count of misrepair
-    #Y = dist.MultinomialProbs(B, X).sample(subkeys[8], (1,)).squeeze()
+    Y = dist.MultinomialProbs(B, X).sample(subkeys[8], (1,)).squeeze()
 
 
     #C_mask = jnp.arange(16)
@@ -74,38 +80,91 @@ def generate_data(args, key):
 def model(data, args):
     with numpyro.plate("J", args.J):
         phi = numpyro.sample("context_defs", dist.Dirichlet(args.alpha))
+        #with numpyro.plate("S", args.S):
+        #    A = numpyro.sample("misrepair_activites", dist.Dirichlet(args.gamma))
+
+    #with numpyro.plate("K", args.K):
+    #    etaC = numpyro.sample("C_bias", dist.Dirichlet(args.betaC))
+    #    etaT = numpyro.sample("T_bias", dist.Dirichlet(args.betaT))
+    #    eta = jnp.concatenate([etaC, etaT], axis = 1)
 
     with numpyro.plate("S", args.S):
         theta = numpyro.sample("context_activities", dist.Dirichlet(args.psi))
     
-    X = numpyro.sample("context_type", dist.MultinomialProbs(theta @ phi, 1000), obs=data)
+    # counts of damage context across samples
+    X = numpyro.sample("context_type", dist.MultinomialProbs(theta @ phi, args.N))
+    
+    ## mask out invalid probabilities
+    #maskC = jnp.concatenate([jnp.ones((args.C//2, args.M//2), dtype=bool), jnp.zeros((args.C//2, args.M//2), dtype=bool)])
+    #maskT = jnp.flip(maskC)
+    ## C mutation transition probabilities
+    #bC = phi.T @ A @ etaC
+    #bC = bC/bC.sum(-1)[...,jnp.newaxis]
+    #bC = jnp.where(maskC, bC, 0)
+    ## T mutation transition probabilities
+    #bT = phi.T @ A @ etaT
+    #bT = bT/bT.sum(-1)[...,jnp.newaxis]
+    #bT = jnp.where(maskT, bT, 0)
+    #B = jnp.concatenate([bC, bT], axis = -1)
+    ## for each damage context, get count of misrepair
+    #Y = numpyro.sample("mutation", dist.MultinomialProbs(B, X), obs = data)
 
-        
-    #return X    
-
-def guide(data, args):
+def model(data, args):
     # posterior approximation q(z|x)
-    # here args are used as prior
     alpha_q = numpyro.param("context_type_bias", jnp.zeros((args.C,))+1, constraint=constraints.positive)
     psi_q = numpyro.param("context_sig_bias", jnp.zeros((args.J,))+0.5, constraint=constraints.positive)
-    
-    with numpyro.plate("J", args.J):
-        phi_q = numpyro.sample("context_defs", dist.Dirichlet(alpha_q))
+    #gamma_q = numpyro.param("misrepair_sig_bias", jnp.zeros((args.K,))+0.5, constraint=constraints.positive)
+    #betaC_q = numpyro.param("misrepair_C_bias", jnp.zeros((args.M//2,))+0.5, constraint=constraints.positive)
+    #betaT_q = numpyro.param("misrepair_T_bias", jnp.zeros((args.M//2,))+0.5, constraint=constraints.positive)
 
-    with numpyro.plate("S", args.S) as s_idx:
-        theta_q = numpyro.sample("context_activities", dist.Dirichlet(psi_q))
+    with numpyro.plate("J", args.J):
+        phi = numpyro.sample("context_defs", dist.Dirichlet(alpha_q))
+        #with numpyro.plate("S", args.S):
+        #    A = numpyro.sample("misrepair_activites", dist.Dirichlet(gamma_q))
+
+    #with numpyro.plate("K", args.K):
+    #    etaC = numpyro.sample("C_bias", dist.Dirichlet(betaC_q))
+    #    etaT = numpyro.sample("T_bias", dist.Dirichlet(betaT_q))
+        
+    with numpyro.plate("S", args.S):
+        theta = numpyro.sample("context_activities", dist.Dirichlet(psi_q))
     
-    numpyro.sample("context_type", dist.MultinomialProbs(theta_q @ phi_q, 1000), obs=data)
+    # counts of damage context across samples
+    X = numpyro.sample("context_type", dist.MultinomialProbs(theta @ phi, args.N), obs = data)
+
+    ## mask out invalid probabilities
+    #maskC = jnp.concatenate([jnp.ones((args.C//2, args.M//2), dtype=bool), jnp.zeros((args.C//2, args.M//2), dtype=bool)])
+    #maskT = jnp.flip(maskC)
+    #
+    ## C mutation transition probabilities
+    #bC = phi.T @ A @ etaC
+    #bC = bC/bC.sum(-1)[...,jnp.newaxis]
+    #bC = jnp.where(maskC, bC, 0)
+    #
+    ## T mutation transition probabilities
+    #bT = phi.T @ A @ etaT
+    #bT = bT/bT.sum(-1)[...,jnp.newaxis]
+    #bT = jnp.where(maskT, bT, 0)
+    #
+    #B = jnp.concatenate([bC, bT], axis = -1)
+    #
+    ## for each damage context, get count of misrepair
+    #Y = numpyro.sample("mutation", dist.MultinomialProbs(B, X))
+
+def pass_guide(data, args):
+    pass
 
 def param_dist(param, name):
-    labels = [f'name_{i}' for i in range(param.shape[0])]
+    labels = [f'{name}_{i}' for i in range(param.shape[0])]
     data = [[label, val] for (label, val) in zip(labels, param)]
     table = wandb.Table(data=data, columns = ["label", "value"])
     return table
 
 def run_inference(data, args, key):
     key, *subkeys = random.split(key, 2)
-    optimizer = numpyro.optim.Adam(step_size=0.0005)
+    numpyro.enable_validation()
+    optimizer = numpyro.optim.Adam(step_size=0.01)
+    guide = autoguide.AutoDiagonalNormal(model)
     svi = SVI(model, guide, optimizer, loss=Trace_ELBO())
     #svi_result = svi.run(random.PRNGKey(0), args.nsteps, data, args)
     
@@ -119,18 +178,17 @@ def run_inference(data, args, key):
     for i in range(1, args.nsteps + 1):
         svi_state, loss = jit(body_fn)(svi_state)
 
-        mean_psi = svi.get_params(svi_state)['context_sig_bias'].mean()
-        psi_hat = param_dist(svi.get_params(svi_state)['context_sig_bias'], 'psi_p')
-        mean_alpha = svi.get_params(svi_state)['context_type_bias'].mean()
-        alpha_hat = param_dist(svi.get_params(svi_state)['context_type_bias'], 'alpha_p')
+        if plot: wandb.log({"loss": float(loss)})
 
-        wandb.log({"losses": float(loss), 
-                   "mean psi": float(mean_psi),
-                   "mean alpha": float(mean_alpha),
-                   "alpha hat" : wandb.plot.bar(alpha_hat, "label", "value", title="Estimated alpha values"),
+    #post = guide.sample_posterior(random.PRNGKey(1), svi_state, (1000,))
+    #print_summary(post, 0.89, False)
+    print(svi.get_params(svi_state)['context_sig_bias'], 'psi')
+    if plot:
+        psi_hat = param_dist(svi.get_params(svi_state)['context_sig_bias'], 'psi')
+        alpha_hat = param_dist(svi.get_params(svi_state)['context_type_bias'], 'alpha')
+        wandb.log({"alpha hat" : wandb.plot.bar(alpha_hat, "label", "value", title="Estimated alpha values"),
                    "psi hat" : wandb.plot.bar(psi_hat, "label", "value", title="Estimated psi values")
-                   })
-    
+                  })
 
 def get_betas(args):
     # calculate betaC and betaT from passed arguments. beta takes priority over bprime.
@@ -199,11 +257,11 @@ def main():
                         help='beta prime hyperparameter that defines betaC and betaT via each base (1xM)')
     parser.add_argument('-seed', type=int, default = 0, help='rng seed')
     parser.add_argument('-nsteps', type=int, default = 100, help='inference iterations')
-    parser.add_argument('-perturb', type=float, default = 0, help='just mess with the data a little')
+    #parser.add_argument('-perturb', type=float, default = 0, help='just mess with the data a little')
 
     
     args = validate_args(parser)
-    wandb.config.update(args)
+    if plot : wandb.config.update(args)
     key = random.PRNGKey(args.seed)
     data = generate_data(args, key)
     #jnp.savez('sim_data.npz', data = data, args = args)
