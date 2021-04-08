@@ -4,6 +4,7 @@ import argparse
 from jax import random, jit
 import jax.numpy as jnp
 from jax.ops import index, index_update
+from jax.nn import softmax
 import numpyro
 import numpyro.distributions as dist
 from numpyro.distributions import constraints
@@ -12,7 +13,7 @@ from numpyro.diagnostics import print_summary
 from numpyro.infer import autoguide
 numpyro.set_platform('gpu')
 
-plot = True
+plot = False
 if plot:
     import wandb
     wandb.init(project="damut")
@@ -45,10 +46,7 @@ def generate_data(args, key):
     etaT = dist.Dirichlet(args.betaT).sample(subkeys[3], (args.K,))
     eta = jnp.concatenate([etaC, etaT], axis = 1)
 
-    #etaC = jnp.concatenate([dist.Dirichlet(args.betaC).sample(subkeys[5], (args.K,)), jnp.full((args.K, args.M//2), 0)], axis = 1)
-    #etaT = jnp.concatenate([jnp.full((args.K, args.M//2), 0), dist.Dirichlet(args.betaT).sample(subkeys[6], (args.K,))], axis = 1)
-    
-    # for each sample get count of damage contexts drawn from each damage context signature
+        # for each sample get count of damage contexts drawn from each damage context signature
     X = dist.MultinomialProbs(theta @ phi, args.N).sample(subkeys[7], (1,)).squeeze()
 
     # get transition probabilities
@@ -57,99 +55,47 @@ def generate_data(args, key):
     # for each damage context, get count of misrepair
     Y = dist.MultinomialProbs(B, X).sample(subkeys[8], (1,)).squeeze()
 
-
-    #C_mask = jnp.arange(16)
-    #T_mask = jnp.arange(16, 32)
-
-    #phiC = phi[:,C_mask]
-    #BC = (phiC.T @ A @ etaC)[:,C_mask,:]
-    #BC = BC/BC.sum(2)[:, :, jnp.newaxis]
-    #YC = dist.MultinomialProbs(BC, X[:,C_mask]).sample(subkeys[9], (1,)).squeeze()
-
-    #phiT = phi[:,T_mask]
-    #BT = (phiT.T @ A @ etaT)[:,T_mask,:]
-    #BT = BT/BT.sum(2)[:, :, jnp.newaxis]
-    #YT = dist.MultinomialProbs(BT, X[:,T_mask]).sample(subkeys[10], (1,)).squeeze()
-
-    #YC[0].sum()
-    #YT[0].sum()
-
-
-    return X
-
-def model(data, args):
-    with numpyro.plate("J", args.J):
-        phi = numpyro.sample("context_defs", dist.Dirichlet(args.alpha))
-        #with numpyro.plate("S", args.S):
-        #    A = numpyro.sample("misrepair_activites", dist.Dirichlet(args.gamma))
-
-    #with numpyro.plate("K", args.K):
-    #    etaC = numpyro.sample("C_bias", dist.Dirichlet(args.betaC))
-    #    etaT = numpyro.sample("T_bias", dist.Dirichlet(args.betaT))
-    #    eta = jnp.concatenate([etaC, etaT], axis = 1)
-
-    with numpyro.plate("S", args.S):
-        theta = numpyro.sample("context_activities", dist.Dirichlet(args.psi))
-    
-    # counts of damage context across samples
-    X = numpyro.sample("context_type", dist.MultinomialProbs(theta @ phi, args.N))
-    
-    ## mask out invalid probabilities
-    #maskC = jnp.concatenate([jnp.ones((args.C//2, args.M//2), dtype=bool), jnp.zeros((args.C//2, args.M//2), dtype=bool)])
-    #maskT = jnp.flip(maskC)
-    ## C mutation transition probabilities
-    #bC = phi.T @ A @ etaC
-    #bC = bC/bC.sum(-1)[...,jnp.newaxis]
-    #bC = jnp.where(maskC, bC, 0)
-    ## T mutation transition probabilities
-    #bT = phi.T @ A @ etaT
-    #bT = bT/bT.sum(-1)[...,jnp.newaxis]
-    #bT = jnp.where(maskT, bT, 0)
-    #B = jnp.concatenate([bC, bT], axis = -1)
-    ## for each damage context, get count of misrepair
-    #Y = numpyro.sample("mutation", dist.MultinomialProbs(B, X), obs = data)
+    return Y
 
 def model(data, args):
     # posterior approximation q(z|x)
     alpha_q = numpyro.param("context_type_bias", jnp.zeros((args.C,))+1, constraint=constraints.positive)
     psi_q = numpyro.param("context_sig_bias", jnp.zeros((args.J,))+0.5, constraint=constraints.positive)
-    #gamma_q = numpyro.param("misrepair_sig_bias", jnp.zeros((args.K,))+0.5, constraint=constraints.positive)
-    #betaC_q = numpyro.param("misrepair_C_bias", jnp.zeros((args.M//2,))+0.5, constraint=constraints.positive)
-    #betaT_q = numpyro.param("misrepair_T_bias", jnp.zeros((args.M//2,))+0.5, constraint=constraints.positive)
+    gamma_q = numpyro.param("misrepair_sig_bias", jnp.zeros((args.K,))+0.5, constraint=constraints.positive)
+    betaC_q = numpyro.param("misrepair_C_bias", jnp.zeros((args.M//2,))+0.5, constraint=constraints.positive)
+    betaT_q = numpyro.param("misrepair_T_bias", jnp.zeros((args.M//2,))+0.5, constraint=constraints.positive)
 
     with numpyro.plate("J", args.J):
         phi = numpyro.sample("context_defs", dist.Dirichlet(alpha_q))
-        #with numpyro.plate("S", args.S):
-        #    A = numpyro.sample("misrepair_activites", dist.Dirichlet(gamma_q))
+        with numpyro.plate("S", args.S):
+            A = numpyro.sample("misrepair_activites", dist.Dirichlet(gamma_q))
 
-    #with numpyro.plate("K", args.K):
-    #    etaC = numpyro.sample("C_bias", dist.Dirichlet(betaC_q))
-    #    etaT = numpyro.sample("T_bias", dist.Dirichlet(betaT_q))
+    with numpyro.plate("K", args.K):
+        etaC = numpyro.sample("C_bias", dist.Dirichlet(betaC_q))
+        etaT = numpyro.sample("T_bias", dist.Dirichlet(betaT_q))
         
     with numpyro.plate("S", args.S):
         theta = numpyro.sample("context_activities", dist.Dirichlet(psi_q))
     
     # counts of damage context across samples
-    X = numpyro.sample("context_type", dist.MultinomialProbs(theta @ phi, args.N), obs = data)
+    X = numpyro.sample("context_type", dist.MultinomialProbs(theta @ phi, args.N))
 
-    ## mask out invalid probabilities
-    #maskC = jnp.concatenate([jnp.ones((args.C//2, args.M//2), dtype=bool), jnp.zeros((args.C//2, args.M//2), dtype=bool)])
-    #maskT = jnp.flip(maskC)
-    #
-    ## C mutation transition probabilities
-    #bC = phi.T @ A @ etaC
-    #bC = bC/bC.sum(-1)[...,jnp.newaxis]
-    #bC = jnp.where(maskC, bC, 0)
-    #
-    ## T mutation transition probabilities
-    #bT = phi.T @ A @ etaT
-    #bT = bT/bT.sum(-1)[...,jnp.newaxis]
-    #bT = jnp.where(maskT, bT, 0)
-    #
-    #B = jnp.concatenate([bC, bT], axis = -1)
-    #
-    ## for each damage context, get count of misrepair
-    #Y = numpyro.sample("mutation", dist.MultinomialProbs(B, X))
+    # mask out invalid probabilities
+    maskC = jnp.concatenate([jnp.ones((args.C//2, args.M//2), dtype=bool), jnp.zeros((args.C//2, args.M//2), dtype=bool)])
+    maskT = jnp.flip(maskC)
+    
+    # C mutation transition probabilities
+    bC = softmax(phi.T @ A @ etaC, axis = -1)
+    bC = jnp.where(maskC, bC, 0)
+    
+    # T mutation transition probabilities
+    bT = softmax(phi.T @ A @ etaT, axis = -1)
+    bT = jnp.where(maskT, bT, 0)
+    
+    B = jnp.concatenate([bC, bT], axis = -1)
+    
+    # for each damage context, get count of misrepair
+    Y = numpyro.sample("mutation", dist.MultinomialProbs(B, X), obs = data)
 
 def pass_guide(data, args):
     pass
@@ -164,7 +110,7 @@ def run_inference(data, args, key):
     key, *subkeys = random.split(key, 2)
     numpyro.enable_validation()
     optimizer = numpyro.optim.Adam(step_size=0.01)
-    guide = autoguide.AutoDiagonalNormal(model)
+    guide = autoguide.AutoNormal(model)
     svi = SVI(model, guide, optimizer, loss=Trace_ELBO())
     #svi_result = svi.run(random.PRNGKey(0), args.nsteps, data, args)
     
