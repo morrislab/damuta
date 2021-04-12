@@ -13,40 +13,24 @@ from scipy.stats import wasserstein_distance
 numpyro.set_platform('gpu')
 
 import wandb
-wandb.init(project="damut")
+#wandb.init(project="vanilla lda")
 
 def model(data, args):
     # posterior approximation q(z|x)
-    alpha_q = numpyro.param("context_type_bias", jnp.zeros((args.C,))+1, constraint=dist.constraints.positive)
-    psi_q = numpyro.param("context_sig_bias", jnp.zeros((args.J,))+0.5, constraint=dist.constraints.positive)
-    gamma_q = numpyro.param("misrepair_sig_bias", jnp.zeros((args.K,))+0.5, constraint=dist.constraints.positive)
-    betaC_q = numpyro.param("misrepair_C_bias", jnp.zeros((args.M//2,))+0.5, constraint=dist.constraints.positive)
-    betaT_q = numpyro.param("misrepair_T_bias", jnp.zeros((args.M//2,))+0.5, constraint=dist.constraints.positive)
+    alpha_q = numpyro.param("mutation_type_bias", jnp.zeros((args.C,))+1, constraint=dist.constraints.positive)
+    psi_q = numpyro.param("signature_bias", jnp.zeros((args.J,))+0.5, constraint=dist.constraints.positive)
 
     with numpyro.plate("J", args.J):
-        phi = numpyro.sample("context_defs", dist.Dirichlet(alpha_q))
-
-    with numpyro.plate("K", args.K):
-        etaC = numpyro.sample("C_defs", dist.Dirichlet(betaC_q))
-        etaT = numpyro.sample("T_defs", dist.Dirichlet(betaT_q))
+        phi = numpyro.sample("signature_defs", dist.Dirichlet(alpha_q))
         
     with numpyro.plate("thetaS", args.S):
-        theta = numpyro.sample("context_activities", dist.Dirichlet(psi_q))
-    
-    with numpyro.plate("J", args.J):
-        with numpyro.plate("S", args.S):
-            A = numpyro.sample("misrepair_activites", dist.Dirichlet(gamma_q))
-        
-    
+        theta = numpyro.sample("signature_activities", dist.Dirichlet(psi_q))
+      
     # https://stackoverflow.com/a/47625092
     # https://stackoverflow.com/a/36031086
-    BC = ((theta@phi)[:, None]) * ((jnp.einsum('ij,ijk->ik', theta, A)@etaC)[..., None])
-    BC = jnp.moveaxis(BC,1,2).reshape((args.S, -1))
-    BT = ((theta@phi)[:, None]) * ((jnp.einsum('ij,ijk->ik', theta, A)@etaT)[..., None])
-    BT = jnp.moveaxis(BT,1,2).reshape((args.S, -1))
-    
-    B = jnp.concatenate([BC[:,0:48], BT[:,48:96]], axis = 1)
-    
+    B = theta@phi
+    print(B.sum(1))
+
     # for each damage context, get count of misrepair
     Y = numpyro.sample("mutation", dist.MultinomialProbs(B, args.N), obs = data)
 
@@ -54,18 +38,19 @@ def log_metrics(args, svi, state, loss):
     wandb.config.update(args)
     wandb.log({"loss": float(loss)})
     params = svi.get_params(state)
-    wandb.log({"alpha earthmover error": wasserstein_distance(args.alpha, params['context_type_bias'])})
-    wandb.log({"psi earthmover error": wasserstein_distance(args.psi, params['context_sig_bias'])})
-    wandb.log({"gamma earthmover error": wasserstein_distance(args.gamma, params['misrepair_sig_bias'])})
-    wandb.log({"beta C earthmover error": wasserstein_distance(args.betaC, params['misrepair_C_bias'])})
-    wandb.log({"beta T earthmover error": wasserstein_distance(args.betaT, params['misrepair_T_bias'])})
-    #wandb.log({"max theta": max(params['context_activities'])})
+    wandb.log({"alpha earthmover error": wasserstein_distance(args.alpha, params['mutation_type_bias']),
+               "psi earthmover error": wasserstein_distance(args.psi, params['signature_bias']),
+               "alpha l1 error": jnp.linalg.norm(args.alpha-params['mutation_type_bias'], 1),
+               "psi l1 error": jnp.linalg.norm(args.psi-params['signature_bias'], 1),
+               "alpha l2 error": jnp.linalg.norm(args.alpha-params['mutation_type_bias'], 2),
+               "psi l2 error": jnp.linalg.norm(args.psi-params['signature_bias'], 2)
+              })
     
 def run_inference(data, args, key):
     key, *subkeys = random.split(key, 2)
     numpyro.enable_validation()
     optimizer = numpyro.optim.Adam(step_size=0.01)
-    guide = autoguide.AutoNormal(model)
+    guide = autoguide.AutoDelta(model)
     svi = SVI(model, guide, optimizer, loss=Trace_ELBO())
     #svi_result = svi.run(subkeys[0], args.nsteps, data, args)
     
@@ -79,7 +64,7 @@ def run_inference(data, args, key):
     for i in range(args.nsteps):
         svi_state, loss = jit(body_fn)(svi_state)
         
-        log_metrics(args, svi, svi_state, loss)
+        #log_metrics(args, svi, svi_state, loss)
 
 def main():
 
