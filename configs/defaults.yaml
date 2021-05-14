@@ -1,0 +1,39 @@
+# default.yaml
+sim_data.py:
+  sim_cosmic:
+    sig_defs: '~/data/cosmic/sigProfiler_SBS_signatures_2019_05_22.csv'
+    seed: 42
+    S: 20
+    N: 1000
+    I: 3
+    tau_hyperprior: 0.01
+
+  sim_parametric: 
+    seed: 42
+    J: 3
+    K: 2
+    S: 4
+    N: 10000
+    alpha_bias: 0.05
+    psi_bias: 1
+    gamma_bias: 0.1
+    beta_bias: 0.1
+
+    
+advi_cosmic.py:
+    fit_collapsed_model:
+        seed: 42
+        n_steps: 50000
+        lr: 1
+        J: 3
+        K: 3
+        alpha_bias: 0.05
+        psi_bias: 1
+        gamma_bias: 0.1
+        beta_bias: 0.1
+        init_method: 'uniform'
+
+plotting.py:
+    plot_diagnostics:
+        J: 3
+        K: 2
