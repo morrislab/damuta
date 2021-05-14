@@ -15,3 +15,4 @@ tandem signatures of damage and repair
 * wandb
 * matplotlib
 * seaborn
+* plotly
