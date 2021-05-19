@@ -1,0 +1,181 @@
+import matplotlib.pyplot as mplt
+from matplotlib.backends.backend_pdf import PdfPages
+import numpy as np
+import seaborn as sns
+import arviz as az
+from config import extyaml
+import plotly as plt
+import plotly.graph_objects as go
+from plotly.colors import n_colors
+plt.io.templates.default = "none"
+
+mut96 = ['A[C>A]A', 'A[C>A]C', 'A[C>A]G', 'A[C>A]T', 'C[C>A]A', 'C[C>A]C', 'C[C>A]G', 'C[C>A]T', 
+         'G[C>A]A', 'G[C>A]C', 'G[C>A]G', 'G[C>A]T', 'T[C>A]A', 'T[C>A]C', 'T[C>A]G', 'T[C>A]T', 
+         'A[C>G]A', 'A[C>G]C', 'A[C>G]G', 'A[C>G]T', 'C[C>G]A', 'C[C>G]C', 'C[C>G]G', 'C[C>G]T', 
+         'G[C>G]A', 'G[C>G]C', 'G[C>G]G', 'G[C>G]T', 'T[C>G]A', 'T[C>G]C', 'T[C>G]G', 'T[C>G]T', 
+         'A[C>T]A', 'A[C>T]C', 'A[C>T]G', 'A[C>T]T', 'C[C>T]A', 'C[C>T]C', 'C[C>T]G', 'C[C>T]T', 
+         'G[C>T]A', 'G[C>T]C', 'G[C>T]G', 'G[C>T]T', 'T[C>T]A', 'T[C>T]C', 'T[C>T]G', 'T[C>T]T', 
+         'A[T>A]A', 'A[T>A]C', 'A[T>A]G', 'A[T>A]T', 'C[T>A]A', 'C[T>A]C', 'C[T>A]G', 'C[T>A]T', 
+         'G[T>A]A', 'G[T>A]C', 'G[T>A]G', 'G[T>A]T', 'T[T>A]A', 'T[T>A]C', 'T[T>A]G', 'T[T>A]T', 
+         'A[T>C]A', 'A[T>C]C', 'A[T>C]G', 'A[T>C]T', 'C[T>C]A', 'C[T>C]C', 'C[T>C]G', 'C[T>C]T', 
+         'G[T>C]A', 'G[T>C]C', 'G[T>C]G', 'G[T>C]T', 'T[T>C]A', 'T[T>C]C', 'T[T>C]G', 'T[T>C]T', 
+         'A[T>G]A', 'A[T>G]C', 'A[T>G]G', 'A[T>G]T', 'C[T>G]A', 'C[T>G]C', 'C[T>G]G', 'C[T>G]T', 
+         'G[T>G]A', 'G[T>G]C', 'G[T>G]G', 'G[T>G]T', 'T[T>G]A', 'T[T>G]C', 'T[T>G]G', 'T[T>G]T']
+
+mut32 = ['ACA', 'ACC', 'ACG', 'ACT', 'CCA', 'CCC', 'CCG', 'CCT', 
+         'GCA', 'GCC', 'GCG', 'GCT', 'TCA', 'TCC', 'TCG', 'TCT', 
+         'ATA', 'ATC', 'ATG', 'ATT', 'CTA', 'CTC', 'CTG', 'CTT', 
+         'GTA', 'GTC', 'GTG', 'GTT', 'TTA', 'TTC', 'TTG', 'TTT']
+
+mut16 = ['A_A', 'A_C', 'A_G', 'A_T', 'C_A', 'C_C', 'C_G', 'C_T', 
+         'G_A', 'G_C', 'G_G', 'G_T', 'T_A', 'T_C', 'T_G', 'T_T']
+
+mut6 = ['C>A','C>G','C>T','T>A','T>C','T>G']
+
+tau_col = np.repeat(['cyan', 'black', 'red', 'grey', 'lightgreen', 'pink'], 16)
+phi_col = np.repeat(['green', 'blue'], 16)
+eta_col = np.repeat(['orange', 'lightblue'], 3)
+
+def plot_sigs(sigs, xlab, cols):
+    assert len(sigs.shape) == 2
+    
+    fig = plt.subplots.make_subplots(rows=sigs.shape[0], cols=1, shared_xaxes=True)
+    
+    for s in range(sigs.shape[0]):
+        fig.add_trace(go.Bar(x=xlab, y=sigs[s], hoverinfo='name',
+                             showlegend = False,
+                             textposition='auto', marker_color=cols,
+                        
+                      ), row = s+1, col = 1 )
+
+    fig.update_xaxes(tickangle=-45, matches = 'x')
+    return fig
+
+def plot_tau(tau):
+    if len(tau.shape) == 1: 
+        tau = tau.reshape(-1,1)
+    return plot_sigs(tau, mut96, tau_col)
+
+def plot_phi(phi):
+    if len(phi.shape) == 1: 
+        phi = phi.reshape(-1,1)
+    return plot_sigs(phi, mut32, phi_col)
+
+def plot_eta(eta):
+    #mplt.bar(mut6, eta, color = np.repeat(eta_col, 3))
+    return None
+    
+def plot_phi_posterior(phi_approx, cols = phi_col):
+    # TxJxC dimension df yields J subplots, C traces 
+    assert len(phi_approx.shape) == 3
+    T, J, C = phi_approx.shape
+    if cols is None: cols = [None]*32
+    
+    fig = plt.subplots.make_subplots(rows=J, cols=1, shared_xaxes=True, vertical_spacing=0.02, 
+                                     row_titles=([f'Phi {l}' for l in range(J)]))
+
+    for j in range(J):
+        for d, col, l in zip(df[:,j,:].T, cols, mut32):
+            fig.add_trace(go.Histogram(x=d, histnorm='probability', marker_color=col,
+                                       legendgroup = l, showlegend = j==0,
+                                       name = l, hoverinfo='name'), row = j+1, col = 1)
+
+    fig.update_yaxes(showticklabels = False)
+    fig.update_layout(showlegend=True, barmode='overlay')
+    fig.update_annotations(textangle = 0, x = -0.1)
+    fig.update_traces(opacity=0.7)
+    
+    return fig
+
+def plot_eta_posterior(eta_approx, cols = eta_col):
+    # TxCxKxM dimension df yields CxK subplots, M traces 
+    assert len(eta_approx.shape) == 4
+    T, C, K, M  = eta_approx.shape
+    if cols is None: cols = [None]*6
+    
+    fig = plt.subplots.make_subplots(rows=C//2, cols=K, shared_xaxes=True, vertical_spacing=0.02, 
+                                     column_titles=([f'Eta {l}' for l in range(K)]))
+
+    for c in range(C):
+        for k in range(K):
+            for m in range(M):
+                d = eta_approx[:,c,k,m]
+                col = cols[0] if c < 16 else cols[-1]
+                fig.add_trace(go.Histogram(x=d, histnorm='probability', marker_color = col, legendgroup = mut6[(m if c < 16 else (m+3))], 
+                                           showlegend = (c==0 and k==0) or (c==16 and k==0), hoverinfo='name', 
+                                           name = mut6[(m if c < 16 else (m+3))]), row = (c%16)+1, col = k+1)
+                
+
+    fig.update_yaxes(showticklabels = False)
+    fig.update_layout(barmode='overlay', height = 1200)
+    fig.update_traces(opacity=0.7)
+    
+    return fig
+
+import plotly.express as px
+
+def plot_density(approx):
+    
+    df=approx.sample(1000)['phi'][:,0,0]
+    fig = px.histogram(df)
+    #fig.show()
+
+
+    #plt.title('Phi density estimates for topic 0,0')
+    #plt.tight_layout()
+    #fig = plt.figure()
+    
+    return fig
+
+
+
+def get_shapes(model):
+    # model may be from trace.approx.model
+    model.theta.dshape
+
+#def plot_diagnostics(trace, J, K, fn = 'model_diagnostics.pdf'):
+#    
+#    with PdfPages(fn) as pdf:
+#        # attach metadata (as pdf note) to page
+#        #pdf.attach_note("sticky note!")  
+#    
+#        # ELBO 
+#        plt.plot(trace.hist)
+#        plt.tight_layout()
+#        pdf.savefig()
+#        plt.close()
+#        
+#        # phi hat
+#        for j in range(J):
+#            plt.subplot(J,1,j+1)
+#            for c in range(32):
+#                sns.distplot(trace.approx.sample(1000)['phi'][:, j, c], kde=False, hist=True)
+#            plt.title(f'Phi density estimates for topic {j}')
+#        plt.tight_layout()
+#        pdf.savefig()
+#        plt.close()
+#        
+#        # eta hat
+#        for k in range(K):
+#            plt.subplot(K,1,k+1)
+#            for m in range(3):
+#                    sns.distplot(trace.approx.sample(1000)['eta'][:, 31, k, m], kde=False, hist=True)
+#            plt.title(f'Eta density estimates for topic {k}')
+#        plt.tight_layout()
+#        pdf.savefig()
+#        plt.close()
+#                
+#        # A summary
+#        a = trace.approx.sample(1000)['A']
+#        ax = sns.heatmap(np.round(a.mean((0, 1)), 2), annot=True, cmap="YlGnBu")
+#        plt.tight_layout()
+#        pdf.savefig()
+#        plt.close()
+#        
+#        ax = sns.heatmap(np.round(a.std((0, 1)), 2), annot=True, cmap="YlGnBu")
+#        plt.tight_layout()
+#        pdf.savefig()
+#        plt.close()
+#        
+
+
