@@ -42,8 +42,7 @@ def plot_sigs(sigs, xlab, cols):
     fig = plt.subplots.make_subplots(rows=sigs.shape[0], cols=1, shared_xaxes=True)
     
     for s in range(sigs.shape[0]):
-        fig.add_trace(go.Bar(x=xlab, y=sigs[s], hoverinfo='name',
-                             showlegend = False,
+        fig.add_trace(go.Bar(x=xlab, y=sigs[s], hoverinfo='name', showlegend = False,
                              textposition='auto', marker_color=cols,
                         
                       ), row = s+1, col = 1 )
@@ -62,8 +61,25 @@ def plot_phi(phi):
     return plot_sigs(phi, mut32, phi_col)
 
 def plot_eta(eta):
-    #mplt.bar(mut6, eta, color = np.repeat(eta_col, 3))
-    return None
+    assert len(eta.shape) == 3
+    eta = np.concatenate([eta[0:16], eta[16:32]], 2)
+    C, K, M = eta.shape
+    assert C == 16
+    
+    fig = plt.subplots.make_subplots(rows=C, cols=K, shared_xaxes=True,
+                                     row_titles=mut16, column_titles=([f'Eta {l}' for l in range(J)]))
+    
+    for c in range(C):
+        for k in range(K):
+            fig.add_trace(go.Bar(x=mut6, y=eta[c][k], hoverinfo='x', showlegend = False,
+                                 textposition='auto', marker_color=eta_col,
+                            
+                          ), row = c+1, col = k+1)
+
+    fig.update_xaxes(tickangle=-45, matches = 'x')
+    for a in range(K, C+K):
+        fig.layout.annotations[a].update(textangle = 0, x = -0.1)
+    return fig
     
 def plot_phi_posterior(phi_approx, cols = phi_col):
     # TxJxC dimension df yields J subplots, C traces 
@@ -93,7 +109,7 @@ def plot_eta_posterior(eta_approx, cols = eta_col):
     T, C, K, M  = eta_approx.shape
     if cols is None: cols = [None]*6
     
-    fig = plt.subplots.make_subplots(rows=C//2, cols=K, shared_xaxes=True, vertical_spacing=0.02, 
+    fig = plt.subplots.make_subplots(rows=C//2, cols=K, shared_xaxes=True, 
                                      column_titles=([f'Eta {l}' for l in range(K)]))
 
     for c in range(C):
@@ -101,7 +117,8 @@ def plot_eta_posterior(eta_approx, cols = eta_col):
             for m in range(M):
                 d = eta_approx[:,c,k,m]
                 col = cols[0] if c < 16 else cols[-1]
-                fig.add_trace(go.Histogram(x=d, histnorm='probability', marker_color = col, legendgroup = mut6[(m if c < 16 else (m+3))], 
+                fig.add_trace(go.Histogram(x=d, histnorm='probability', marker_color = col, 
+                                           legendgroup = mut6[(m if c < 16 else (m+3))], 
                                            showlegend = (c==0 and k==0) or (c==16 and k==0), hoverinfo='name', 
                                            name = mut6[(m if c < 16 else (m+3))]), row = (c%16)+1, col = k+1)
                 
@@ -112,26 +129,47 @@ def plot_eta_posterior(eta_approx, cols = eta_col):
     
     return fig
 
-import plotly.express as px
-
-def plot_density(approx):
+def plot_tau_cos(model, trace):
     
-    df=approx.sample(1000)['phi'][:,0,0]
-    fig = px.histogram(df)
-    #fig.show()
-
-
-    #plt.title('Phi density estimates for topic 0,0')
-    #plt.tight_layout()
-    #fig = plt.figure()
+    with model:
+        
+        phi_hat=trace.approx.sample_node(model.phi).eval()
+        eta_hat=trace.approx.sample_node(model.eta).eval()
+        
+        tau_hat = np.vstack([np.outer(phi_hat[j,c], eta_hat[c,k,:]) \
+                    for j in range(J) for k in range(K) for c in range(C)]).reshape(J, K, -1).reshape(-1, 96)
     
-    return fig
-
-
-
-def get_shapes(model):
-    # model may be from trace.approx.model
-    model.theta.dshape
+    
+    fig = plt.subplots.make_subplots(
+            rows=2, cols=2,
+            column_widths=[0.5, 0.5],
+            row_heights=[0.5, 0.5],
+            specs=[[ {"type": "heatmap"},              {"type": "heatmap"}],
+                   [ {"type": "heatmap", "colspan": 2},        None      ]]
+          )
+    
+    fig.add_trace(go.Heatmap(z=cosine_similarity(tau,tau).round(2), coloraxis='coloraxis'), row=1, col =1)
+    fig.update_xaxes(title_text="tau gt", row=1, col=1)
+    fig.update_yaxes(title_text="tau gt", row=1, col=1)
+    
+    fig.add_trace(go.Heatmap(z=cosine_similarity(tau_hat,tau_hat).round(2), coloraxis='coloraxis'), row=1, col =2)
+    fig.update_xaxes(title_text="tau hat", row=1, col=2)
+    fig.update_yaxes(title_text="tau hat", row=1, col=2)
+    
+    cross = cosine_similarity(tau_hat,tau)
+    fig.update_xaxes(title_text="tau hat", row=2, col=1)
+    fig.update_yaxes(title_text="tau gt", row=2, col=1)
+    
+    if cross.shape[0] > cross.shape[1]: 
+        cross = cross.T
+        fig.update_xaxes(title_text="tau gt", row=2, col=1)
+        fig.update_yaxes(title_text="tau hat", row=2, col=1)
+    
+    fig.add_trace(go.Heatmap(z=cross.round(2), coloraxis='coloraxis'), row=2, col =1)
+    
+    fig.update_layout(coloraxis=dict(colorscale = 'viridis'), showlegend=False, height=1000,
+                      title = 'cosine distance of estimated signatures and ground truth')
+    fig.show()
 
 #def plot_diagnostics(trace, J, K, fn = 'model_diagnostics.pdf'):
 #    
