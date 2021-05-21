@@ -20,7 +20,6 @@ def sim_cosmic(sig_defs: str, S: int, N: int, tau_hyperprior: float, I: int, see
 
     if I:
         tau = tau[np.random.choice(tau.shape[0], size = I, replace = False)]                                       
-
     # draw activities according to tau
     tau_activities = pm.Dirichlet.dist(a=np.ones(I) * tau_hyperprior).random(size = S)
     B=(tau_activities @ tau)

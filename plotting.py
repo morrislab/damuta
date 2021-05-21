@@ -1,9 +1,10 @@
-import matplotlib.pyplot as mplt
-from matplotlib.backends.backend_pdf import PdfPages
+#import matplotlib.pyplot as mplt
+#from matplotlib.backends.backend_pdf import PdfPages
 import numpy as np
-import seaborn as sns
+import pymc3 as pm
 import arviz as az
-from config import extyaml
+from config import *
+from sklearn.metrics.pairwise import cosine_similarity
 import plotly as plt
 import plotly.graph_objects as go
 from plotly.colors import n_colors
@@ -91,7 +92,7 @@ def plot_phi_posterior(phi_approx, cols = phi_col):
                                      row_titles=([f'Phi {l}' for l in range(J)]))
 
     for j in range(J):
-        for d, col, l in zip(df[:,j,:].T, cols, mut32):
+        for d, col, l in zip(phi_approx[:,j,:].T, cols, mut32):
             fig.add_trace(go.Histogram(x=d, histnorm='probability', marker_color=col,
                                        legendgroup = l, showlegend = j==0,
                                        name = l, hoverinfo='name'), row = j+1, col = 1)
@@ -129,16 +130,32 @@ def plot_eta_posterior(eta_approx, cols = eta_col):
     
     return fig
 
-def plot_tau_cos(model, trace):
+def plot_mean_std(array):
+    assert len(array.shape) == 3 or len(array.shape) == 4
+    if len(array.shape) == 3: array = array[None,:,:,:]
+
+    fig = plt.subplots.make_subplots(rows=1, cols=2, subplot_titles = ['mean', 'std'])
+    fig.add_trace(go.Heatmap(z=array.mean((0, 1)).round(2), coloraxis='coloraxis'), row=1, col =1)
+    fig.add_trace(go.Heatmap(z=array.std((0, 1)).round(2), coloraxis='coloraxis'), row=1, col =2)
     
-    with model:
-        
-        phi_hat=trace.approx.sample_node(model.phi).eval()
-        eta_hat=trace.approx.sample_node(model.eta).eval()
-        
-        tau_hat = np.vstack([np.outer(phi_hat[j,c], eta_hat[c,k,:]) \
-                    for j in range(J) for k in range(K) for c in range(C)]).reshape(J, K, -1).reshape(-1, 96)
+    fig.update_layout(coloraxis=dict(colorscale = 'viridis'))
+    return fig
+
+
+def get_tau(phi, eta):
+    assert len(phi.shape) == 2 and len(eta.shape) == 3
+    J,C = phi.shape
+    C,K,M = eta.shape 
     
+    tau = np.vstack([np.outer(phi[j,c], eta[c,k,:]) \
+                for j in range(J) for k in range(K) for c in range(C)]).reshape(J, K, -1).reshape(-1, 96)
+    
+    return tau
+
+
+def plot_tau_cos(tau_gt, phi_hat, eta_hat):
+    
+    tau_hat = get_tau(phi_hat, eta_hat)
     
     fig = plt.subplots.make_subplots(
             rows=2, cols=2,
@@ -148,7 +165,7 @@ def plot_tau_cos(model, trace):
                    [ {"type": "heatmap", "colspan": 2},        None      ]]
           )
     
-    fig.add_trace(go.Heatmap(z=cosine_similarity(tau,tau).round(2), coloraxis='coloraxis'), row=1, col =1)
+    fig.add_trace(go.Heatmap(z=cosine_similarity(tau_gt,tau_gt).round(2), coloraxis='coloraxis'), row=1, col =1)
     fig.update_xaxes(title_text="tau gt", row=1, col=1)
     fig.update_yaxes(title_text="tau gt", row=1, col=1)
     
@@ -156,7 +173,7 @@ def plot_tau_cos(model, trace):
     fig.update_xaxes(title_text="tau hat", row=1, col=2)
     fig.update_yaxes(title_text="tau hat", row=1, col=2)
     
-    cross = cosine_similarity(tau_hat,tau)
+    cross = cosine_similarity(tau_hat,tau_gt)
     fig.update_xaxes(title_text="tau hat", row=2, col=1)
     fig.update_yaxes(title_text="tau gt", row=2, col=1)
     
@@ -169,7 +186,15 @@ def plot_tau_cos(model, trace):
     
     fig.update_layout(coloraxis=dict(colorscale = 'viridis'), showlegend=False, height=1000,
                       title = 'cosine distance of estimated signatures and ground truth')
-    fig.show()
+    
+    return fig
+    
+    
+def save_gv(model, fn = 'model_graph'):
+    gv = pm.model_graph.model_to_graphviz(model)
+    gv.format = 'png'
+    return gv.render(filename=fn)
+    
 
 #def plot_diagnostics(trace, J, K, fn = 'model_diagnostics.pdf'):
 #    

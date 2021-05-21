@@ -7,19 +7,18 @@ from sklearn.metrics.pairwise import cosine_similarity
 import typing
 import logging
 import theano
+from config import *
 from plotting import *
 from sim_data import sim_cosmic
-import config
 import theano.tensor as tt 
+import wandb
 
-# Constants
-C = 32
-M = 3
 
-@config.extyaml
-def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int,
+
+@extyaml
+def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int, callbacks, 
                         alpha_bias: float, psi_bias: float, gamma_bias: float, beta_bias: float, 
-                        n_steps: int, seed: int, lr: float, init_method: str) -> (pm.model.Model, pm.variational.inference.ADVI):
+                        n_steps: int, seed: int, lr: float) -> (pm.model.Model, pm.variational.inference.ADVI):
     
     logging.debug(f"theano device: {theano.config.device}")
     
@@ -45,60 +44,92 @@ def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int,
         
         # mutation counts
         pm.Multinomial('corpus', n = N.reshape(S,1), p = B , observed=corpus_obs)
-    
-    with model:
+        
+        wandb.log({'graphical model': wandb.Image(save_gv(model))})
+
         trace = pm.ADVI()
-        trace.fit(n_steps)
-    
+        trace.fit(n_steps, callbacks = callbacks)
+   
     return model, trace
 
-class rv_init():
+
+@extyaml  
+def cbs(*args, train=None, val=None, log_every=None, tau_gt=None):
+    # return a list of callbacks, with extra parameters as desired
     
-    def __init__(self, method='uniform', **kwargs):
+    def wandb_calls(*args):
+        approx, losses, i = args
+        wandb.log({'ELBO': losses[-1]})
         
-        self.phi = None
-        self.eta = None
-        
-        if method == 'uniform':
-                return self
-        elif method == 'from-tau':
-                return split_tau(sigs, J, K)
-        elif method == 'clark':
-                return clark(data, J, K) 
+        # only log expensive objects (plots) sparcely
+        if i % log_every == 0 :
             
-    
-    def split_tau(self, sigs=None, J=1, K=1):
-        assert sigs is not None
-        # for each signature in sigs, get the corresponding phi
-        wrapped = sigs.reshape(sigs.shape[0], -1, 16)
-        self.phi = np.hstack([wrapped[:,[0,1,2],:].sum(1), wrapped[:,[3,4,5],:].sum(1)])[range(J)]
+            hat = approx.sample(1000)
+            tau_hat = get_tau(hat.phi.mean(0), hat.eta.mean(0))
+            
+            
+            wandb.log({         
+                       'train alp': alp_B(train, hat.B.mean(0)),
+                       'val alp': alp_B(val, hat.B.mean(0)),
+                       'phi posterior': plot_phi_posterior(hat.phi, cols=None),
+                       'eta posterior': plot_eta_posterior(hat.eta, cols=None),
+                       'signature similarities': plot_tau_cos(tau_gt, hat.phi.mean(0), hat.eta.mean(0)),
+                        
+                       'inferred signatures': plot_tau(tau_hat),
+                        
+                       '1000 samples from phi node': plot_mean_std(hat.phi),
+                       '1000 samples from eta node': plot_mean_std(hat.eta),
+                       '1000 samples from theta node': plot_mean_std(hat.theta),
+                       '1000 samples from A node': plot_mean_std(hat.A),
+                       '1000 samples from B node': plot_mean_std(hat.B),
 
-        # for each signature in sigs, get the corresponding eta
-        # TODO: ordered alphabetically, or pyrimidine last (?)
-        wrapped = sigs.reshape(sigs.shape[0], -1, 16)
-        self.eta = wrapped.sum(2)
-          
-        # subset to desired J & K
-        self.phi = self.phi[range(J)]
-        self.eta = self.eta[range(K)]
-        
-        return self
+                      })
     
-    def clark(self, data=None, J=1, K=1):
-        assert data is not None
-               
+    return [wandb_calls]
 
+def alp_B(data, B):
+    return (data * np.log(B)).sum() / data.sum()
+
+
+
+def split_count(counts, fraction):
+    c = (counts * fraction).astype(int)
+    frac1 = np.histogram(np.repeat(np.arange(96), c), bins=96, range=(0, 96))[0]
+    frac2 = counts - frac1
+    assert all(frac2 >= 0) and all(frac1 >= 0)
+    return frac1, frac2
+
+def split_by_count(data, fraction=0.8):
+    stacked = np.array([split_count(m, fraction) for m in data])
+    return stacked[:,0,:], stacked[:,1,:]
+
+def split_by_S(data, fraction=0.8):
+    c = int((data.shape[0] * fraction))
+    frac1 = data[0:c]
+    frac2 = data[c:(data.shape[0])]
+    return frac1, frac2
 
 def main():
-    cosmic, tau, tau_activities =sim_cosmic()
-    with PdfPages('true_sigs.pdf') as pdf:
-        for i in range(tau.shape[0]):
-            plot_tau(tau[i])
-            plt.tight_layout()
-            pdf.savefig()
-            plt.close()
-    model, trace = fit_collapsed_model(corpus_obs = cosmic)
-    plot_diagnostics(trace, 3, 2)
+    wandb.init()
+    wandb.config.update(config)
+    
+    cosmic, tau, tau_activities = sim_cosmic()
+    wandb.log({'gt signatures': plot_tau(tau).update_layout(height = 800)})
+    
+    train, val  = split_by_count(cosmic)
+
+    model, trace = fit_collapsed_model(corpus_obs = train, 
+                                       callbacks = cbs(train = train, val = val, 
+                                                       log_every=100, tau_gt = tau))
+    
+    
+    
+    
+    
+    
+    
+    
+
     
     
     

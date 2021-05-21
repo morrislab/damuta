@@ -5,6 +5,10 @@ import pickle
 from pathlib import Path
 import yaml
 
+# Constants
+C = 32
+M = 3
+
 # We only specify the yaml file from argparse and handle rest
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("-f", "--config_file", default="configs/defaults.yaml", help="configuration file path")
@@ -24,6 +28,7 @@ logging.getLogger("filelock").setLevel(logging.ERROR)
 # Let's load the yaml file here
 with open(ARGS.config_file, 'r') as f:
     config = yaml.safe_load(f)
+        
 print(f"Loaded configuration file {ARGS.config_file}")
 
 def extyaml(func):
@@ -44,7 +49,6 @@ def extyaml(func):
 def save_checkpoint(fn, model, trace):
     with open(f'{fn}.pickle', 'wb') as buff:
         pickle.dump({'model': model, 'trace': trace, 'config': config}, buff)
-
         
 def load_checkpoint(fn):
     with open(fn, 'rb') as buff:
