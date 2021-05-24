@@ -35,8 +35,17 @@ advi_cosmic.py:
     cbs:
         # sparse logging will speed up training 
         log_every: 1000
-
-plotting.py:
-    plot_diagnostics:
+        
+        
+utils.py:
+    collapsed_model_factory:
+        seed: 42
+        n_steps: 50000
+        lr: 1
         J: 3
-        K: 2
+        K: 3
+        alpha_bias: 0.05
+        psi_bias: 1
+        gamma_bias: 0.1
+        beta_bias: 0.1
+    

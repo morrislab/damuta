@@ -8,10 +8,8 @@ C = 32
 M = 3
 
 @extyaml
-def collapsed_model_factory(corpus, 
-                           J: int, K: int, 
-                        alpha_bias: float, psi_bias: float, gamma_bias: float, beta_bias: float, 
-                        n_steps: int, seed: int, lr: float, phi_obs = None, eta_obs = None,):
+def collapsed_model_factory(corpus, J: int, K: int, alpha_bias: float, psi_bias: float, 
+                            gamma_bias: float, beta_bias: float, phi_obs = None, eta_obs = None,):
     
     S = corpus.shape[0]
     N = corpus.sum(1).reshape(S,1)

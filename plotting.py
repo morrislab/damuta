@@ -4,6 +4,7 @@ import numpy as np
 import pymc3 as pm
 import arviz as az
 from config import *
+from utils import *
 from sklearn.metrics.pairwise import cosine_similarity
 import plotly as plt
 import plotly.graph_objects as go
@@ -43,7 +44,7 @@ def plot_sigs(sigs, xlab, cols):
     fig = plt.subplots.make_subplots(rows=sigs.shape[0], cols=1, shared_xaxes=True)
     
     for s in range(sigs.shape[0]):
-        fig.add_trace(go.Bar(x=xlab, y=sigs[s], hoverinfo='name', showlegend = False,
+        fig.add_trace(go.Bar(x=xlab, y=sigs[s], hoverinfo='y', showlegend = False,
                              textposition='auto', marker_color=cols,
                         
                       ), row = s+1, col = 1 )
@@ -53,12 +54,12 @@ def plot_sigs(sigs, xlab, cols):
 
 def plot_tau(tau):
     if len(tau.shape) == 1: 
-        tau = tau.reshape(-1,1)
+        tau = tau.reshape(1,-1)
     return plot_sigs(tau, mut96, tau_col)
 
 def plot_phi(phi):
     if len(phi.shape) == 1: 
-        phi = phi.reshape(-1,1)
+        phi = phi.reshape(1,-1)
     return plot_sigs(phi, mut32, phi_col)
 
 def plot_eta(eta):
@@ -68,11 +69,11 @@ def plot_eta(eta):
     assert C == 16
     
     fig = plt.subplots.make_subplots(rows=C, cols=K, shared_xaxes=True,
-                                     row_titles=mut16, column_titles=([f'Eta {l}' for l in range(J)]))
+                                     row_titles=mut16, column_titles=([f'Eta {l}' for l in range(K)]))
     
     for c in range(C):
         for k in range(K):
-            fig.add_trace(go.Bar(x=mut6, y=eta[c][k], hoverinfo='x', showlegend = False,
+            fig.add_trace(go.Bar(x=mut6, y=eta[c][k], hoverinfo='y', showlegend = False,
                                  textposition='auto', marker_color=eta_col,
                             
                           ), row = c+1, col = k+1)
@@ -140,17 +141,6 @@ def plot_mean_std(array):
     
     fig.update_layout(coloraxis=dict(colorscale = 'viridis'))
     return fig
-
-
-def get_tau(phi, eta):
-    assert len(phi.shape) == 2 and len(eta.shape) == 3
-    J,C = phi.shape
-    C,K,M = eta.shape 
-    
-    tau = np.vstack([np.outer(phi[j,c], eta[c,k,:]) \
-                for j in range(J) for k in range(K) for c in range(C)]).reshape(J, K, -1).reshape(-1, 96)
-    
-    return tau
 
 
 def plot_tau_cos(tau_gt, phi_hat, eta_hat):

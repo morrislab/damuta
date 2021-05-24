@@ -5,9 +5,6 @@ import pickle
 from pathlib import Path
 import yaml
 
-# Constants
-C = 32
-M = 3
 
 # We only specify the yaml file from argparse and handle rest
 parser = argparse.ArgumentParser(description=__doc__)

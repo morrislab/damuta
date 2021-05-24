@@ -8,16 +8,16 @@ import typing
 import logging
 import theano
 from config import *
+from utils import *
 from plotting import *
 from sim_data import sim_cosmic
-import theano.tensor as tt 
+
 import wandb
 
 
 
 @extyaml
-def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int, callbacks, 
-                        alpha_bias: float, psi_bias: float, gamma_bias: float, beta_bias: float, 
+def fit_collapsed_model(corpus_obs: np.ndarray, callbacks, 
                         n_steps: int, seed: int, lr: float) -> (pm.model.Model, pm.variational.inference.ADVI):
     
     logging.debug(f"theano device: {theano.config.device}")
@@ -28,22 +28,24 @@ def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int, callbacks,
     logging.debug(f"number of samples in corpus: {S}")
     logging.debug(f"mean number of mutations per sample: {N.mean()}")
     
-    with pm.Model() as model:
-    
-        phi = pm.Dirichlet('phi', a = np.ones(C) * alpha_bias, shape=(J, C))
-        theta = pm.Dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
-        A = pm.Dirichlet("A", a = np.ones(K) * gamma_bias, shape = (S, J, K))
-        # 4 is constant for ACGT
-        beta = np.ones((K,4)) * beta_bias
-        etaC = pm.Dirichlet("etaC", a=beta[:,[0,2,3]], shape=(C//2, K, M))
-        etaT = pm.Dirichlet("etaT", a=beta[:,[0,1,2]], shape=(C//2, K, M))
-        eta = pm.Deterministic('eta', pm.math.concatenate([etaC, etaT], axis=0))
-    
-        B = pm.Deterministic("B", (pm.math.matrix_dot(theta, phi)[:,:,None] * \
-                                   pm.math.matrix_dot(tt.batched_dot(theta,A),eta)).reshape((S, -1)))
-        
-        # mutation counts
-        pm.Multinomial('corpus', n = N.reshape(S,1), p = B , observed=corpus_obs)
+    #with pm.Model() as model:
+    #
+    #    phi = pm.Dirichlet('phi', a = np.ones(C) * alpha_bias, shape=(J, C))
+    #    theta = pm.Dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
+    #    A = pm.Dirichlet("A", a = np.ones(K) * gamma_bias, shape = (S, J, K))
+    #    # 4 is constant for ACGT
+    #    beta = np.ones((K,4)) * beta_bias
+    #    etaC = pm.Dirichlet("etaC", a=beta[:,[0,2,3]], shape=(C//2, K, M))
+    #    etaT = pm.Dirichlet("etaT", a=beta[:,[0,1,2]], shape=(C//2, K, M))
+    #    eta = pm.Deterministic('eta', pm.math.concatenate([etaC, etaT], axis=0))
+    #
+    #    B = pm.Deterministic("B", (pm.math.matrix_dot(theta, phi)[:,:,None] * \
+    #                               pm.math.matrix_dot(tt.batched_dot(theta,A),eta)).reshape((S, -1)))
+    #    
+    #    # mutation counts
+    #    pm.Multinomial('corpus', n = N.reshape(S,1), p = B , observed=corpus_obs)
+    #    
+    with collapsed_model_factory(corpus_obs) as model:
         
         wandb.log({'graphical model': wandb.Image(save_gv(model))})
 
@@ -75,6 +77,8 @@ def cbs(*args, train=None, val=None, log_every=None, tau_gt=None):
                        'eta posterior': plot_eta_posterior(hat.eta, cols=None),
                        'signature similarities': plot_tau_cos(tau_gt, hat.phi.mean(0), hat.eta.mean(0)),
                         
+                       'inferred phi': plot_phi(hat.phi.mean(0)),
+                       'inferred eta': plot_eta(hat.eta.mean(0)),
                        'inferred signatures': plot_tau(tau_hat),
                         
                        '1000 samples from phi node': plot_mean_std(hat.phi),
@@ -89,8 +93,6 @@ def cbs(*args, train=None, val=None, log_every=None, tau_gt=None):
 
 def alp_B(data, B):
     return (data * np.log(B)).sum() / data.sum()
-
-
 
 def split_count(counts, fraction):
     c = (counts * fraction).astype(int)
