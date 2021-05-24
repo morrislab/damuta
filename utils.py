@@ -44,11 +44,11 @@ def get_tau(phi, eta):
     
     tau = np.einsum('jc,ckm->jkcm',phi, eta).reshape(-1,96)
     
-    sel = np.concatenate([np.arange(0,46,3), np.arange(1,47,3), np.arange(2,48,3),
-                np.arange(48,94,3), np.arange(49,95,3), np.arange(50,96,3)])
+    #sel = np.concatenate([np.arange(0,46,3), np.arange(1,47,3), np.arange(2,48,3),
+    #            np.arange(48,94,3), np.arange(49,95,3), np.arange(50,96,3)])
     
     # reorder by block
-    tau = np.vstack([t[sel] for t in tau])
+    #tau = np.vstack([t[sel] for t in tau])
     return tau
 
 def get_phis(sigs):

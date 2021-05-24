@@ -184,6 +184,81 @@ def save_gv(model, fn = 'model_graph'):
     gv = pm.model_graph.model_to_graphviz(model)
     gv.format = 'png'
     return gv.render(filename=fn)
+
+
+def plot_bipartite(w, rescale = 10, direction = 'forward'):
+    # create fully connected, directional bipartite graph 
+    # input is JxK matrix st w[j,k] gives the (possibly 0) weight 
+    # of edge spannig nodes j to k. 
+    assert len(w.shape) == 2
+    J,K = w.shape
+    
+    y0s = -np.arange(J) + np.arange(J).mean()
+    y1s = -np.arange(K) + np.arange(K).mean()
+    node_y = np.array([[y0, y1, None] for y0 in y0s for y1 in y1s]).flatten()
+    node_x = np.array([[0, 1, None] for y0 in y0s for y1 in y1s]).flatten()
+    
+    fig = go.Figure()
+    
+    # plot each edge with its weight
+    i=-1
+    for y0 in y0s:
+        for y1 in y1s:
+            i+=1
+            
+            if direction == 'forward': 
+                source = (0.003*rescale, y0)
+                target = (1-(0.003*rescale), y1)
+            else:
+                target = (0.003*rescale, y0)
+                source = (1-(0.003*rescale), y1)
+                
+            if w.flatten()[i] != 0:
+                fig.add_annotation(x=source[0], y = source[1],
+                                   xref="x", yref="y",
+                                   text="",
+                                   showarrow=True,
+                                   axref = "x", ayref='y',
+                                   ax= target[0],
+                                   ay= target[1],
+                                   arrowhead = 5,
+                                   arrowwidth=w.flatten()[i] * rescale,
+                                   arrowcolor='rgb(6, 144, 143)'
+                               )
+    
+                # add tiny jitter to show all overlapping points.
+                fig.add_trace(go.Scatter(x=[0.5], y=[(y0+y1)/2] + pm.Normal.dist(0,0.001).random(),
+                                marker=dict(size = 0.001),
+                                hovertemplate=f'{w.flatten()[i]}',
+                                mode='markers'))
+                
+    # plot nodes
+    fig.add_trace(go.Scatter(x=node_x, y=node_y,
+                            marker=dict(size = rescale * 4, color='#e8ec67'),
+                            hoverinfo='none',
+                            mode='markers'))
+    
+    fig.update_layout(
+                title='<br>Network graph made with Python',
+                titlefont_size=16,
+                showlegend=False,
+                hovermode='closest',
+                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
+    )
+                   
+
+    return fig
+
+def plot_bipartite_K(weights):
+    # normalize bipartite graph in J->K direction
+    fig = plot_bipartite(weights/weights.sum(0))
+    return fig
+
+def plot_bipartite_J(weights):
+    # normalize bipartite graph in K-> direction
+    fig = plot_bipartite((weights.T/weights.sum(1)).T, direction = "back")
+    return fig
     
 
 #def plot_diagnostics(trace, J, K, fn = 'model_diagnostics.pdf'):

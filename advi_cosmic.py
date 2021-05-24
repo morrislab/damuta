@@ -28,23 +28,6 @@ def fit_collapsed_model(corpus_obs: np.ndarray, callbacks,
     logging.debug(f"number of samples in corpus: {S}")
     logging.debug(f"mean number of mutations per sample: {N.mean()}")
     
-    #with pm.Model() as model:
-    #
-    #    phi = pm.Dirichlet('phi', a = np.ones(C) * alpha_bias, shape=(J, C))
-    #    theta = pm.Dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
-    #    A = pm.Dirichlet("A", a = np.ones(K) * gamma_bias, shape = (S, J, K))
-    #    # 4 is constant for ACGT
-    #    beta = np.ones((K,4)) * beta_bias
-    #    etaC = pm.Dirichlet("etaC", a=beta[:,[0,2,3]], shape=(C//2, K, M))
-    #    etaT = pm.Dirichlet("etaT", a=beta[:,[0,1,2]], shape=(C//2, K, M))
-    #    eta = pm.Deterministic('eta', pm.math.concatenate([etaC, etaT], axis=0))
-    #
-    #    B = pm.Deterministic("B", (pm.math.matrix_dot(theta, phi)[:,:,None] * \
-    #                               pm.math.matrix_dot(tt.batched_dot(theta,A),eta)).reshape((S, -1)))
-    #    
-    #    # mutation counts
-    #    pm.Multinomial('corpus', n = N.reshape(S,1), p = B , observed=corpus_obs)
-    #    
     with collapsed_model_factory(corpus_obs) as model:
         
         wandb.log({'graphical model': wandb.Image(save_gv(model))})
@@ -64,7 +47,7 @@ def cbs(*args, train=None, val=None, log_every=None, tau_gt=None):
         wandb.log({'ELBO': losses[-1]})
         
         # only log expensive objects (plots) sparcely
-        if i % log_every == 0 :
+        if i % log_every == 1 :
             
             hat = approx.sample(1000)
             tau_hat = get_tau(hat.phi.mean(0), hat.eta.mean(0))
