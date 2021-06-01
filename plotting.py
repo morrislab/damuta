@@ -62,26 +62,17 @@ def plot_phi(phi):
         phi = phi.reshape(1,-1)
     return plot_sigs(phi, mut32, phi_col)
 
-def plot_eta(eta):
+def plot_eta(eta, cols = eta_col):
     assert len(eta.shape) == 3
-    eta = np.concatenate([eta[0:16], eta[16:32]], 2)
-    C, K, M = eta.shape
-    assert C == 16
-    
-    fig = plt.subplots.make_subplots(rows=C, cols=K, shared_xaxes=True,
-                                     row_titles=mut16, column_titles=([f'Eta {l}' for l in range(K)]))
-    
-    for c in range(C):
-        for k in range(K):
-            fig.add_trace(go.Bar(x=mut6, y=eta[c][k], hoverinfo='y', showlegend = False,
-                                 textposition='auto', marker_color=eta_col,
-                            
-                          ), row = c+1, col = k+1)
-
-    fig.update_xaxes(tickangle=-45, matches = 'x')
-    for a in range(K, C+K):
-        fig.layout.annotations[a].update(textangle = 0, x = -0.1)
+    e = np.hstack([eta[0], eta[1]])
+    K = e.shape[0]
+    fig = plt.subplots.make_subplots(rows=K, cols=1, shared_xaxes=True,
+                                     row_titles=([f'Eta {l}' for l in range(K)]))
+    for k in range(K):
+        fig.add_trace(go.Bar(x=mut6, y=e[k], hoverinfo='y', showlegend = False,
+                             textposition='auto', marker_color=cols), row = k+1,col = 1)
     return fig
+
     
 def plot_phi_posterior(phi_approx, cols = phi_col):
     # TxJxC dimension df yields J subplots, C traces 
@@ -105,28 +96,30 @@ def plot_phi_posterior(phi_approx, cols = phi_col):
     
     return fig
 
+
 def plot_eta_posterior(eta_approx, cols = eta_col):
     # TxCxKxM dimension df yields CxK subplots, M traces 
     assert len(eta_approx.shape) == 4
     T, C, K, M  = eta_approx.shape
+    assert C==2
     if cols is None: cols = [None]*6
     
-    fig = plt.subplots.make_subplots(rows=C//2, cols=K, shared_xaxes=True, 
+    fig = plt.subplots.make_subplots(rows=1, cols=K, shared_xaxes=True, 
                                      column_titles=([f'Eta {l}' for l in range(K)]))
 
     for c in range(C):
-        for k in range(K):
-            for m in range(M):
+        for m in range(M):
+            for k in range(K):
                 d = eta_approx[:,c,k,m]
-                col = cols[0] if c < 16 else cols[-1]
+                col = cols[(m if c==0 else (m+3))]
                 fig.add_trace(go.Histogram(x=d, histnorm='probability', marker_color = col, 
-                                           legendgroup = mut6[(m if c < 16 else (m+3))], 
-                                           showlegend = (c==0 and k==0) or (c==16 and k==0), hoverinfo='name', 
-                                           name = mut6[(m if c < 16 else (m+3))]), row = (c%16)+1, col = k+1)
+                                           legendgroup = mut6[(m if c==0 else (m+3))], 
+                                           showlegend = k==0, hoverinfo='name', 
+                                           name = mut6[(m if c < 1 else (m+3))]), row = 1, col = k+1)
                 
 
     fig.update_yaxes(showticklabels = False)
-    fig.update_layout(barmode='overlay', height = 1200)
+    fig.update_layout(barmode='overlay')
     fig.update_traces(opacity=0.7)
     
     return fig
@@ -142,37 +135,34 @@ def plot_mean_std(array):
     fig.update_layout(coloraxis=dict(colorscale = 'viridis'))
     return fig
 
+def plot_tau_cos(tau_gt, tau_hat):
 
-def plot_tau_cos(tau_gt, phi_hat, eta_hat):
-    
-    tau_hat = get_tau(phi_hat, eta_hat)
     
     fig = plt.subplots.make_subplots(
             rows=2, cols=2,
-            column_widths=[0.5, 0.5],
-            row_heights=[0.5, 0.5],
-            specs=[[ {"type": "heatmap"},              {"type": "heatmap"}],
-                   [ {"type": "heatmap", "colspan": 2},        None      ]]
+            column_widths=[0.5, 0.5], row_heights=[0.5, 0.5],
+            specs=[[{"type": "heatmap", "rowspan": 2},  {"type": "heatmap"}   ],
+                   [          None                   ,  {"type": "heatmap"}   ]]
           )
     
-    fig.add_trace(go.Heatmap(z=cosine_similarity(tau_gt,tau_gt).round(2), coloraxis='coloraxis'), row=1, col =1)
+    fig.add_trace(go.Heatmap(z=cosine_similarity(tau_gt,tau_gt).round(2), coloraxis='coloraxis'), row=1, col =2)
+    fig.update_xaxes(title_text="tau gt", row=1, col=2)
+    fig.update_yaxes(title_text="tau gt", row=1, col=2)
+    
+    fig.add_trace(go.Heatmap(z=cosine_similarity(tau_hat,tau_hat).round(2), coloraxis='coloraxis'), row=2, col =2)
+    fig.update_xaxes(title_text="tau hat", row=2, col=2)
+    fig.update_yaxes(title_text="tau hat", row=2, col=2)
+    
+    cross = cosine_similarity(tau_hat, tau_gt)
     fig.update_xaxes(title_text="tau gt", row=1, col=1)
-    fig.update_yaxes(title_text="tau gt", row=1, col=1)
+    fig.update_yaxes(title_text="tau hat", row=1, col=1)
     
-    fig.add_trace(go.Heatmap(z=cosine_similarity(tau_hat,tau_hat).round(2), coloraxis='coloraxis'), row=1, col =2)
-    fig.update_xaxes(title_text="tau hat", row=1, col=2)
-    fig.update_yaxes(title_text="tau hat", row=1, col=2)
-    
-    cross = cosine_similarity(tau_hat,tau_gt)
-    fig.update_xaxes(title_text="tau hat", row=2, col=1)
-    fig.update_yaxes(title_text="tau gt", row=2, col=1)
-    
-    if cross.shape[0] > cross.shape[1]: 
+    if cross.shape[0] < cross.shape[1]:
         cross = cross.T
-        fig.update_xaxes(title_text="tau gt", row=2, col=1)
-        fig.update_yaxes(title_text="tau hat", row=2, col=1)
+        fig.update_xaxes(title_text="tau hat", row=1, col=1)
+        fig.update_yaxes(title_text="tau gt", row=1, col=1)
     
-    fig.add_trace(go.Heatmap(z=cross.round(2), coloraxis='coloraxis'), row=2, col =1)
+    fig.add_trace(go.Heatmap(z=cross.round(2), coloraxis='coloraxis'), row=1, col =1)
     
     fig.update_layout(coloraxis=dict(colorscale = 'viridis'), showlegend=False, height=1000,
                       title = 'cosine distance of estimated signatures and ground truth')
@@ -256,7 +246,7 @@ def plot_bipartite_K(weights):
     return fig
 
 def plot_bipartite_J(weights):
-    # normalize bipartite graph in K-> direction
+    # normalize bipartite graph in K->J direction
     fig = plot_bipartite((weights.T/weights.sum(1)).T, direction = "back")
     return fig
     

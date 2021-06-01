@@ -1,4 +1,4 @@
-# advi_cosmic.py
+# cosmic_mix.py
 
 import numpy as np
 import pymc3 as pm
@@ -14,11 +14,11 @@ from sim_data import sim_cosmic
 
 import wandb
 
-
-
 @extyaml
-def fit_collapsed_model(corpus_obs: np.ndarray, callbacks, 
-                        n_steps: int, seed: int, lr: float) -> (pm.model.Model, pm.variational.inference.ADVI):
+def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int,
+                        alpha_bias: float, psi_bias: float, 
+                        gamma_bias: float, beta_bias: float,
+                        callbacks, n_steps: int, seed: int, lr: float) -> (pm.model.Model, pm.variational.inference.ADVI):
     
     logging.debug(f"theano device: {theano.config.device}")
     
@@ -28,7 +28,8 @@ def fit_collapsed_model(corpus_obs: np.ndarray, callbacks,
     logging.debug(f"number of samples in corpus: {S}")
     logging.debug(f"mean number of mutations per sample: {N.mean()}")
     
-    with collapsed_model_factory(corpus_obs) as model:
+    with collapsed_model_factory(corpus_obs, J, K, alpha_bias, 
+                                 psi_bias, gamma_bias, beta_bias) as model:
         
         wandb.log({'graphical model': wandb.Image(save_gv(model))})
 
@@ -39,7 +40,7 @@ def fit_collapsed_model(corpus_obs: np.ndarray, callbacks,
 
 
 @extyaml  
-def cbs(*args, train=None, val=None, log_every=None, tau_gt=None):
+def cbs(*args, train=None, val=None, tau_gt=None, log_every=None):
     # return a list of callbacks, with extra parameters as desired
     
     def wandb_calls(*args):
@@ -50,49 +51,33 @@ def cbs(*args, train=None, val=None, log_every=None, tau_gt=None):
         if i % log_every == 1 :
             
             hat = approx.sample(1000)
-            tau_hat = get_tau(hat.phi.mean(0), hat.eta.mean(0))
-            
+            tau_hat = get_tau(hat.phi.mean(0), hat.eta.mean(0))        
             
             wandb.log({         
                        'train alp': alp_B(train, hat.B.mean(0)),
                        'val alp': alp_B(val, hat.B.mean(0)),
+                       'train alp alt': alp_B_alt(train, hat),
+                       'val alp alt': alp_B_alt(val, hat),
                        'phi posterior': plot_phi_posterior(hat.phi, cols=None),
                        'eta posterior': plot_eta_posterior(hat.eta, cols=None),
-                       'signature similarities': plot_tau_cos(tau_gt, hat.phi.mean(0), hat.eta.mean(0)),
+                       'signature similarities': plot_tau_cos(tau_gt, tau_hat),
                         
                        'inferred phi': plot_phi(hat.phi.mean(0)),
                        'inferred eta': plot_eta(hat.eta.mean(0)),
                        'inferred signatures': plot_tau(tau_hat),
                         
-                       '1000 samples from phi node': plot_mean_std(hat.phi),
-                       '1000 samples from eta node': plot_mean_std(hat.eta),
                        '1000 samples from theta node': plot_mean_std(hat.theta),
                        '1000 samples from A node': plot_mean_std(hat.A),
                        '1000 samples from B node': plot_mean_std(hat.B),
+                        
+                       #'B repairs A': plot_bipartite_J(hat.A.mean(0)),
+                       #'A is repaired by B': plot_bipartite_K(hat.A.mean(0))
 
                       })
     
     return [wandb_calls]
 
-def alp_B(data, B):
-    return (data * np.log(B)).sum() / data.sum()
 
-def split_count(counts, fraction):
-    c = (counts * fraction).astype(int)
-    frac1 = np.histogram(np.repeat(np.arange(96), c), bins=96, range=(0, 96))[0]
-    frac2 = counts - frac1
-    assert all(frac2 >= 0) and all(frac1 >= 0)
-    return frac1, frac2
-
-def split_by_count(data, fraction=0.8):
-    stacked = np.array([split_count(m, fraction) for m in data])
-    return stacked[:,0,:], stacked[:,1,:]
-
-def split_by_S(data, fraction=0.8):
-    c = int((data.shape[0] * fraction))
-    frac1 = data[0:c]
-    frac2 = data[c:(data.shape[0])]
-    return frac1, frac2
 
 def main():
     wandb.init()
@@ -104,18 +89,7 @@ def main():
     train, val  = split_by_count(cosmic)
 
     model, trace = fit_collapsed_model(corpus_obs = train, 
-                                       callbacks = cbs(train = train, val = val, 
-                                                       log_every=100, tau_gt = tau))
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
+                                       callbacks = cbs(train = train, val = val, tau_gt = tau))
     
     
 if __name__ == '__main__':
