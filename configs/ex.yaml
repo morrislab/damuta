@@ -1,0 +1,25 @@
+sim_data.py:
+  sim_cosmic:
+    sig_defs: '~/data/cosmic/sigProfiler_SBS_signatures_2019_05_22.csv'
+    seed: 42
+    S: 400
+    N: 10000
+    I: 3
+    tau_hyperprior: 0.05
+
+cosmic_mix.py:
+    fit_collapsed_model:
+        J: 3
+        K: 3
+        alpha_bias: 0.05
+        psi_bias: 1
+        gamma_bias: 0.1
+        beta_bias: 0.1
+        seed: 42
+        n_steps: 50000
+        lr: 1
+    
+    cbs:
+        # sparse logging will speed up training 
+        log_every: 5000        
+    

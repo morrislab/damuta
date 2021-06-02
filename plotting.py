@@ -38,10 +38,11 @@ tau_col = np.repeat(['cyan', 'black', 'red', 'grey', 'lightgreen', 'pink'], 16)
 phi_col = np.repeat(['green', 'blue'], 16)
 eta_col = np.repeat(['orange', 'lightblue'], 3)
 
-def plot_sigs(sigs, xlab, cols):
+def plot_sigs(sigs, xlab, cols, row_title='Sig'):
     assert len(sigs.shape) == 2
     
-    fig = plt.subplots.make_subplots(rows=sigs.shape[0], cols=1, shared_xaxes=True)
+    fig = plt.subplots.make_subplots(rows=sigs.shape[0], cols=1, shared_xaxes=True,
+                                     row_titles=([f'{row_title} {l}' for l in range(sigs.shape[0])]) )
     
     for s in range(sigs.shape[0]):
         fig.add_trace(go.Bar(x=xlab, y=sigs[s], hoverinfo='y', showlegend = False,
@@ -55,12 +56,12 @@ def plot_sigs(sigs, xlab, cols):
 def plot_tau(tau):
     if len(tau.shape) == 1: 
         tau = tau.reshape(1,-1)
-    return plot_sigs(tau, mut96, tau_col)
+    return plot_sigs(tau, mut96, tau_col, 'Tau')
 
 def plot_phi(phi):
     if len(phi.shape) == 1: 
         phi = phi.reshape(1,-1)
-    return plot_sigs(phi, mut32, phi_col)
+    return plot_sigs(phi, mut32, phi_col, 'Phi')
 
 def plot_eta(eta, cols = eta_col):
     assert len(eta.shape) == 3
@@ -135,9 +136,8 @@ def plot_mean_std(array):
     fig.update_layout(coloraxis=dict(colorscale = 'viridis'))
     return fig
 
-def plot_tau_cos(tau_gt, tau_hat):
-
-    
+def plot_cossim(tau_gt, tau_hat):
+    # heatmap of cosine similarities
     fig = plt.subplots.make_subplots(
             rows=2, cols=2,
             column_widths=[0.5, 0.5], row_heights=[0.5, 0.5],
@@ -164,7 +164,7 @@ def plot_tau_cos(tau_gt, tau_hat):
     
     fig.add_trace(go.Heatmap(z=cross.round(2), coloraxis='coloraxis'), row=1, col =1)
     
-    fig.update_layout(coloraxis=dict(colorscale = 'viridis'), showlegend=False, height=1000,
+    fig.update_layout(coloraxis=dict(colorscale = 'viridis'), showlegend=False, 
                       title = 'cosine distance of estimated signatures and ground truth')
     
     return fig
@@ -176,7 +176,7 @@ def save_gv(model, fn = 'model_graph'):
     return gv.render(filename=fn)
 
 
-def plot_bipartite(w, rescale = 10, direction = 'forward'):
+def plot_bipartite(w, rescale = 10, direction = 'forward', main = ''):
     # create fully connected, directional bipartite graph 
     # input is JxK matrix st w[j,k] gives the (possibly 0) weight 
     # of edge spannig nodes j to k. 
@@ -212,14 +212,14 @@ def plot_bipartite(w, rescale = 10, direction = 'forward'):
                                    ax= target[0],
                                    ay= target[1],
                                    arrowhead = 5,
-                                   arrowwidth=w.flatten()[i] * rescale,
+                                   arrowwidth=(max(0.01, w.flatten()[i] * rescale) if w.flatten()[i] > 0 else 0),
                                    arrowcolor='rgb(6, 144, 143)'
                                )
     
                 # add tiny jitter to show all overlapping points.
                 fig.add_trace(go.Scatter(x=[0.5], y=[(y0+y1)/2] + pm.Normal.dist(0,0.001).random(),
                                 marker=dict(size = 0.001),
-                                hovertemplate=f'{w.flatten()[i]}',
+                                hovertemplate=f'{w.flatten()[i].round(2)}',
                                 mode='markers'))
                 
     # plot nodes
@@ -229,7 +229,7 @@ def plot_bipartite(w, rescale = 10, direction = 'forward'):
                             mode='markers'))
     
     fig.update_layout(
-                title='<br>Network graph made with Python',
+                title=main,
                 titlefont_size=16,
                 showlegend=False,
                 hovermode='closest',
@@ -242,58 +242,12 @@ def plot_bipartite(w, rescale = 10, direction = 'forward'):
 
 def plot_bipartite_K(weights):
     # normalize bipartite graph in J->K direction
-    fig = plot_bipartite(weights/weights.sum(0))
+    fig = plot_bipartite((weights/weights.sum(0)).round(2), main = 'K repairs J')
     return fig
 
 def plot_bipartite_J(weights):
     # normalize bipartite graph in K->J direction
-    fig = plot_bipartite((weights.T/weights.sum(1)).T, direction = "back")
+    fig = plot_bipartite((weights.T/weights.sum(1)).T.round(2), direction = "back", main = 'J repaired by K')
     return fig
     
-
-#def plot_diagnostics(trace, J, K, fn = 'model_diagnostics.pdf'):
-#    
-#    with PdfPages(fn) as pdf:
-#        # attach metadata (as pdf note) to page
-#        #pdf.attach_note("sticky note!")  
-#    
-#        # ELBO 
-#        plt.plot(trace.hist)
-#        plt.tight_layout()
-#        pdf.savefig()
-#        plt.close()
-#        
-#        # phi hat
-#        for j in range(J):
-#            plt.subplot(J,1,j+1)
-#            for c in range(32):
-#                sns.distplot(trace.approx.sample(1000)['phi'][:, j, c], kde=False, hist=True)
-#            plt.title(f'Phi density estimates for topic {j}')
-#        plt.tight_layout()
-#        pdf.savefig()
-#        plt.close()
-#        
-#        # eta hat
-#        for k in range(K):
-#            plt.subplot(K,1,k+1)
-#            for m in range(3):
-#                    sns.distplot(trace.approx.sample(1000)['eta'][:, 31, k, m], kde=False, hist=True)
-#            plt.title(f'Eta density estimates for topic {k}')
-#        plt.tight_layout()
-#        pdf.savefig()
-#        plt.close()
-#                
-#        # A summary
-#        a = trace.approx.sample(1000)['A']
-#        ax = sns.heatmap(np.round(a.mean((0, 1)), 2), annot=True, cmap="YlGnBu")
-#        plt.tight_layout()
-#        pdf.savefig()
-#        plt.close()
-#        
-#        ax = sns.heatmap(np.round(a.std((0, 1)), 2), annot=True, cmap="YlGnBu")
-#        plt.tight_layout()
-#        pdf.savefig()
-#        plt.close()
-#        
-
 

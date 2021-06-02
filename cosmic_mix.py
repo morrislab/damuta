@@ -18,7 +18,7 @@ import wandb
 def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int,
                         alpha_bias: float, psi_bias: float, 
                         gamma_bias: float, beta_bias: float,
-                        callbacks, n_steps: int, seed: int, lr: float) -> (pm.model.Model, pm.variational.inference.ADVI):
+                        callbacks: list, n_steps: int, seed: int, lr: float) -> (pm.model.Model, pm.variational.inference.ADVI):
     
     logging.debug(f"theano device: {theano.config.device}")
     
@@ -51,27 +51,26 @@ def cbs(*args, train=None, val=None, tau_gt=None, log_every=None):
         if i % log_every == 1 :
             
             hat = approx.sample(1000)
-            tau_hat = get_tau(hat.phi.mean(0), hat.eta.mean(0))        
+            tau_hat = get_tau(hat.phi.mean(0), hat.eta.mean(0))
+            act_hat = np.einsum('sj,sjk->sjk', hat.theta.mean(0), hat.A.mean(0))
             
             wandb.log({         
                        'train alp': alp_B(train, hat.B.mean(0)),
                        'val alp': alp_B(val, hat.B.mean(0)),
-                       'train alp alt': alp_B_alt(train, hat),
-                       'val alp alt': alp_B_alt(val, hat),
                        'phi posterior': plot_phi_posterior(hat.phi, cols=None),
                        'eta posterior': plot_eta_posterior(hat.eta, cols=None),
-                       'signature similarities': plot_tau_cos(tau_gt, tau_hat),
+                       'signature similarities': plot_cossim(tau_gt, tau_hat),
                         
+                       'inferred signatures': plot_tau(tau_hat),
                        'inferred phi': plot_phi(hat.phi.mean(0)),
                        'inferred eta': plot_eta(hat.eta.mean(0)),
-                       'inferred signatures': plot_tau(tau_hat),
+
+                       'estimated recruitment': plot_mean_std(act_hat),
                         
-                       '1000 samples from theta node': plot_mean_std(hat.theta),
-                       '1000 samples from A node': plot_mean_std(hat.A),
-                       '1000 samples from B node': plot_mean_std(hat.B),
-                        
-                       #'B repairs A': plot_bipartite_J(hat.A.mean(0)),
-                       #'A is repaired by B': plot_bipartite_K(hat.A.mean(0))
+                       'average availability': plot_bipartite_J(act_hat.mean(0)),
+                       'average recruitment': plot_bipartite_K(act_hat.mean(0)),
+                       'availability in sample 0': plot_bipartite_J(act_hat[0]),
+                       'recruitment in sample 0': plot_bipartite_K(act_hat[0]),
 
                       })
     

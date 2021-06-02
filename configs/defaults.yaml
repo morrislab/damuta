@@ -29,7 +29,7 @@ cosmic_mix.py:
         gamma_bias: 0.1
         beta_bias: 0.1
         seed: 42
-        n_steps: 50000
+        n_steps: 1f0000
         lr: 1
     
     cbs:

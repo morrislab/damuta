@@ -8,7 +8,7 @@ import theano
 import theano.tensor as tt 
 import typing
 import logging
-from config import extyaml
+from config import *
 
 @extyaml
 def sim_cosmic(sig_defs: str, S: int, N: int, tau_hyperprior: float, I: int, seed: int):
@@ -30,38 +30,34 @@ def sim_cosmic(sig_defs: str, S: int, N: int, tau_hyperprior: float, I: int, see
     return corpus, tau, tau_activities
 
 @extyaml
-def sim_parametric():
-    C = 32
-    M = 3
-    J = 2
-    K = 2
-    N = np.array([1000] * 10)
-    S = len(N)
-    
+def sim_parametric(J:int,K:int,N:int,S:int,alpha_bias:float,psi_bias:float,
+                   gamma_bias:float,beta_bias:float,seed:int):
+    # simulate from generated phi and eta
+    np.random.seed(seed)
+    pm.set_tt_rng(seed)
+    N = np.array([N] * S)
+
     # Hyper-parameter for priors
-    alpha = np.ones(C) * 0.05
-    #alpha[0] = 1
-    psi = np.ones(J)
-    gamma = np.ones(K) * 0.1
-    #gamma = np.array([5,0.1,0.1,0.1]) * 0.1
-    beta = np.ones((K,4)) * 0.1
-    #beta = np.repeat(np.array([[1, 0.1, 1, 5]]), K, axis=0)
+    alpha = np.ones(C) * alpha_bias
+    psi = np.ones(J) * psi_bias
+    gamma = np.ones(K) * gamma_bias
+    beta = np.ones((K,4)) * beta_bias
     
-    phi_gen = pm.Dirichlet.dist(a=alpha, shape=(C)).random(size = J)
-    theta_gen = pm.Dirichlet.dist(a=psi).random(size = S)
-    A_gen = pm.Dirichlet.dist(a=gamma, shape=(J, K)).random(size = S)
+    phi = pm.Dirichlet.dist(a=alpha, shape=(C)).random(size = J)
+    theta = pm.Dirichlet.dist(a=psi).random(size = S)
+    A = pm.Dirichlet.dist(a=gamma, shape=(J, K)).random(size = S)
     # ACGT
     # 0123
-    eta_gen = np.vstack([[pm.Dirichlet.dist(a=beta[:,[0,2,3]]).random(size=1)] * 16, 
-                         [pm.Dirichlet.dist(a=beta[:,[0,1,2]]).random(size=1)] * 16]).squeeze()
-    #eta_gen = np.vstack([pm.Dirichlet.dist(a=beta[:,[0,2,3]]).random(size=C//2), 
-    #                     pm.Dirichlet.dist(a=beta[:,[0,1,2]]).random(size=C//2)])
+    eta = np.vstack([[pm.Dirichlet.dist(a=beta[:,[0,2,3]]).random(size=1)] , 
+                         [pm.Dirichlet.dist(a=beta[:,[0,1,2]]).random(size=1)] ]).squeeze()
+
+    W=np.dot(theta, phi).reshape(S,2,16)
+    Q=np.einsum('sj,sjk,pkm->spm', theta, A, eta)
+    B=np.einsum('spc,spm->spmc', W, Q).reshape(S, -1)
     
-    W=(theta_gen@phi_gen).T
-    Q=np.einsum('sj,sjk->sk', theta_gen, A_gen)@eta_gen
-    B=np.einsum('cs,csm->scm',W,Q).reshape(S, -1)
     data = np.vstack([d.random(size = 1) for d in map(pm.Multinomial.dist, N, B)])
-    
+    return data, {'phi': phi, 'theta': theta, 'A': A, 'eta': eta, 'B': B,
+                  'alpha': alpha, 'psi': psi, 'gamma': gamma, 'beta': beta}
 
 def encode_counts(counts):
     # turn counts of position into word-style encoding

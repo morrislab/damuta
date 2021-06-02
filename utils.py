@@ -1,11 +1,9 @@
 import numpy as np
 import pymc3 as pm
 from config import *
+from plotting import *
 import theano.tensor as tt 
 import typing
-# Constants
-C = 32
-M = 3
 
 def collapsed_model_factory(corpus, J: int, K: int, alpha_bias: float, psi_bias: float, 
                             gamma_bias: float, beta_bias: float, phi_obs = None, eta_obs = None,):
@@ -37,13 +35,6 @@ def collapsed_model_factory(corpus, J: int, K: int, alpha_bias: float, psi_bias:
 
 def alp_B(data, B):
     return (data * np.log(B)).sum() / data.sum()
-
-def alp_B_alt(data, hat):
-    S = hat.theta.shape[1]
-    W=(hat.theta.mean(0)@hat.phi.mean(0)).reshape((S,2,16))[:,:,None,:] 
-    Q=(np.dot(np.einsum('sj,sjk->sk', hat['theta'].mean(0), hat['A'].mean(0)),hat['eta'].mean(0)))[:,:,:,None]
-    B = (W*Q).reshape((S, -1))
-    return ( (data * np.log(B)).sum() / data.sum() )
 
 def split_count(counts, fraction):
     c = (counts * fraction).astype(int)
@@ -79,3 +70,7 @@ def get_etas(sigs):
     wrapped = sigs.reshape(sigs.shape[0], -1, 16)
     etas = wrapped.sum(2)
     return etas#[0,1,2,3,5,4]
+
+def flatten_eta(eta): # eta pkm -> kc
+    return np.moveaxis(eta,0,1).reshape(-1, 6)
+        
