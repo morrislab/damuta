@@ -10,8 +10,8 @@ def collapsed_model_factory(corpus, J: int, K: int, alpha_bias: float, psi_bias:
     
     S = corpus.shape[0]
     N = corpus.sum(1).reshape(S,1)
-    etaC_obs = eta_obs[0] if eta_obs is not None else eta_obs
-    etaT_obs = eta_obs[1] if eta_obs is not None else eta_obs
+    etaC_obs = eta_obs[0,None,:,:] if eta_obs is not None else eta_obs
+    etaT_obs = eta_obs[1,None,:,:] if eta_obs is not None else eta_obs
     
     with pm.Model() as model:
         

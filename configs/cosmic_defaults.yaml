@@ -1,6 +1,6 @@
 sim_data.py:
   sim_cosmic:
-    sig_defs: '~/data/cosmic/sigProfiler_SBS_signatures_2019_05_22.csv'
+    sig_defs: 'sigProfiler_SBS_signatures_2019_05_22.csv'
     seed: 42
     S: 100
     N: 5000
