@@ -183,8 +183,8 @@ def plot_bipartite(w, rescale = 10, direction = 'forward', main = ''):
     assert len(w.shape) == 2
     J,K = w.shape
     
-    y0s = -np.arange(J) + np.arange(J).mean()
-    y1s = -np.arange(K) + np.arange(K).mean()
+    y0s = np.arange(J) - np.arange(J).mean()
+    y1s = np.arange(K) - np.arange(K).mean()
     node_y = np.array([[y0, y1, None] for y0 in y0s for y1 in y1s]).flatten()
     node_x = np.array([[0, 1, None] for y0 in y0s for y1 in y1s]).flatten()
     
