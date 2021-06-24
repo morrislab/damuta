@@ -1,16 +1,8 @@
 # cosmic_mix.py
-
-import numpy as np
-import pymc3 as pm
-import pandas as pd
-from sklearn.metrics.pairwise import cosine_similarity
-import typing
-import logging
-import theano
-from config import *
 from utils import *
 from plotting import *
 from sim_data import sim_cosmic
+from models import collapsed_model_factory
 
 import wandb
 
@@ -19,8 +11,6 @@ def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int,
                         alpha_bias: float, psi_bias: float, 
                         gamma_bias: float, beta_bias: float,
                         callbacks: list, n_steps: int, seed: int, lr: float) -> (pm.model.Model, pm.variational.inference.ADVI):
-    
-    logging.debug(f"theano device: {theano.config.device}")
     
     S = corpus_obs.shape[0]
     N = corpus_obs.sum(1)

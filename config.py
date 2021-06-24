@@ -2,8 +2,8 @@
 import argparse
 import logging
 import pickle
-from pathlib import Path
 import yaml
+from pathlib import Path
 
 # Constants
 C = 32

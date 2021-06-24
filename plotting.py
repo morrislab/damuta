@@ -1,38 +1,9 @@
-#import matplotlib.pyplot as mplt
-#from matplotlib.backends.backend_pdf import PdfPages
-import numpy as np
-import pymc3 as pm
-import arviz as az
-from config import *
 from utils import *
 from sklearn.metrics.pairwise import cosine_similarity
 import plotly as plt
 import plotly.graph_objects as go
 from plotly.colors import n_colors
 plt.io.templates.default = "none"
-
-mut96 = ['A[C>A]A', 'A[C>A]C', 'A[C>A]G', 'A[C>A]T', 'C[C>A]A', 'C[C>A]C', 'C[C>A]G', 'C[C>A]T', 
-         'G[C>A]A', 'G[C>A]C', 'G[C>A]G', 'G[C>A]T', 'T[C>A]A', 'T[C>A]C', 'T[C>A]G', 'T[C>A]T', 
-         'A[C>G]A', 'A[C>G]C', 'A[C>G]G', 'A[C>G]T', 'C[C>G]A', 'C[C>G]C', 'C[C>G]G', 'C[C>G]T', 
-         'G[C>G]A', 'G[C>G]C', 'G[C>G]G', 'G[C>G]T', 'T[C>G]A', 'T[C>G]C', 'T[C>G]G', 'T[C>G]T', 
-         'A[C>T]A', 'A[C>T]C', 'A[C>T]G', 'A[C>T]T', 'C[C>T]A', 'C[C>T]C', 'C[C>T]G', 'C[C>T]T', 
-         'G[C>T]A', 'G[C>T]C', 'G[C>T]G', 'G[C>T]T', 'T[C>T]A', 'T[C>T]C', 'T[C>T]G', 'T[C>T]T', 
-         'A[T>A]A', 'A[T>A]C', 'A[T>A]G', 'A[T>A]T', 'C[T>A]A', 'C[T>A]C', 'C[T>A]G', 'C[T>A]T', 
-         'G[T>A]A', 'G[T>A]C', 'G[T>A]G', 'G[T>A]T', 'T[T>A]A', 'T[T>A]C', 'T[T>A]G', 'T[T>A]T', 
-         'A[T>C]A', 'A[T>C]C', 'A[T>C]G', 'A[T>C]T', 'C[T>C]A', 'C[T>C]C', 'C[T>C]G', 'C[T>C]T', 
-         'G[T>C]A', 'G[T>C]C', 'G[T>C]G', 'G[T>C]T', 'T[T>C]A', 'T[T>C]C', 'T[T>C]G', 'T[T>C]T', 
-         'A[T>G]A', 'A[T>G]C', 'A[T>G]G', 'A[T>G]T', 'C[T>G]A', 'C[T>G]C', 'C[T>G]G', 'C[T>G]T', 
-         'G[T>G]A', 'G[T>G]C', 'G[T>G]G', 'G[T>G]T', 'T[T>G]A', 'T[T>G]C', 'T[T>G]G', 'T[T>G]T']
-
-mut32 = ['ACA', 'ACC', 'ACG', 'ACT', 'CCA', 'CCC', 'CCG', 'CCT', 
-         'GCA', 'GCC', 'GCG', 'GCT', 'TCA', 'TCC', 'TCG', 'TCT', 
-         'ATA', 'ATC', 'ATG', 'ATT', 'CTA', 'CTC', 'CTG', 'CTT', 
-         'GTA', 'GTC', 'GTG', 'GTT', 'TTA', 'TTC', 'TTG', 'TTT']
-
-mut16 = ['A_A', 'A_C', 'A_G', 'A_T', 'C_A', 'C_C', 'C_G', 'C_T', 
-         'G_A', 'G_C', 'G_G', 'G_T', 'T_A', 'T_C', 'T_G', 'T_T']
-
-mut6 = ['C>A','C>G','C>T','T>A','T>C','T>G']
 
 tau_col = np.repeat(['cyan', 'black', 'red', 'grey', 'lightgreen', 'pink'], 16)
 phi_col = np.repeat(['green', 'blue'], 16)
@@ -176,7 +147,7 @@ def save_gv(model, fn = 'model_graph'):
     return gv.render(filename=fn)
 
 
-def plot_bipartite(w, rescale = 10, direction = 'forward', main = ''):
+def plot_bipartite(w, rescale = 10, direction = 'forward', main = '', ah=0):
     # create fully connected, directional bipartite graph 
     # input is JxK matrix st w[j,k] gives the (possibly 0) weight 
     # of edge spannig nodes j to k. 
@@ -211,7 +182,7 @@ def plot_bipartite(w, rescale = 10, direction = 'forward', main = ''):
                                    axref = "x", ayref='y',
                                    ax= target[0],
                                    ay= target[1],
-                                   arrowhead = 5,
+                                   arrowhead = ah,
                                    arrowwidth=(max(0.01, w.flatten()[i] * rescale) if w.flatten()[i] > 0 else 0),
                                    arrowcolor='rgb(6, 144, 143)'
                                )
@@ -242,12 +213,12 @@ def plot_bipartite(w, rescale = 10, direction = 'forward', main = ''):
 
 def plot_bipartite_K(weights):
     # normalize bipartite graph in J->K direction
-    fig = plot_bipartite((weights/weights.sum(0)).round(2), main = 'K repairs J')
+    fig = plot_bipartite((weights/weights.sum(0)).round(2), main = 'K repairs J', ah=5)
     return fig
 
 def plot_bipartite_J(weights):
     # normalize bipartite graph in K->J direction
-    fig = plot_bipartite((weights.T/weights.sum(1)).T.round(2), direction = "back", main = 'J repaired by K')
+    fig = plot_bipartite((weights.T/weights.sum(1)).T.round(2), direction = "back", main = 'J repaired by K', ah=5)
     return fig
     
 

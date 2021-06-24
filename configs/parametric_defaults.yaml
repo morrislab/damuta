@@ -11,7 +11,7 @@ sim_data.py:
     beta_bias: 1
 
     
-parametric_mix.py:
+fit_parametric.py:
     fit_collapsed_model:
         J: 6
         K: 6

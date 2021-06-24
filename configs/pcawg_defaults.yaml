@@ -2,7 +2,7 @@ fit_pcawg.py:
     load_counts:
         counts_fn: 'mutation_types_raw_counts.csv'
         types_fn: 'pcawg_cancer_types.csv'
-        type_subset: ['Skin-Melanoma', 'Head-SCC', 'Bladder-TCC']
+        type_subset: ['Skin-Melanoma']
     
     fit_collapsed_model:
         J: 5

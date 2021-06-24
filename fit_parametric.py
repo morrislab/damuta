@@ -1,11 +1,8 @@
-# parametric_mix.py
-
-from config import *
 from utils import *
+from plotting import * 
 from sim_data import sim_parametric
-import theano
+from models import collapsed_model_factory
 
-import wandb
 
 
 @extyaml
@@ -13,8 +10,7 @@ def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int,
                         alpha_bias: float, psi_bias: float, 
                         gamma_bias: float, beta_bias: float,
                         callbacks: list, n_steps: int, seed: int) -> (pm.model.Model, pm.variational.inference.ADVI):
-    
-    logging.debug(f"theano device: {theano.config.device}")
+  
     
     S = corpus_obs.shape[0]
     N = corpus_obs.sum(1)

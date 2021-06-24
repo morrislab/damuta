@@ -1,14 +1,6 @@
 # sim_data.py
 # simulate mutation catalogue using cosmic signatures
-
-import numpy as np
-import pymc3 as pm
-import pandas as pd
-import theano
-import theano.tensor as tt 
-import typing
-import logging
-from config import *
+from utils import *
 
 @extyaml
 def sim_cosmic(sig_defs: str, S: int, N: int, tau_hyperprior: float, I: int, seed: int):
@@ -16,7 +8,7 @@ def sim_cosmic(sig_defs: str, S: int, N: int, tau_hyperprior: float, I: int, see
     np.random.seed(seed)
     pm.set_tt_rng(seed)
     N = np.array([N] * S)
-    tau = pd.read_csv(sig_defs, index_col = [0,1]).to_numpy().T
+    tau = load_sigs(sig_defs, naming_style = 'cosmic', sep = '\t').to_numpy().T
 
     if I:
         tau = tau[np.random.choice(tau.shape[0], size = I, replace = False)]

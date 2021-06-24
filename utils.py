@@ -1,37 +1,92 @@
+from config import *
 import numpy as np
 import pymc3 as pm
-from config import *
-from plotting import *
+import pandas as pd
 import theano.tensor as tt 
 import typing
+import wandb
 
-def collapsed_model_factory(corpus, J: int, K: int, alpha_bias: float, psi_bias: float, 
-                            gamma_bias: float, beta_bias: float, phi_obs = None, eta_obs = None,):
+idx96 = pd.MultiIndex.from_tuples([
+            ('C>A', 'ACA'), ('C>A', 'ACC'), ('C>A', 'ACG'), ('C>A', 'ACT'), 
+            ('C>A', 'CCA'), ('C>A', 'CCC'), ('C>A', 'CCG'), ('C>A', 'CCT'), 
+            ('C>A', 'GCA'), ('C>A', 'GCC'), ('C>A', 'GCG'), ('C>A', 'GCT'), 
+            ('C>A', 'TCA'), ('C>A', 'TCC'), ('C>A', 'TCG'), ('C>A', 'TCT'), 
+            ('C>G', 'ACA'), ('C>G', 'ACC'), ('C>G', 'ACG'), ('C>G', 'ACT'), 
+            ('C>G', 'CCA'), ('C>G', 'CCC'), ('C>G', 'CCG'), ('C>G', 'CCT'), 
+            ('C>G', 'GCA'), ('C>G', 'GCC'), ('C>G', 'GCG'), ('C>G', 'GCT'), 
+            ('C>G', 'TCA'), ('C>G', 'TCC'), ('C>G', 'TCG'), ('C>G', 'TCT'), 
+            ('C>T', 'ACA'), ('C>T', 'ACC'), ('C>T', 'ACG'), ('C>T', 'ACT'), 
+            ('C>T', 'CCA'), ('C>T', 'CCC'), ('C>T', 'CCG'), ('C>T', 'CCT'), 
+            ('C>T', 'GCA'), ('C>T', 'GCC'), ('C>T', 'GCG'), ('C>T', 'GCT'), 
+            ('C>T', 'TCA'), ('C>T', 'TCC'), ('C>T', 'TCG'), ('C>T', 'TCT'), 
+            ('T>A', 'ATA'), ('T>A', 'ATC'), ('T>A', 'ATG'), ('T>A', 'ATT'), 
+            ('T>A', 'CTA'), ('T>A', 'CTC'), ('T>A', 'CTG'), ('T>A', 'CTT'), 
+            ('T>A', 'GTA'), ('T>A', 'GTC'), ('T>A', 'GTG'), ('T>A', 'GTT'), 
+            ('T>A', 'TTA'), ('T>A', 'TTC'), ('T>A', 'TTG'), ('T>A', 'TTT'), 
+            ('T>C', 'ATA'), ('T>C', 'ATC'), ('T>C', 'ATG'), ('T>C', 'ATT'), 
+            ('T>C', 'CTA'), ('T>C', 'CTC'), ('T>C', 'CTG'), ('T>C', 'CTT'), 
+            ('T>C', 'GTA'), ('T>C', 'GTC'), ('T>C', 'GTG'), ('T>C', 'GTT'), 
+            ('T>C', 'TTA'), ('T>C', 'TTC'), ('T>C', 'TTG'), ('T>C', 'TTT'), 
+            ('T>G', 'ATA'), ('T>G', 'ATC'), ('T>G', 'ATG'), ('T>G', 'ATT'), 
+            ('T>G', 'CTA'), ('T>G', 'CTC'), ('T>G', 'CTG'), ('T>G', 'CTT'), 
+            ('T>G', 'GTA'), ('T>G', 'GTC'), ('T>G', 'GTG'), ('T>G', 'GTT'), 
+            ('T>G', 'TTA'), ('T>G', 'TTC'), ('T>G', 'TTG'), ('T>G', 'TTT')],
+            names=['Type', 'Subtype'])
     
-    S = corpus.shape[0]
-    N = corpus.sum(1).reshape(S,1)
-    etaC_obs = eta_obs[0,None,:,:] if eta_obs is not None else eta_obs
-    etaT_obs = eta_obs[1,None,:,:] if eta_obs is not None else eta_obs
+
+mut96 = ['A[C>A]A', 'A[C>A]C', 'A[C>A]G', 'A[C>A]T', 'C[C>A]A', 'C[C>A]C', 'C[C>A]G', 'C[C>A]T', 
+         'G[C>A]A', 'G[C>A]C', 'G[C>A]G', 'G[C>A]T', 'T[C>A]A', 'T[C>A]C', 'T[C>A]G', 'T[C>A]T', 
+         'A[C>G]A', 'A[C>G]C', 'A[C>G]G', 'A[C>G]T', 'C[C>G]A', 'C[C>G]C', 'C[C>G]G', 'C[C>G]T', 
+         'G[C>G]A', 'G[C>G]C', 'G[C>G]G', 'G[C>G]T', 'T[C>G]A', 'T[C>G]C', 'T[C>G]G', 'T[C>G]T', 
+         'A[C>T]A', 'A[C>T]C', 'A[C>T]G', 'A[C>T]T', 'C[C>T]A', 'C[C>T]C', 'C[C>T]G', 'C[C>T]T', 
+         'G[C>T]A', 'G[C>T]C', 'G[C>T]G', 'G[C>T]T', 'T[C>T]A', 'T[C>T]C', 'T[C>T]G', 'T[C>T]T', 
+         'A[T>A]A', 'A[T>A]C', 'A[T>A]G', 'A[T>A]T', 'C[T>A]A', 'C[T>A]C', 'C[T>A]G', 'C[T>A]T', 
+         'G[T>A]A', 'G[T>A]C', 'G[T>A]G', 'G[T>A]T', 'T[T>A]A', 'T[T>A]C', 'T[T>A]G', 'T[T>A]T', 
+         'A[T>C]A', 'A[T>C]C', 'A[T>C]G', 'A[T>C]T', 'C[T>C]A', 'C[T>C]C', 'C[T>C]G', 'C[T>C]T', 
+         'G[T>C]A', 'G[T>C]C', 'G[T>C]G', 'G[T>C]T', 'T[T>C]A', 'T[T>C]C', 'T[T>C]G', 'T[T>C]T', 
+         'A[T>G]A', 'A[T>G]C', 'A[T>G]G', 'A[T>G]T', 'C[T>G]A', 'C[T>G]C', 'C[T>G]G', 'C[T>G]T', 
+         'G[T>G]A', 'G[T>G]C', 'G[T>G]G', 'G[T>G]T', 'T[T>G]A', 'T[T>G]C', 'T[T>G]G', 'T[T>G]T']
+
+mut32 = ['ACA', 'ACC', 'ACG', 'ACT', 'CCA', 'CCC', 'CCG', 'CCT', 
+         'GCA', 'GCC', 'GCG', 'GCT', 'TCA', 'TCC', 'TCG', 'TCT', 
+         'ATA', 'ATC', 'ATG', 'ATT', 'CTA', 'CTC', 'CTG', 'CTT', 
+         'GTA', 'GTC', 'GTG', 'GTT', 'TTA', 'TTC', 'TTG', 'TTT']
+
+mut16 = ['A_A', 'A_C', 'A_G', 'A_T', 'C_A', 'C_C', 'C_G', 'C_T', 
+         'G_A', 'G_C', 'G_G', 'G_T', 'T_A', 'T_C', 'T_G', 'T_T']
+
+mut6 = ['C>A','C>G','C>T','T>A','T>C','T>G']
+
+
+def load_sigs(fn, naming_style = 'pcawg', **kwargs):
+    styles = ['pcawg', 'cosmic']
+    assert naming_style in styles, f'naming_style should be one of {styles}'
     
-    with pm.Model() as model:
+    
+    if naming_style == 'cosmic':
+        # read in sigs
+        sigs = pd.read_csv(fn, index_col = 0, **kwargs).reindex(mut96)
+        # sanity check for matching mut96, should have no NA 
+        sel = (~sigs.isnull()).all(axis = 1)
+        assert sel.all(),\
+            f'invalid signature definitions: null entry for types {list(sigs.index[~sel])}' 
+        # convert to pcawg convention
+        sigs = sigs.set_index(idx96)
         
-        data = pm.Data("data", corpus)
-        phi = pm.Dirichlet('phi', a = np.ones(C) * alpha_bias, shape=(J, C), observed=phi_obs)
-        theta = pm.Dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
-        A = pm.Dirichlet("A", a = np.ones(K) * gamma_bias, shape = (S, J, K))
-        # 4 is constant for ACGT
-        beta = np.ones((K,4)) * beta_bias
-        etaC = pm.Dirichlet("etaC", a=beta[:,[0,2,3]], shape=(1, K, M), observed=etaC_obs)
-        etaT = pm.Dirichlet("etaT", a=beta[:,[0,1,2]], shape=(1, K, M), observed=etaT_obs)
-        eta = pm.Deterministic('eta', pm.math.concatenate([etaC, etaT], axis=0))
-
-        B = pm.Deterministic("B", (pm.math.matrix_dot(theta, phi).reshape((S,2,16))[:,:,None,:] * \
-                                   pm.math.matrix_dot(tt.batched_dot(theta,A),eta)[:,:,:,None]).reshape((S, -1)))
+    else:
+        # read in sigs
+        sigs = pd.read_csv(fn, index_col = (0,1), **kwargs).reindex(idx96)
+        # sanity check for idx, should have no NA
+        sel = (~sigs.isnull()).all(axis = 1)
+        assert sel.all(),\
+            f'invalid signature definitions: null entry for types {list(sigs.index[~sel])}' 
         
-        # mutation counts
-        lik = pm.Multinomial('corpus', n = N, p = B , observed=data)
-
-    return model
+    # check colsums are 1
+    sel = np.isclose(sigs.sum(axis=0), 1)
+    assert sel.all() ,\
+        f'invalid signature definitions: does not sum to 1 in columns {list(sigs.columns[~sel])}' 
+        
+    return sigs
 
 def alp_B(data, B):
     return (data * np.log(B)).sum() / data.sum()

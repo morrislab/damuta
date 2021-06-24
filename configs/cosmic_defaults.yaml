@@ -1,13 +1,13 @@
 sim_data.py:
   sim_cosmic:
-    sig_defs: 'sigProfiler_SBS_signatures_2019_05_22.csv'
+    sig_defs: 'COSMIC_v3.2_SBS_GRCh37.txt'
     seed: 42
     S: 100
     N: 5000
     I: 3
     tau_hyperprior: 0.05
 
-cosmic_mix.py:
+fit_cosmic_mix.py:
     fit_collapsed_model:
         J: 2
         K: 2
