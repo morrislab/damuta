@@ -36,7 +36,7 @@ def plot_phi(phi):
 
 def plot_eta(eta, cols = eta_col):
     assert len(eta.shape) == 3
-    e = np.hstack([eta[0], eta[1]])
+    e=eta.reshape(-1,6)
     K = e.shape[0]
     fig = plt.subplots.make_subplots(rows=K, cols=1, shared_xaxes=True,
                                      row_titles=([f'Eta {l}' for l in range(K)]))
