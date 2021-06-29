@@ -35,7 +35,7 @@ def plot_phi(phi):
     return plot_sigs(phi, mut32, phi_col, 'Phi')
 
 def plot_eta(eta, cols = eta_col):
-    assert len(eta.shape) == 3
+    # eta should be Kx2x3 or Kx6
     e=eta.reshape(-1,6)
     K = e.shape[0]
     fig = plt.subplots.make_subplots(rows=K, cols=1, shared_xaxes=True,
@@ -221,4 +221,14 @@ def plot_bipartite_J(weights):
     fig = plot_bipartite((weights.T/weights.sum(1)).T.round(2), direction = "back", main = 'J repaired by K', ah=5)
     return fig
     
+def plot_nmut(nmut_dict):
+    # dsets is a dict of nmut per sample per dataset
+    # ex. {'train': train.sum(1)}
+    
+    fig = go.Figure()
 
+    for dset in nmut_dict.keys():
+        fig.add_trace(go.Box(y=nmut_dict[dset], name = dset))
+    
+    fig.update_layout(title_text="Number of mutations per sample in datasplit")
+    return fig
