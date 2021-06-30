@@ -2,7 +2,7 @@ fit_pcawg.py:
     load_counts:
         counts_fn: 'mutation_types_raw_counts.csv'
         types_fn: 'pcawg_cancer_types.csv'
-        type_subset: ['Skin-Melanoma']
+        type_subset: 'Skin-Melanoma'
      
     load_ref_taus:
         cosmic_fn: 'COSMIC_v3.2_SBS_GRCh37.txt'
@@ -17,11 +17,11 @@ fit_pcawg.py:
         gamma_bias: 2
         beta_bias: 1
         seed: 42
-        n_steps: 500
+        n_steps: 50000
         init_strategy: 'kmeans'
     
     cbs:
         # sparse logging will speed up training 
-        log_every: 100
+        log_every: 10000
     
     

@@ -112,6 +112,7 @@ def split_count(counts, fraction):
 
 def split_by_count(data, fraction=0.8):
     stacked = np.array([split_count(m, fraction) for m in data])
+    logging.debug(f'dim counts on split {stacked.shape}')
     return stacked[:,0,:], stacked[:,1,:]
 
 def split_by_S(data, fraction=0.8):

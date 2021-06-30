@@ -50,7 +50,7 @@ def fit_collapsed_model(train: np.ndarray, test: np.ndarray, J: int, K: int,
 
         
 def test_cbs(approx, losses, i):
-    wandb.log({'ELBO': losses[-1]})
+    wandb.log({'test refit ELBO': losses[-1]})
 
 @extyaml  
 def cbs(*args, train=None, val=None, ref_taus, log_every=None):
@@ -109,7 +109,7 @@ def load_counts(counts_fn, types_fn, type_subset):
     cancer_types.columns=['type', 'guid']
 
     if type_subset is not None:
-        counts = counts.loc[cancer_types.guid[[x in type_subset for x in cancer_types.type]]]
+        counts = counts.loc[cancer_types.guid[[x in [type_subset] for x in cancer_types.type]]]
 
     return counts.to_numpy()
     
@@ -121,11 +121,12 @@ def load_ref_taus(cosmic_fn, alex_local_fn, degas_local_fn):
     
 
 def main():
-    wandb.init(project = 'da-pcawg', group = ', '.join(config['fit_pcawg.py']['load_counts']['type_subset']),
-               tags=['local signatures'] + config['fit_pcawg.py']['load_counts']['type_subset'])
+    wandb.init(project = 'da-pcawg', group = config['fit_pcawg.py']['load_counts']['type_subset'],
+               tags= [config['fit_pcawg.py']['load_counts']['type_subset']] )
     wandb.config.update(config)
     
     counts = load_counts()
+    logging.debug(f'dim counts on read {counts.shape}')
     train, test = split_by_S(counts)
     
     wandb.log({'nmut per sample': plot_nmut({'train': train.sum(1), 'test': test.sum(1)})})
