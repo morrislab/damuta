@@ -103,7 +103,11 @@ def cbs(*args, train=None, val=None, ref_taus, log_every=None):
 
 @extyaml
 def load_counts(counts_fn, types_fn, type_subset=None):
-
+    
+    # probably don't want str input
+    if isinstance(type_subset, str):
+        warnings.warn("For str type_subset, each letter is matched. Are you sure you don't want list?", UserWarning)
+        
     counts = pd.read_csv(counts_fn, index_col = [0], header = [0])[mut96]
     cancer_types = pd.read_csv(types_fn)
     cancer_types.columns=['type', 'guid']
@@ -112,7 +116,7 @@ def load_counts(counts_fn, types_fn, type_subset=None):
     if type_subset is not None:
         
         # partial matches allowed
-        sel = pd.read_csv('pcawg_cancer_types.csv').type.str.contains(type_subset)
+        sel = np.fromiter((map(any, zip(*[cancer_types.type.str.contains(x) for x in type_subset] ))), dtype = bool)
         
         # type should appear in the type column of the lookup 
         assert sel.any(), 'Cancer type subsetting yielded no selection. Check keywords?'
