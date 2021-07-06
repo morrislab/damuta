@@ -102,14 +102,22 @@ def cbs(*args, train=None, val=None, ref_taus, log_every=None):
 
 
 @extyaml
-def load_counts(counts_fn, types_fn, type_subset):
+def load_counts(counts_fn, types_fn, type_subset=None):
 
     counts = pd.read_csv(counts_fn, index_col = [0], header = [0])[mut96]
     cancer_types = pd.read_csv(types_fn)
     cancer_types.columns=['type', 'guid']
-
+    
+    # subset guid by matching cancer type
     if type_subset is not None:
-        counts = counts.loc[cancer_types.guid[[x in [type_subset] for x in cancer_types.type]]]
+        
+        # partial matches allowed
+        sel = pd.read_csv('pcawg_cancer_types.csv').type.str.contains(type_subset)
+        
+        # type should appear in the type column of the lookup 
+        assert sel.any(), 'Cancer type subsetting yielded no selection. Check keywords?'
+        
+        counts = counts.loc[cancer_types.guid[sel]]
 
     return counts.to_numpy()
     
