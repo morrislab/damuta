@@ -7,10 +7,14 @@ plt.io.templates.default = "none"
 
 tau_col = np.repeat(['cyan', 'black', 'red', 'grey', 'lightgreen', 'pink'], 16)
 phi_col = np.repeat(['green', 'blue'], 16)
-eta_col = np.repeat(['orange', 'lightblue'], 3)
+#eta_col = np.repeat(['orange', 'lightblue'], 3)
+eta_col = np.array(['cyan', 'black', 'red', 'grey', 'lightgreen', 'pink'])
+#45818e #a64d79
 
-def plot_sigs(sigs, xlab, cols, row_title='Sig'):
+def plot_sigs(sigs, xlab=None, cols=None, row_title='Sig'):
     assert len(sigs.shape) == 2
+    if xlab is None: xlab = np.arange(sigs.shape[1])
+    if cols is None: cols = np.repeat('grey', sigs.shape[1])
     
     fig = plt.subplots.make_subplots(rows=sigs.shape[0], cols=1, shared_xaxes=True,
                                      row_titles=([f'{row_title} {l}' for l in range(sigs.shape[0])]) )
