@@ -133,8 +133,8 @@ def load_ref_taus(cosmic_fn, alex_local_fn, degas_local_fn):
     
 
 def main():
-    wandb.init(project = 'da-pcawg', group = config['fit_pcawg.py']['load_counts']['type_subset'],
-               tags= [config['fit_pcawg.py']['load_counts']['type_subset']] )
+    wandb.init(project = 'da-pcawg', #group = config['fit_pcawg.py']['load_counts']['type_subset'],
+               tags= config['fit_pcawg.py']['load_counts']['type_subset'] )
     wandb.config.update(config)
     
     counts = load_counts()

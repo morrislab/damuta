@@ -2,7 +2,8 @@ fit_pcawg.py:
     load_counts:
         counts_fn: 'mutation_types_raw_counts.csv'
         types_fn: 'pcawg_cancer_types.csv'
-        type_subset: 'Skin-Melanoma'
+        type_subset: 
+            - 'Breast'
      
     load_ref_taus:
         cosmic_fn: 'COSMIC_v3.2_SBS_GRCh37.txt'
