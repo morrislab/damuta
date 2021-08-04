@@ -1,0 +1,60 @@
+sim_args:
+  cosmic:
+    sig_defs: 'COSMIC_v3.2_SBS_GRCh37.txt'
+    seed: 42
+    S: 100
+    N: 5000
+    I: 4
+    tau_hyperprior: 0.1
+
+  parametric:
+    seed: 42
+    J: 3
+    K: 3
+    S: 100
+    N: 10000
+    alpha_bias: 0.05
+    psi_bias: 1
+    gamma_bias: 0.1
+    beta_bias: 1
+
+dataset_args:
+  load_counts:
+    counts_fn: 'mutation_types_raw_counts.csv'
+    types_fn: 'pcawg_cancer_types.csv'
+    type_subset: 
+        - 'Breast'
+
+  load_ref_taus:
+      cosmic_fn: 'COSMIC_v3.2_SBS_GRCh37.txt'
+      alex_local_fn: 'pcawg_localsigs.csv'
+      degas_local_fn: 'degasperi_localsigs.csv'
+
+model_args:
+  J: 5
+  K: 4
+  alpha_bias: 0.05
+  psi_bias: 1
+  gamma_bias: 2
+  beta_bias: 1
+  seed: 42
+  n_steps: 30000
+  init_strategy: 'kmeans'
+  log_every: 10000
+
+pymc3_args:
+  seed: 42
+  niters: 10000
+  method: fullrank_advi
+  lr: 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
