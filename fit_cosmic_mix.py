@@ -21,7 +21,7 @@ def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int,
     with collapsed_model_factory(corpus_obs, J, K, alpha_bias, 
                                  psi_bias, gamma_bias, beta_bias) as model:
         
-        wandb.log({'graphical model': wandb.Image(save_gv(model))})
+        #wandb.log({'graphical model': wandb.Image(save_gv(model))})
 
         trace = pm.ADVI()
         trace.fit(n_steps, callbacks = callbacks)
@@ -55,12 +55,12 @@ def cbs(*args, train=None, val=None, tau_gt=None, log_every=None):
                        'inferred phi': plot_phi(hat.phi.mean(0)),
                        'inferred eta': plot_eta(hat.eta.mean(0)),
 
-                       'estimated recruitment': plot_mean_std(act_hat),
+                       #'estimated recruitment': plot_mean_std(act_hat),
                         
-                       'average availability': plot_bipartite_J(act_hat.mean(0)),
-                       'average recruitment': plot_bipartite_K(act_hat.mean(0)),
-                       'availability in sample 0': plot_bipartite_J(act_hat[0]),
-                       'recruitment in sample 0': plot_bipartite_K(act_hat[0]),
+                       #'average availability': plot_bipartite_J(act_hat.mean(0)),
+                       #'average recruitment': plot_bipartite_K(act_hat.mean(0)),
+                       #'availability in sample 0': plot_bipartite_J(act_hat[0]),
+                       #'recruitment in sample 0': plot_bipartite_K(act_hat[0]),
 
                       })
     

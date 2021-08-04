@@ -21,7 +21,7 @@ def fit_collapsed_model(corpus_obs: np.ndarray, J: int, K: int,
     with collapsed_model_factory(corpus_obs, J, K, alpha_bias, 
                                  psi_bias, gamma_bias, beta_bias) as model:
         
-        wandb.log({'graphical model': wandb.Image(save_gv(model))})
+        #wandb.log({'graphical model': wandb.Image(save_gv(model))})
 
         trace = pm.ADVI()
         trace.fit(n_steps, callbacks = callbacks)

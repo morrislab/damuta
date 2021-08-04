@@ -4,13 +4,13 @@ sim_data.py:
     seed: 42
     S: 100
     N: 5000
-    I: 3
-    tau_hyperprior: 0.05
+    I: 4
+    tau_hyperprior: 0.1
 
 fit_cosmic_mix.py:
     fit_collapsed_model:
-        J: 2
-        K: 2
+        J: 5
+        K: 4
         alpha_bias: 0.05
         psi_bias: 1
         gamma_bias: 0.1
