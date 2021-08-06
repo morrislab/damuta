@@ -1,54 +1,54 @@
-sim_args:
-  cosmic:
-    sig_defs: 'COSMIC_v3.2_SBS_GRCh37.txt'
-    seed: 42
-    S: 100
-    N: 5000
-    I: 4
-    tau_hyperprior: 0.1
+dataset:
+  # select data source - one of load_counts, sim_cosmic, sim_parametric
+  # any parameters for non-selected data sources will be ignored
+  dataset_sel: sim_cosmic
 
-  parametric:
-    seed: 42
-    J: 3
-    K: 3
-    S: 100
-    N: 10000
-    alpha_bias: 0.05
-    psi_bias: 1
-    gamma_bias: 0.1
-    beta_bias: 1
-
-dataset_args:
   load_counts:
-    counts_fn: 'mutation_types_raw_counts.csv'
-    types_fn: 'pcawg_cancer_types.csv'
-    type_subset: 
-        - 'Breast'
+    counts_fp: data/mutation_types_raw_counts.csv
+    annotation_fp: data/pcawg_cancer_types.csv
+    annotation_subset: ['Breast']
 
   load_ref_taus:
-      cosmic_fn: 'COSMIC_v3.2_SBS_GRCh37.txt'
-      alex_local_fn: 'pcawg_localsigs.csv'
-      degas_local_fn: 'degasperi_localsigs.csv'
+    cosmic_fp: data/COSMIC_v3.2_SBS_GRCh37.txt
+    alex_local_fp: data/pcawg_localsigs.csv
+    degas_local_fp: data/degasperi_localsigs.csv
 
-model_args:
+  sim_cosmic:
+    sig_defs: data/COSMIC_v3.2_SBS_GRCh37.txt
+    sim_seed: 42
+    sim_S: 100
+    sim_N: 5000
+    sim_I: 4
+    sim_tau_hyperprior: 0.1
+    batch_size: None
+
+  sim_parametric:
+    sim_seed: 42
+    sim_J: 3
+    sim_K: 3
+    sim_S: 100
+    sim_N: 10000
+    sim_alpha_bias: 0.05
+    sim_psi_bias: 1
+    sim_gamma_bias: 0.1
+    sim_beta_bias: 1
+
+model:
   J: 5
   K: 4
   alpha_bias: 0.05
   psi_bias: 1
   gamma_bias: 2
   beta_bias: 1
-  seed: 42
   n_steps: 30000
-  init_strategy: 'kmeans'
+  init_strategy: kmeans
   log_every: 10000
 
-pymc3_args:
-  seed: 42
+pymc3:
+  pymc3_seed: 41
   niters: 10000
   method: fullrank_advi
-  lr: 
-        
-        
+  lr: 1
         
         
         
