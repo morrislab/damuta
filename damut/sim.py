@@ -1,6 +1,5 @@
 # sim_data.py
 # simulate mutation catalogue using cosmic signatures
-from utils import *
 
 @extyaml
 def sim_cosmic(sig_defs: str, S: int, N: int, tau_hyperprior: float, I: int, seed: int):
