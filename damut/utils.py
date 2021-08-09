@@ -5,6 +5,12 @@ import pickle
 import wandb
 import yaml
 
+# constants
+C=32
+M=3
+P=2
+
+# labels
 idx96 = pd.MultiIndex.from_tuples([
             ('C>A', 'ACA'), ('C>A', 'ACC'), ('C>A', 'ACG'), ('C>A', 'ACT'), 
             ('C>A', 'CCA'), ('C>A', 'CCC'), ('C>A', 'CCG'), ('C>A', 'CCT'), 
@@ -55,7 +61,6 @@ mut16 = ['A_A', 'A_C', 'A_G', 'A_T', 'C_A', 'C_C', 'C_G', 'C_T',
 
 mut6 = ['C>A','C>G','C>T','T>A','T>C','T>G']
 
-
 def load_config(config_fp):
 
     # load the yaml file 
@@ -65,39 +70,130 @@ def load_config(config_fp):
 
     # remove any parameters not applicable to selected data source
     ds = config.pop('dataset')
-    ds[ds['dataset_sel']].update({'dataste_sel': ds['dataset_sel']})
+    ds[ds['dataset_sel']].update({'dataset_sel': ds['dataset_sel']})
 
     # update dataset args to subsetted list
     config.update({'dataset': ds[ds['dataset_sel']]})
-
+    
+    # create RNG to pass around as per https://albertcthomas.github.io/good-practices-random-number-generators/
+    config['dataset'].update({'sim_rng': np.random.default_rng(config['dataset']['sim_seed'])})
+    config['model'].update({'model_rng': np.random.default_rng(config['model']['model_seed'])})
+    
     return config['dataset'], config['model'], config['pymc3']
     
+def detect_naming_style(fp):
+
+    # first column must have type at minimum
+    df = pd.read_csv(fp, index_col=0, sep = None, engine = 'python')
+    naming_style = 'unrecognized'
+    
+    # check if index is type style
+    if df.index.isin(mut96).any(): naming_style = 'type'
+
+    # check if index is type/subtype style
+    else:
+        df = df.reset_index()
+        df = df.set_index(list(df.columns[0:2]))
+        if df.index.isin(idx96).any(): naming_style = 'type/subtype'
+
+    assert naming_style == 'type' or naming_style == 'type/subtype', \
+            'Mutation type naming style could not be identified.\n'\
+            '\tExpected either two column type/subtype (ex. C>A,ACA) or\n'\
+            '\tsingle column type (ex A[C>A]A). See examples at COSMIC database.'
+    
+    return naming_style
+
+def load_sigs(fp):
+
+    naming_style = detect_naming_style(fp)
+
+    if naming_style == 'type':
+        # read in sigs
+        sigs = pd.read_csv(fp, index_col = 0, sep = None, engine = 'python').reindex(mut96)
+        # sanity check for matching mut96, should have no NA 
+        sel = (~sigs.isnull()).all(axis = 1)
+        assert sel.all(), f'invalid signature definitions: null entry for types {list(sigs.index[~sel])}' 
+        # convert to pcawg convention
+        sigs = sigs.set_index(idx96)
+        
+    elif naming_style == 'type/subtype':
+        # read in sigs
+        sigs = pd.read_csv(fp, index_col = (0,1), header=0).reindex(idx96)
+        # sanity check for idx, should have no NA
+        sel = (~sigs.isnull()).all(axis = 1)
+        assert sel.all(), f'invalid signature definitions: null entry for types {list(sigs.index[~sel])}' 
+    
+    # check colsums are 1
+    sel = np.isclose(sigs.sum(axis=0), 1)
+    assert sel.all(), f'invalid signature definitions: does not sum to 1 in columns {list(sigs.columns[~sel])}' 
+
+    assert all(sigs.index == idx96) or all(sigs.index == mut96), 'signature defintions failed to be read correctly'
+    
+    # force Jx96 and mut96 convention
+    sigs = sigs.T
+    sigs.columns = mut96
+    
+    return sigs
+
+def load_counts(counts_fp):
+    counts = pd.read_csv(counts_fp, index_col = 0, header = 0)[mut96]
+    assert counts.ndim == 2, 'Mutation counts failed to load. Check column names are mutation type (ex. A[C>A]A). See COSMIC database for more.'
+    assert counts.shape[1] == 96, f'Expected 96 mutation types, got {counts.shape[1]}'
+    return counts
+
+def subset_samples(dataset, annotation, annotation_subset):
+    # subset sample ids by matching to annotation_subset
+
+    if annotation_subset is None:
+        return dataset
+
+    # stop string being auto cast to list
+    if type(annotation_subset) == str:
+        annotation_subset = [annotation_subset]
+    
+    if annotation.ndim > 2:
+        warnings.warn("More than one annotation is available per sample, only the first will be used", UserWarning)
+    
+    # annotation ids should match sample ids
+    assert dataset.index.isin(annotation.index).any(), 'No sample ID matches found in dataset for the provided annotation'
+
+    # reoder annotation (with gaps) to match dataset
+    annotation = annotation.reindex(dataset.index).dropna()
+
+    # partial matches allowed
+    sel = np.fromiter((map(any, zip(*[annotation[annotation.columns[0]].str.contains(x) for x in annotation_subset] ))), dtype = bool)
+        
+    # type should appear in the type column of the lookup 
+    assert sel.any(), 'Cancer type subsetting yielded no selection. Check keywords?'
+
+    dataset = dataset.loc[annotation.index[sel]]
+    return dataset
 
 def save_checkpoint(fn, model, trace):
+    raise NotImplemented 
     with open(f'{fn}.pickle', 'wb') as buff:
         pickle.dump({'model': model, 'trace': trace, 'config': config}, buff)
         
 def load_checkpoint(fn):
+    raise NotImplemented 
     with open(fn, 'rb') as buff:
         data = pickle.load(buff)
     return data
 
-def split_count(counts, fraction):
-    c = (counts * fraction).astype(int)
-    frac1 = np.histogram(np.repeat(np.arange(96), c), bins=96, range=(0, 96))[0]
-    frac2 = counts - frac1
+def split_by_count(data, fraction=0.8):
+    # assumes daya is a pandas df
+    frac1 = (data * fraction).astype(int)
+    frac1 = frac1.apply(lambda c: np.histogram(np.repeat(np.arange(96),c), bins=96, range=(0, 96))[0], axis = 1, result_type='expand')
+    frac1.columns = data.columns
+    frac2 = data - frac1
     assert all(frac2 >= 0) and all(frac1 >= 0)
+    assert np.all(data == frac1 + frac2), 'Splitting failed'
     return frac1, frac2
 
-def split_by_count(data, fraction=0.8):
-    stacked = np.array([split_count(m, fraction) for m in data])
-    logging.debug(f'dim counts on split {stacked.shape}')
-    return stacked[:,0,:], stacked[:,1,:]
-
 def split_by_S(data, fraction=0.8):
-    c = int((data.shape[0] * fraction))
-    frac1 = data[0:c]
-    frac2 = data[c:(data.shape[0])]
+    # assumes data is a pandas df with an index
+    frac1 = data.sample(frac=fraction)
+    frac2 = data.drop(frac1.index)
     return frac1, frac2
 
 def split_data(counts, S_frac = 0.9, c_frac = 0.8):
@@ -112,19 +208,45 @@ def get_tau(phi, eta):
     tau =  np.einsum('jpc,pkm->jkpmc', phi.reshape((-1,2,16)), eta).reshape((-1,96))
     return tau
 
-def get_phis(sigs):
+def get_phi(sigs):
     # for each signature in sigs, get the corresponding phi
-    wrapped = sigs.reshape(sigs.shape[0], -1, 16)
+    wrapped = sigs.reshape(sigs.shape[0], 6, 16)
     phis = np.hstack([wrapped[:,[0,1,2],:].sum(1), wrapped[:,[3,4,5],:].sum(1)])
     return phis
 
-def get_etas(sigs):
+def get_eta(sigs):
     # for each signature in sigs, get the corresponding eta
-    # ordered alphabetically, or pyrimidine last (?)
-    wrapped = sigs.reshape(sigs.shape[0], -1, 16)
+    wrapped = sigs.reshape(sigs.shape[0], 6, 16)
     etas = wrapped.sum(2)
-    return etas#[0,1,2,3,5,4]
+    return etas.reshape(-1,2,3) # TODO: check this
 
 def flatten_eta(eta): # eta pkm -> kc
     return np.moveaxis(eta,0,1).reshape(-1, 6)
 
+def alr(x, e=1e-12):
+    '''
+    additive log ratio
+    x is a NxD matrix
+    >>> x = np.array([.1, .3, .4, .2])
+    >>> alr(x)
+    array([ 1.09861229,  1.38629436,  0.69314718])
+    '''
+    # add small value for stability in log
+    x = x + e
+    return (np.log(x) - np.log(x[...,-1]).reshape(-1,1))[:,0:-1]
+
+def alr_inv(y):
+    '''
+    inverse alr transform
+    y is a Nx(D-1) matrix
+    >>> x = np.array([.1, .3, .4, .2])
+    >>> alr_inv(alr(x))
+    array([ 0.1,  0.3,  0.4,  0.2])
+    '''
+    if y.ndim == 1: y = y.reshape(1,-1)
+    return softmax(np.hstack([y, np.zeros((y.shape[0], 1)) ]), axis = 1)
+
+def kmeans_alr(data, nsig, sigfunc, rng=np.random.default_rng()):
+    #https://github.com/scikit-learn/scikit-learn/issues/16988#issuecomment-817375063
+    km = k_means(alr(sigfunc(data)), nsig, random_state=np.random.RandomState(rng.bit_generator))
+    return alr_inv(km[0])

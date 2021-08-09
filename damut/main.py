@@ -1,116 +1,32 @@
 # main.py
-from damut.utils import *
+from .sim import *
+from .model_factory import * 
 
-# constants
-C=32
-M=3
-
-def infer(data, model_args={}, pymc3_args={}):
+def infer(train, cbs=None, model_args={}, pymc3_args={}):
     print('hello!')
     wandb.log({'uwu': 'a message!', 
-               'metric1' : model_args['J']})
+               'fake_metric' : model_args['J']})
 
-def detect_naming_style(fp):
-
-    # first column must have type at minimum
-    df = pd.read_csv(fp, index_col=0)
-    naming_style = 'unrecognized'
-    
-    # check if index is type style
-    if df.index.isin(mut96).any(): naming_style = 'type'
-
-    # check if index is type/subtype style
-    else:
-        df = df.reset_index()
-        df = df.set_index(list(df.columns[0:2]))
-        if df.index.isin(idx96).any(): naming_style = 'type/subtype'
-
-    assert naming_style == 'type' or naming_style == 'type/subtype', \
-            'Mutation type naming style could not be identified.\n'\
-            '\tExpected either two column type/subtype (ex. C>A,ACA) or\n'\
-            '\tsingle column type (ex A[C>A]A). See examples at COSMIC database.'
-    
-    return naming_style
-
-def load_sigs(fp):
-
-    naming_style = detect_naming_style(fp)
-
-    if naming_style == 'type':
-        # read in sigs
-        sigs = pd.read_csv(fp, index_col = 0).reindex(mut96)
-        # sanity check for matching mut96, should have no NA 
-        sel = (~sigs.isnull()).all(axis = 1)
-        assert sel.all(), f'invalid signature definitions: null entry for types {list(sigs.index[~sel])}' 
-        # convert to pcawg convention
-        sigs = sigs.set_index(idx96)
-        
-    elif naming_style == 'type/subtype':
-        # read in sigs
-        sigs = pd.read_csv(fp, index_col = (0,1), **kwargs).reindex(idx96)
-        # sanity check for idx, should have no NA
-        sel = (~sigs.isnull()).all(axis = 1)
-        assert sel.all(), f'invalid signature definitions: null entry for types {list(sigs.index[~sel])}' 
-    
-    # check colsums are 1
-    sel = np.isclose(sigs.sum(axis=0), 1)
-    assert sel.all(), f'invalid signature definitions: does not sum to 1 in columns {list(sigs.columns[~sel])}' 
-
-    assert df.index == idx96 or df.index == mut96, 'signature defintions failed to be read correctly'
-        
-    return sigs
-
-def load_counts(counts_fp):
-    counts = pd.read_csv(counts_fp, index_col = 0, header = 0)[mut96]
-    assert counts.ndim == 2, 'Mutation counts failed to load. Check column names are mutation type (ex. A[C>A]A). See COSMIC database for more.'
-    assert counts.shape[1] == 96, f'Expected 96 mutation types, got {counts.shape[1]}'
-    return counts
-
-def load_dataset(dataset_sel, counts_fp, annotation_fp, annotation_subset):
+def load_dataset(dataset_sel, counts_fp=None, annotation_fp=None, annotation_subset=None, sim_rng=None,
+                 sig_defs_fp=None, sim_seed=None, sim_S=None, sim_N=None, sim_I=None, sim_tau_hyperprior=None,
+                 sim_J=None, sim_K=None, sim_alpha_bias=None, sim_psi_bias=None, sim_gamma_bias=None, sim_beta_bias=None):
     # load counts, or simulated data - as specified by dataset_sel
     if dataset_sel == 'load_counts':
         dataset = load_counts(counts_fp)
-        if dataset_args['type_subset'] is not None:
-            dataset = subset_samples(dataset, annotation_fp, annotation_subset)
-            annotation = pd.read_csv(annotation_fp, index_col = 0, header = 0)
-
-# load counts
-# optionally subset counts by an annotation (ex type)
-
-def subset_samples(dataset, annotation, annotation_subset):
-    # subset sample ids by matching to annotation_subset
-
-    if annotation_subset is None:
-        return dataset
-
-    # stop string being auto cast to list
-    if type(annotation_subset) == str:
-        annotation_subset = [annotation_subset]
+        annotation = pd.read_csv(annotation_fp, index_col = 0, header = 0)
+        dataset = subset_samples(dataset, annotation, annotation_subset)
     
-    if annotation.ndim > 2:
-        warnings.warn("More than one annotation is available per sample, only the first will be used", UserWarning)
+    elif dataset_sel == 'sim_from_sigs':
+        sig_defs = load_sigs(sig_defs_fp)
+        dataset, sim_params = sim_from_sigs(sig_defs, sim_tau_hyperprior, sim_S, sim_N, sim_I, sim_rng)
     
-    # annotation ids should match sample ids
-    assert dataset.index.isin(annotation.index).any(), 'No sample ID matches found in dataset for the provided annotation'
-
-    # reoder annotation (with gaps) to match dataset
-    annotation = annotation.reindex(dataset.index).dropna()
-
-    # partial matches allowed
-    sel = np.fromiter((map(any, zip(*[annotation[annotation.columns[0]].str.contains(x) for x in annotation_subset] ))), dtype = bool)
+    elif dataset_sel == 'sim_parametric':
+        dataset, sim_params = sim_parametric(sim_J,sim_K,sim_S,sim_N,sim_alpha_bias,sim_psi_bias,sim_gamma_bias,sim_beta_bias,sim_rng)
         
-    # type should appear in the type column of the lookup 
-    assert sel.any(), 'Cancer type subsetting yielded no selection. Check keywords?'
-
-    dataset = dataset.loc[annotation.index[sel]]
-    return dataset
-
-
-def load_ref_taus(cosmic_fn, alex_local_fn, degas_local_fn):
-    return [load_sigs(cosmic_fn, 'cosmic', sep = '\t').to_numpy().T,
-            load_sigs(alex_local_fn).to_numpy().T,
-            load_sigs(degas_local_fn, 'cosmic').to_numpy().T]
+    else:
+        assert False, 'dataset selection not recognized'
     
+    return dataset
 
 
 def fit_collapsed_model(train: np.ndarray, test: np.ndarray, J: int, K: int,

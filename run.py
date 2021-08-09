@@ -7,9 +7,8 @@ if __name__ == "__main__":
 
     # pick up config file path
     parser = argparse.ArgumentParser()
-    parser.add_argument('-f', help='yaml config file', default = "config/config-defaults.yaml",
-                        '-p', help='wandb project name to assign run to', default = 'foo'
-                       )
+    parser.add_argument('-f', help='yaml config file', default = "config/config-defaults.yaml")
+    parser.add_argument('-p', help='wandb project name to assign run to', default = None)
     args = parser.parse_args()
 
     # load config
@@ -20,7 +19,7 @@ if __name__ == "__main__":
     run.config.update({**dataset_args, **model_args, **pymc3_args})
 
     # load data 
-    counts = da.load_dataset(dataset_args)
+    counts = da.load_dataset(**dataset_args)
     trn, val, tst1, tst2 = split_data(counts)
     
     # fit model for train samples

@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from damut import subset_samples
+from damut import subset_samples, split_by_count, split_by_S
 
 c = pd.read_csv('data/mutation_types_raw_counts.csv', index_col=0, header=0)
 a = pd.read_csv('data/pcawg_cancer_types.csv', index_col=0, header=0)
@@ -41,3 +41,7 @@ def test_no_match():
     with pytest.raises(AssertionError):
         subset_samples(c,a,'zilch')
     assert all(subset_samples(c,a,['Breast','zilch']) == subset_samples(c,a,['Breast'])), 'No match fails in combo'
+
+def test_data_splitting():
+    split_by_count(c)
+    split_by_S(c)
