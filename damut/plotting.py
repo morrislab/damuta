@@ -1,5 +1,4 @@
-from utils import *
-from sklearn.metrics.pairwise import cosine_similarity
+from .utils import *
 from sklearn.decomposition import PCA
 import plotly as plt
 from plotly.subplots import make_subplots
@@ -73,9 +72,9 @@ def plot_phi_posterior(phi_approx, cols = phi_col):
 
 
 def plot_eta_posterior(eta_approx, cols = eta_col):
-    # TxCxKxM dimension df yields CxK subplots, M traces 
+    # TxKxCxM dimension df yields CxK subplots, M traces 
     assert len(eta_approx.shape) == 4
-    T, C, K, M  = eta_approx.shape
+    T, K, C, M  = eta_approx.shape
     assert C==2
     if cols is None: cols = [None]*6
     
@@ -85,7 +84,7 @@ def plot_eta_posterior(eta_approx, cols = eta_col):
     for c in range(C):
         for m in range(M):
             for k in range(K):
-                d = eta_approx[:,c,k,m]
+                d = eta_approx[:,k,c,m]
                 col = cols[(m if c==0 else (m+3))]
                 fig.add_trace(go.Histogram(x=d, histnorm='probability', marker_color = col, 
                                            legendgroup = mut6[(m if c==0 else (m+3))], 

@@ -4,6 +4,10 @@ import pandas as pd
 import pickle
 import wandb
 import yaml
+import warnings
+from sklearn.cluster import k_means
+from scipy.special import softmax, logsumexp, loggamma
+from sklearn.metrics.pairwise import cosine_similarity
 
 # constants
 C=32
@@ -75,9 +79,10 @@ def load_config(config_fp):
     # update dataset args to subsetted list
     config.update({'dataset': ds[ds['dataset_sel']]})
     
-    # create RNG to pass around as per https://albertcthomas.github.io/good-practices-random-number-generators/
-    config['dataset'].update({'sim_rng': np.random.default_rng(config['dataset']['sim_seed'])})
+    # handle seeding
+    config['dataset'].update({'data_rng': np.random.default_rng(config['dataset']['data_seed'])})
     config['model'].update({'model_rng': np.random.default_rng(config['model']['model_seed'])})
+    config['pymc3']['random_seed'] = config['pymc3'].pop('pymc3_seed')
     
     return config['dataset'], config['model'], config['pymc3']
     
@@ -180,47 +185,54 @@ def load_checkpoint(fn):
         data = pickle.load(buff)
     return data
 
-def split_by_count(data, fraction=0.8):
-    # assumes daya is a pandas df
-    frac1 = (data * fraction).astype(int)
-    frac1 = frac1.apply(lambda c: np.histogram(np.repeat(np.arange(96),c), bins=96, range=(0, 96))[0], axis = 1, result_type='expand')
-    frac1.columns = data.columns
+def split_by_count(data, fraction, rng):
+    # assumes data is a pandas df
+
+    frac1 = data.apply(lambda r: rng.choice( np.repeat(np.arange(96), r), int(fraction*r.sum()), replace = False) , axis = 1)
+    frac1 = pd.DataFrame(frac1.apply(lambda r: np.histogram(r, bins=96, range=(0, 96))[0]).to_list(), 
+                         index = data.index, columns = data.columns)
+    #frac1 = (data * fraction).astype(int)
+    #frac1 = frac1.apply(lambda r: np.histogram(r, bins=96, range=(0, 96))[0], axis = 1, result_type='expand')
+    #frac1.columns = data.columns
     frac2 = data - frac1
     assert all(frac2 >= 0) and all(frac1 >= 0)
     assert np.all(data == frac1 + frac2), 'Splitting failed'
     return frac1, frac2
 
-def split_by_S(data, fraction=0.8):
+def split_by_S(data, fraction, rng):
     # assumes data is a pandas df with an index
-    frac1 = data.sample(frac=fraction)
+    frac1 = data.sample(frac=fraction, random_state=np.random.RandomState(rng.bit_generator))
     frac2 = data.drop(frac1.index)
     return frac1, frac2
 
-def split_data(counts, S_frac = 0.9, c_frac = 0.8):
+def split_data(counts, S_frac = 0.9, c_frac = 0.8, rng=np.random.default_rng()):
     # get train/val/test split
-    trn, tst = split_by_S(counts, S_frac)
-    trn, val = split_by_count(trn, c_frac)
-    tst1, tst2 = split_by_count(tst, c_frac)
+    trn, tst = split_by_S(counts, S_frac, rng)
+    trn, val = split_by_count(trn, c_frac, rng)
+    tst1, tst2 = split_by_count(tst, c_frac, rng)
     return trn, val, tst1, tst2
 
 def get_tau(phi, eta):
     assert len(phi.shape) == 2 and len(eta.shape) == 3
-    tau =  np.einsum('jpc,pkm->jkpmc', phi.reshape((-1,2,16)), eta).reshape((-1,96))
+    tau =  np.einsum('jpc,kpm->jkpmc', phi.reshape((-1,2,16)), eta).reshape((-1,96))
     return tau
 
 def get_phi(sigs):
     # for each signature in sigs, get the corresponding phi
-    wrapped = sigs.reshape(sigs.shape[0], 6, 16)
-    phis = np.hstack([wrapped[:,[0,1,2],:].sum(1), wrapped[:,[3,4,5],:].sum(1)])
-    return phis
+    wrapped = sigs.reshape(-1, 2, 3, 16)
+    phi = wrapped.sum(2).reshape(-1,32)
+    return phi
 
 def get_eta(sigs):
-    # for each signature in sigs, get the corresponding eta
-    wrapped = sigs.reshape(sigs.shape[0], 6, 16)
-    etas = wrapped.sum(2)
-    return etas.reshape(-1,2,3) # TODO: check this
+    # for each signature in sigs, get the corresponding eta (kxpxm)
+    wrapped = sigs.reshape(-1, 6, 16)
+    eta = wrapped.sum(2).reshape(-1,3)
+    # notrmalize such that etaC and etaT sum to 1 respectively.
+    eta = (eta/eta.sum(1)[:,None]).reshape(-1,P,M)
+    return eta
 
 def flatten_eta(eta): # eta pkm -> kc
+    warnings.warn('Eta no longer constructed as pkm - use reshape instead', DeprecationWarning)
     return np.moveaxis(eta,0,1).reshape(-1, 6)
 
 def alr(x, e=1e-12):
@@ -246,7 +258,41 @@ def alr_inv(y):
     if y.ndim == 1: y = y.reshape(1,-1)
     return softmax(np.hstack([y, np.zeros((y.shape[0], 1)) ]), axis = 1)
 
-def kmeans_alr(data, nsig, sigfunc, rng=np.random.default_rng()):
+def kmeans_alr(data, nsig, rng=np.random.default_rng()):
     #https://github.com/scikit-learn/scikit-learn/issues/16988#issuecomment-817375063
-    km = k_means(alr(sigfunc(data)), nsig, random_state=np.random.RandomState(rng.bit_generator))
+    km = k_means(alr(data), nsig, random_state=np.random.RandomState(rng.bit_generator))
     return alr_inv(km[0])
+
+def alp_B(data, B):
+    return (data * np.log(B)).sum() / data.sum()
+
+def mult_ll(x, p):
+    # x and p should both be same dimensions; Sx96
+    return loggamma(x.sum(1) + 1) - loggamma(x+1).sum(1) + (x * np.log(p)).sum(1)
+
+def lap_B(data, Bs):
+    # Bs should be shape DxSx96 where D is the number of posterior samples
+    # use logsumexp for stability
+    assert Bs.ndim == 3, 'expected multiple trials for B'
+    return logsumexp(np.vstack([mult_ll(data, B) for B in Bs]).sum(1)) - np.log(Bs.shape[0])
+
+def profile_sigs(sigs, refsigs, thresh = 0.9, refidx = None):
+    # return mapping of sigs to similar refsigs
+    
+    if isinstance(refsigs, pd.core.frame.DataFrame) and refsigs.index is not None:
+        refidx = refsigs.index
+    elif refidx is None:
+        refidx = pd.Index([f'refsig_{i}' for i in range(0,refsigs.shape[0])])
+    
+    sim = cosine_similarity(sigs, refsigs)
+    closest_dist = np.max(sim, axis=1)
+    closest = refidx[np.argmax(sim, axis=1)]
+    above_thresh = [str(refidx[x].to_numpy()) for x in sim > thresh]
+    
+    df=pd.DataFrame.from_dict({'inferred signature': [f'sig_{i}' for i in range(0,sigs.shape[0])],
+                               'closest reference signature':closest, 
+                               'dist to closest': closest_dist,
+                               f'reference signatures with >{thresh} similarity': above_thresh
+                              })
+    df.index = [f'sig_{i}' for i in range(0,sigs.shape[0])]
+    return df
