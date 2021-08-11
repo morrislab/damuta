@@ -1,23 +1,24 @@
 dataset:
   # select data source - one of load_counts, sim_cosmic, sim_parametric
   # any parameters for non-selected data sources will be ignored
-  dataset_sel: sim_from_sigs
+  dataset_sel: load_counts
 
   load_counts:
+    data_seed: 97
     counts_fp: data/mutation_types_raw_counts.csv
     annotation_fp: data/pcawg_cancer_types.csv
-    annotation_subset: ['ColoRect']
+    annotation_subset: ['Colo']
 
   sim_from_sigs:
     sig_defs_fp: data/COSMIC_v3.2_SBS_GRCh37.txt
-    sim_seed: 42
+    data_seed: 42
     sim_S: 100
     sim_N: 5000
     sim_I: 4
     sim_tau_hyperprior: 0.1
 
   sim_parametric:
-    sim_seed: 42
+    data_seed: 42
     sim_J: 3
     sim_K: 3
     sim_S: 100
@@ -28,22 +29,23 @@ dataset:
     sim_beta_bias: 1
 
 model:
-  model_sel: damut
-  model_seed: 69
-  J: 5
-  K: 4
-  alpha_bias: 0.05
-  psi_bias: 1
+  model_sel: foo_model
+  model_seed: 12
+  J: 8
+  K: 6
+  alpha_bias: 1
+  psi_bias: 0.1
   gamma_bias: 2
   beta_bias: 1
-  n_steps: 30000
-  init_strategy: kmeans
-  log_every: 10000
+  init_strategy: uniform
+  #log_every: 10000
 
 pymc3:
-  niters: 10000
-  method: fullrank_advi
-  lr: 1
+  n: 300
+  method: advi
+  pymc3_seed: 34
+  #obj_optimizer: [pm.adam, pm.sgd, pm.adagrad, pm.adadelta]
+  #more_obj_params: [learning_rate=0.1]
         
         
         

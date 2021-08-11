@@ -9,13 +9,13 @@ def ch_dirichlet(node_name, a, shape, scale=1, testval = None):
     # dirichlet reparameterized here because of stickbreaking bug
     # https://github.com/pymc-devs/pymc3/issues/4733
     X = pm.Gamma(f'gamma_{node_name}', mu = a, sigma = scale, shape = shape, testval = testval)
-    X = pm.Deterministic(node_name, (X/X.sum(axis = (X.ndim-1))[...,None]))
-    return X
+    Y = pm.Deterministic(node_name, (X/X.sum(axis = (X.ndim-1))[...,None]))
+    return Y
 
-def tandem_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, model_rng = np.random.default_rng(),
+def tandem_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, model_rng = None,
                phi_obs=None, etaC_obs=None, etaT_obs=None, init_strategy = 'uniform', tau = None, cbs=None):
     # latent dirichlet allocation with tandem signautres of damage and repair
-    
+
     S = train.shape[0]
     N = train.sum(1).reshape(S,1)
     phi_init, etaC_init, etaT_init = init_sigs(init_strategy, data=train, J=J, K=K, tau=tau, rng=model_rng)
@@ -54,7 +54,7 @@ def vanilla_nmf(train, I):
     W = model.fit_transform(train)
     H = model.components_
 
-def init_sigs(strategy, rng=np.random.default_rng(), data=None, J=None, K=None, tau=None):
+def init_sigs(strategy, rng=None, data=None, J=None, K=None, tau=None):
     
     strats = ['kmeans', 'supply_tau', 'uniform', 'random']
     assert strategy in strats, f'strategy should be one of {strats}'

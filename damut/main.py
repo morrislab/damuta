@@ -6,10 +6,16 @@ from .plotting import *
 def infer(train, model_args={}, pymc3_args={}, cbs=None):
     
     models = {'tandem_lda': tandem_lda,
-              'tandtiss_lda': tandtiss_lda}
+              'tandtiss_lda': tandtiss_lda,
+              'foo_model': foo_model
+             }
     
     assert model_args['model_sel'] in models.keys(), \
         f"Unrecognized model selection. model_sel should be one of [{models.keys()}]"
+        
+    np.random.seed(model_args['model_seed']) 
+    pm.set_tt_rng(model_args['model_seed'])  
+    model_args.pop('model_seed') # TODO: remove this seeding hack with next pymc3 release
             
     with models[model_args.pop('model_sel')](train = train, **model_args) as model: 
         trace = pm.fit(**pymc3_args, callbacks = cbs)
