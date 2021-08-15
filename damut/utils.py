@@ -65,6 +65,7 @@ mut16 = ['A_A', 'A_C', 'A_G', 'A_T', 'C_A', 'C_C', 'C_G', 'C_T',
 
 mut6 = ['C>A','C>G','C>T','T>A','T>C','T>G']
 
+
 def load_config(config_fp):
 
     # load the yaml file 
@@ -82,7 +83,6 @@ def load_config(config_fp):
     # handle seeding
     config['dataset'].update({'data_rng': np.random.default_rng(config['dataset']['data_seed'])})
     config['model'].update({'model_rng': np.random.default_rng(config['model']['model_seed'])})
-    config['pymc3']['random_seed'] = config['pymc3'].pop('pymc3_seed')
     
     return config['dataset'], config['model'], config['pymc3']
     

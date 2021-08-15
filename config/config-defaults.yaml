@@ -29,13 +29,13 @@ dataset:
     sim_beta_bias: 1
 
 model:
-  model_sel: foo_model
+  model_sel: tandem_lda
   model_seed: 12
   J: 8
   K: 6
   alpha_bias: 1
   psi_bias: 0.1
-  gamma_bias: 2
+  gamma_bias: 0.5
   beta_bias: 1
   init_strategy: uniform
   #log_every: 10000

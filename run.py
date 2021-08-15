@@ -19,9 +19,9 @@ if __name__ == "__main__":
     run = wandb.init()
     run.config.update({**dataset_args, **model_args, **pymc3_args})
     
-    np.random.seed(model_args['model_seed']) 
-    pm.set_tt_rng(model_args['model_seed'])  
-    model_args.pop('model_seed') # TODO: remove this seeding hack with next pymc3 release
+    #np.random.seed(model_args['model_seed']) 
+    #pm.set_tt_rng(model_args['model_seed'])  
+    #model_args.pop('model_seed') # TODO: remove this seeding hack with next pymc3 release
 
     # load data 
     cosmic = da.load_sigs("data/COSMIC_v3.2_SBS_GRCh37.txt")
@@ -35,6 +35,7 @@ if __name__ == "__main__":
                                         ['test2', tst2.shape[0], tst2.sum(1).mean(), np.median(tst2.sum(1)), tst2.sum(1).min(), tst2.sum(1).max()] 
                                        ])
     wandb.log({'dataset summary': summary_table})
+    
     
     # fit model for train samples
     model, trace = da.infer(trn.to_numpy(), model_args, pymc3_args, 

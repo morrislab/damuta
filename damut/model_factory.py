@@ -12,7 +12,7 @@ def ch_dirichlet(node_name, a, shape, scale=1, testval = None):
     Y = pm.Deterministic(node_name, (X/X.sum(axis = (X.ndim-1))[...,None]))
     return Y
 
-def tandem_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, model_rng = None,
+def tandem_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, model_rng = None, 
                phi_obs=None, etaC_obs=None, etaT_obs=None, init_strategy = 'uniform', tau = None, cbs=None):
     # latent dirichlet allocation with tandem signautres of damage and repair
 
@@ -40,11 +40,41 @@ def tandem_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, model_r
 
     return model
 
-
-def tandtiss_lda():
+def tandtiss_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, lambda_bias,
+                 type_codes, model_rng = None, init_strategy = 'uniform', tau = None, cbs=None):
     # latent dirichlet allocation with tandem signautres of damage and repair
     # and hirearchical tissue-specific priors
-    raise NotImplemented
+    
+    S = train.shape[0]
+    N = train.sum(1).reshape(S,1)
+    phi_init, etaC_init, etaT_init = init_sigs(init_strategy, data=train, J=J, K=K, tau=tau, rng=model_rng)
+    
+    with pm.Model() as model:
+        
+        data = pm.Data("data", train)
+        phi = ch_dirichlet('phi', a = np.ones(C) * alpha_bias, shape=(J, C), testval = phi_init)
+        theta = ch_dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
+        
+        
+        a_t = pm.Gamma('a_t',1,1,shape = (max(type_codes + 1),K))
+        b_t = pm.Gamma('b_t',1,1,shape = (max(type_codes + 1),K))
+        g = pm.Gamma('gamma', alpha = a_t[type_codes], beta = b_t[type_codes], shape = (S,K))
+        m = ch_dirichlet('M', a=np.ones(K) * lambda_bias, shape = (J,K))
+        A = ch_dirichlet("A", a = (m[None,:,:] * g[:,None,:]), shape = (S, J, K))
+
+        # 4 is constant for ACGT
+        beta = np.ones(4) * beta_bias
+        etaC = ch_dirichlet("etaC", a=beta[[0,2,3]], shape=(K,M), testval = etaC_init)
+        etaT = ch_dirichlet("etaT", a=beta[[0,1,2]], shape=(K,M), testval = etaT_init)
+        eta = pm.Deterministic('eta', pm.math.stack([etaC, etaT], axis=1))
+
+        B = pm.Deterministic("B", (pm.math.dot(theta, phi).reshape((S,2,16))[:,:,None,:] * \
+                                   pm.math.dot(batched_dot(theta,A), eta.dimshuffle(1,0,2))[:,:,:,None]).reshape((S, -1)))
+        
+        # mutation counts
+        pm.Multinomial('corpus', n = N, p = B, observed=data)
+
+    return model
     
 def vanilla_lda():
     raise NotImplemented
