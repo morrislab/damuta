@@ -1,5 +1,5 @@
-# damut
-tandem signatures of damage and repair
+# DAmuta
+Dirichlet Allocation of mutations in cancer 
 
 # dependencies 
 
