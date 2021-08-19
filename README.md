@@ -1,5 +1,5 @@
 # DAmuta
-Dirichlet Allocation of mutations in cancer 
+**D**irichlet **A**llocation of **muta**tions in cancer 
 
 # dependencies 
 
