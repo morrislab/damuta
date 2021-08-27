@@ -48,46 +48,13 @@ def load_dataset(dataset_sel, counts_fp=None, annotation_fp=None, annotation_sub
     
     return dataset
 
-def cbs(*args, train=None, val=None, cosmic=None, log_every=None):
+def cbs(*args):
     # return a list of callbacks, with extra parameters as desired
     
     def wandb_calls(*args):
         approx, losses, i = args
         wandb.log({'ELBO': losses[-1]})
         
-        # only log expensive objects (plots) sparcely
-        if i % log_every == 1 :
-            
-            hat = approx.sample(1000)
-            tau_hat = get_tau(hat.phi.mean(0), hat.eta.mean(0))
-            W_hat = np.einsum('sj,sjk->sjk', hat.theta.mean(0), hat.A.mean(0))
-            
-            wandb.log({         
-                       "trn alp": alp_B(train, hat.B.mean(0)),
-                       "val alp": alp_B(val, hat.B.mean(0)),
-                       "trn lap": lap_B(train, hat.B),
-                       "val lap": lap_B(val, hat.B),
-                       'phi posterior': plot_phi_posterior(hat.phi, cols=None),
-                       'eta posterior': plot_eta_posterior(hat.eta, cols=None),
-                
-                       #'cosin similarity to Alexandrov et al. local signatures': plot_cossim(tau_alex, tau_hat),
-                       #'cosin similarity to Degasperi et al. local signatures': plot_cossim(tau_degas, tau_hat),
-                       'cosin similarity to COSMIC signatures': plot_cossim(cosmic, tau_hat),
-                       'phi similarities': go.Figure(go.Heatmap(z=cosine_similarity(hat.phi.mean(0), hat.phi.mean(0)).round(2), 
-                                                              colorscale = 'viridis')),
-                       'eta similarities': go.Figure(go.Heatmap(z=cosine_similarity(flatten_eta(hat.eta.mean(0)),
-                                                                                  flatten_eta(hat.eta.mean(0))).round(2), 
-                                                              colorscale = 'viridis')),
-                        
-                       'inferred signatures': plot_tau(tau_hat),
-                       'inferred phi': plot_phi(hat.phi.mean(0)),
-                       'inferred eta': plot_eta(hat.eta.mean(0)),
-
-                       #'estimated recruitment': plot_mean_std(W_hat),
-                       #'mean recruitment': plot_bipartite(W_hat.mean(0).round(2)),
-                       #'median recruitment': plot_bipartite(np.median(W_hat,0).round(2)),
-                
-                      })
     
     return [wandb_calls]
 

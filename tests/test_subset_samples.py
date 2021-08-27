@@ -1,5 +1,6 @@
 import pytest
 import pandas as pd
+from numpy.random import default_rng
 from damut import subset_samples, split_by_count, split_by_S
 
 c = pd.read_csv('data/mutation_types_raw_counts.csv', index_col=0, header=0)
@@ -43,5 +44,5 @@ def test_no_match():
     assert all(subset_samples(c,a,['Breast','zilch']) == subset_samples(c,a,['Breast'])), 'No match fails in combo'
 
 def test_data_splitting():
-    split_by_count(c)
-    split_by_S(c)
+    split_by_count(c, 0.8, rng=default_rng())
+    split_by_S(c, 0.8, rng=default_rng())

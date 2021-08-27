@@ -146,8 +146,9 @@ def load_counts(counts_fp):
     assert counts.shape[1] == 96, f'Expected 96 mutation types, got {counts.shape[1]}'
     return counts
 
-def subset_samples(dataset, annotation, annotation_subset):
+def subset_samples(dataset, annotation, annotation_subset, sel_idx = 0):
     # subset sample ids by matching to annotation_subset
+    # expect annotation_subset to be pd dataframe with ids as index
 
     if annotation_subset is None:
         return dataset
@@ -157,8 +158,8 @@ def subset_samples(dataset, annotation, annotation_subset):
         annotation_subset = [annotation_subset]
     
     if annotation.ndim > 2:
-        warnings.warn("More than one annotation is available per sample, only the first will be used", UserWarning)
-    
+        warnings.warn(f"More than one annotation is available per sample, selection index {sel_idx}", UserWarning)
+        
     # annotation ids should match sample ids
     assert dataset.index.isin(annotation.index).any(), 'No sample ID matches found in dataset for the provided annotation'
 
@@ -166,7 +167,7 @@ def subset_samples(dataset, annotation, annotation_subset):
     annotation = annotation.reindex(dataset.index).dropna()
 
     # partial matches allowed
-    sel = np.fromiter((map(any, zip(*[annotation[annotation.columns[0]].str.contains(x) for x in annotation_subset] ))), dtype = bool)
+    sel = np.fromiter((map(any, zip(*[annotation[annotation.columns[sel_idx]].str.contains(x) for x in annotation_subset] ))), dtype = bool)
         
     # type should appear in the type column of the lookup 
     assert sel.any(), 'Cancer type subsetting yielded no selection. Check keywords?'
@@ -174,16 +175,15 @@ def subset_samples(dataset, annotation, annotation_subset):
     dataset = dataset.loc[annotation.index[sel]]
     return dataset
 
-def save_checkpoint(fn, model, trace):
-    raise NotImplemented 
-    with open(f'{fn}.pickle', 'wb') as buff:
-        pickle.dump({'model': model, 'trace': trace, 'config': config}, buff)
+def save_checkpoint(fp, model, trace, dataset_args, model_args, pymc3_args): 
+    with open(f'{fp}', 'wb') as buff:
+        pickle.dump({'model': model, 'trace': trace, 'dataset_args': dataset_args, 
+                     'model_args': model_args, 'pymc3_args': pymc3_args}, buff)
         
 def load_checkpoint(fn):
-    raise NotImplemented 
     with open(fn, 'rb') as buff:
         data = pickle.load(buff)
-    return data
+        return data['model'], data['trace'], data['dataset_args'], data['model_args'], data['pymc3_args'] 
 
 def split_by_count(data, fraction, rng):
     # assumes data is a pandas df

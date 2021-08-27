@@ -84,7 +84,7 @@ def vanilla_nmf(train, I):
     W = model.fit_transform(train)
     H = model.components_
 
-def init_sigs(strategy, rng=None, data=None, J=None, K=None, tau=None):
+def init_sigs(strategy, data=None, J=None, K=None, tau=None, rng=np.random.default_rng()):
     
     strats = ['kmeans', 'supply_tau', 'uniform', 'random']
     assert strategy in strats, f'strategy should be one of {strats}'
@@ -115,8 +115,8 @@ def init_kmeans(data, J, K, rng):
     data = data/data.sum(1)[:,None]
     
     #return kmeans_alr(get_phi(data), J, rng), kmeans_alr(get_eta(data).reshape(-1,P*M), K, rng).reshape(-1,P,M) 
-    return k_means(get_phi(data), J, random_state=np.random.RandomState(rng.bit_generator))[0], \
-           k_means(get_eta(data).reshape(-1,6), K, random_state=np.random.RandomState(rng.bit_generator))[0].reshape(-1,P,M)
+    return k_means(get_phi(data), J, init='k-means++',random_state=np.random.RandomState(rng.bit_generator))[0], \
+           k_means(get_eta(data).reshape(-1,6), K, init='k-means++', random_state=np.random.RandomState(rng.bit_generator))[0].reshape(-1,P,M)
  
 def init_from_tau(tau, J, K, rng):
     # return phi and eta naively from tau
