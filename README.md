@@ -1,7 +1,5 @@
-# damut
-tandem signatures of damage and repair
-
-clone this repo with `git clone https://github.com/harrig12/damut`
+# DAmuta
+**D**irichlet **A**llocation of **muta**tions in cancer 
 
 # major dependencies 
 
