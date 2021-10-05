@@ -1,15 +1,15 @@
 import pytest
 import pandas as pd
 from numpy.random import default_rng
-from damut import subset_samples, split_by_count, split_by_S
+from damuta import subset_samples, split_by_count, split_by_S
 
 c = pd.read_csv('data/mutation_types_raw_counts.csv', index_col=0, header=0)
 a = pd.read_csv('data/pcawg_cancer_types.csv', index_col=0, header=0)
 
-def test_no_subsetting():
+def test_no_subsetting(c,a):
     assert all(c == subset_samples(c,a,None))
     
-def test_list_equiv():
+def test_list_equiv(c,a):
     assert all(subset_samples(c,a,'Breast') == subset_samples(c,a,['Breast'])), 'Sring processing failed'
 
 @pytest.mark.parametrize(
@@ -38,11 +38,15 @@ def test_subsetting(subset, sel, expected, c, a):
     assert all(c_subsetted.index.isin(sel.index[sel])), 'index build fail'
     assert all(c_subsetted == expected), 'subsetting fail'
     
-def test_no_match():
+def test_no_match(c,a):
     with pytest.raises(AssertionError):
         subset_samples(c,a,'zilch')
     assert all(subset_samples(c,a,['Breast','zilch']) == subset_samples(c,a,['Breast'])), 'No match fails in combo'
 
-def test_data_splitting():
+def test_data_splitting(c):
     split_by_count(c, 0.8, rng=default_rng())
     split_by_S(c, 0.8, rng=default_rng())
+    
+    
+
+    

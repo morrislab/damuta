@@ -1,10 +1,8 @@
 import pytest
 import numpy as np
-from damut import load_sigs, sim_from_sigs, sim_parametric
+from damuta import load_sigs, sim_from_sigs, sim_parametric
 
-sig_defs = load_sigs('data/COSMIC_v3.2_SBS_GRCh37.txt')
-
-def test_from_sigs_seeding():
+def test_from_sigs_seeding(sig_defs):
     # same seed 
     d0, p0 = sim_from_sigs(sig_defs, 0.1, 10, 1000, 5, np.random.default_rng(100))
     d1, p1 = sim_from_sigs(sig_defs, 0.1, 10, 1000, 5, np.random.default_rng(100))

@@ -30,7 +30,6 @@ dataset:
 
 model:
   model_sel: tandem_lda
-  model_seed: 12
   J: 8
   K: 6
   alpha_bias: 1
@@ -43,7 +42,7 @@ model:
 pymc3:
   n: 300
   method: advi
-  pymc3_seed: 34
+  random_seed: 34
   #obj_optimizer: [pm.adam, pm.sgd, pm.adagrad, pm.adadelta]
   #more_obj_params: [learning_rate=0.1]
         

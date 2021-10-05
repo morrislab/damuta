@@ -302,3 +302,14 @@ def plot_elbow_pca(X, n_comp=10, mcol=None):
     
     
     return fig
+
+def fclust_scree(mat, max_t = 10):
+    d = pdist(mat, 'cosine')
+    Z = linkage(d, "ward")
+    # from fcluster docs
+    # flat clusters so that the original observations in 
+    # each flat cluster have no greater a cophenetic distance than t.
+    n_clust = [fcluster(Z, t=t, criterion='distance').max() for t in np.arange(1,max_t)]
+    fig = go.Figure(go.Scatter(y = n_clust, x = np.arange(1,max_t)))
+    fig.update_layout(yaxis_title = "number of clusters", xaxis_title="dendrogram cutoff")
+    return fig

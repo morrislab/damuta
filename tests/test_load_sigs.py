@@ -1,5 +1,5 @@
 import pytest
-from damut import load_sigs, detect_naming_style
+from damuta import load_sigs, detect_naming_style
 
 def test_correct_naming():
     assert detect_naming_style('data/degasperi_localsigs.csv') == 'type'
@@ -23,4 +23,4 @@ def test_provided_sigs_loadable(sig_fp):
     assert sig_defs.shape[0] > 0, 'No signatures loaded'
     assert sig_defs.shape[1] == 96, 'Incorrect nmber of mutation types'
 
-    
+     
