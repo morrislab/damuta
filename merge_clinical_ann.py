@@ -2,19 +2,21 @@
 import pandas as pd
 
 donor_clinical = pd.read_csv('data/pcawg_donor_clinical_August2016_v9.csv')
-icgc_annotations = pd.read_csv('data/icgc_sample_annotations_summary_table.txt', sep = '\t')
-pcawg_annotations = pd.read_csv('data/pcawg_supplement_table1.csv')
+icgc_annotations = pd.read_csv('data/icgc_sample_annotations_summary_table.txt', sep = '\t').set_index('tumour_aliquot_id')
+pcawg_annotations = pd.read_csv('data/pcawg_supplement_table1.csv').set_index('tumour_specimen_aliquot_id')
 
-clinical_ann = icgc_annotations.rename(columns = {'tumour_aliquot_id':'tumour_specimen_aliquot_id'})
-clinical_ann = clinical_ann.merge(pcawg_annotations, how = 'left', on= ['tumour_specimen_aliquot_id',
-                                                                        'histology_abbreviation',
-                                                                        'icgc_sample_id',
-                                                                        'icgc_donor_id',
-                                                                        'tumour_stage',
-                                                                        'tumour_grade',
-                                                                        'specimen_donor_treatment_type'
-                                                                        ])
-
+pcawg_annotations.update(icgc_annotations)
+icgc_annotations.update(pcawg_annotations)
+clinical_ann = icgc_annotations.merge(pcawg_annotations, how = 'left', 
+                                  left_index = True, right_index = True,
+                                  on= ['histology_abbreviation',
+                                       'icgc_sample_id',
+                                       'icgc_donor_id',
+                                       'tumour_stage',
+                                       'tumour_grade',
+                                       'specimen_donor_treatment_type'
+                                       ])
+clinical_ann = clinical_ann.reset_index()
 clinical_ann = clinical_ann.merge(donor_clinical, how = 'left', on  = ['icgc_donor_id', 
                                                                        'project_code', 
                                                                        'donor_wgs_included_excluded',    

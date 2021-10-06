@@ -24,6 +24,6 @@ pcawg_cancer_types.csv | sample annotations used in [Jiao et. al](https://doi.or
 pcawg_donor_clinical_August2016_v9.csv | donor clinical information in PCAWG | [ICGC data portal](https://dcc.icgc.org/releases/PCAWG/clinical_and_histology/)
 pcawg_supplement_table1.csv | Supplementary Table 1. Sample, demographic and basic mutation data for the 2,583 white-listed donors in the PCAWG data-set | [PCAWG paper](https://doi.org/10.1038/s41586-020-1969-6)
 pcawg-wgs-rnaseq-mirna.csv | Sample sheet for WGS | [ICGC data portal](https://dcc.icgc.org/releases/PCAWG/donors_and_biospecimens/)
-clinical_ann_merged.csv | alloquot_id merged data | created with `merge_clinical_ann.py`, combines  icgc_sample_annotations_summary_table.txt, pcawg_supplement_table1.csv, pcawg_donor_clinical_August2016_v9.csv (in that priority order)
-
+clinical_ann_merged.csv | merged data | created with `merge_clinical_ann.py`, combines  icgc_sample_annotations_summary_table.txt, pcawg_supplement_table1.csv, pcawg_donor_clinical_August2016_v9.csv (in that priority order)
+clinical_ann_filtered.csv | merged and filtered data | created with `filter_clinical_ann.py`, subsets to select columns and uses aliquot ids to identify rows
 
