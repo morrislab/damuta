@@ -29,7 +29,8 @@ dataset:
     sim_beta_bias: 1
 
 model:
-  model_sel: tandem_lda
+  model_sel: vanilla_lda
+  model_seed: 42
   J: 8
   K: 6
   alpha_bias: 1

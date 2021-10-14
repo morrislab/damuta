@@ -76,8 +76,22 @@ def tandtiss_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, lambd
 
     return model
     
-def vanilla_lda():
-    raise NotImplemented
+def vanilla_lda(train, I, alpha_bias, psi_bias, model_rng = None, 
+                tau = None, cbs=None):
+    
+    S = train.shape[0]
+    N = train.sum(1).reshape(S,1)
+    
+    with pm.Model() as model:
+        
+        data = pm.Data("data", train)
+        tau = ch_dirichlet('tau', a = np.ones(96) * alpha_bias, shape=(I, 96))
+        theta = ch_dirichlet("theta", a = np.ones(I) * psi_bias, shape=(S, I))
+        B = pm.Deterministic("B", pm.math.dot(theta, tau))
+        # mutation counts
+        pm.Multinomial('corpus', n = N, p = B, observed=data)
+
+    return model
 
 def vanilla_nmf(train, I):
     model = NMF(n_components=I, init='random', random_state=0)

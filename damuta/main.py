@@ -6,7 +6,8 @@ from .plotting import *
 def infer(train, model_args={}, pymc3_args={}, cbs=None):
     
     models = {'tandem_lda': tandem_lda,
-              'tandtiss_lda': tandtiss_lda
+              'tandtiss_lda': tandtiss_lda,
+              'vanilla_lda': vanilla_lda
              }
     
     assert model_args['model_sel'] in models.keys(), \
