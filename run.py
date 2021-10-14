@@ -1,5 +1,5 @@
 import wandb
-import damut as da
+import damuta as da
 import numpy as np
 import pymc3 as pm
 import argparse

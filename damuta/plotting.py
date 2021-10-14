@@ -1,5 +1,7 @@
 from .utils import *
 from sklearn.decomposition import PCA
+from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+from scipy.spatial.distance import pdist
 import plotly as plt
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
@@ -186,8 +188,8 @@ def plot_bipartite(w, rescale = 10, main = '', ah=0, thresh = 0.01,
     for y0 in y0s:
         for y1 in y1s:
             i += 1
-            source = (0.03, y0)
-            target = (1-0.03, y1)
+            source = (0.01, y0)
+            target = (1-0.01, y1)
                 
             if edges[i] > (thresh*10):
                 fig.add_annotation(x=source[0], y = source[1],
@@ -210,7 +212,7 @@ def plot_bipartite(w, rescale = 10, main = '', ah=0, thresh = 0.01,
             
     # plot nodes
     fig.add_trace(go.Scatter(x=node_x, y=node_y,
-                             marker=dict(size = 40, color=([node_cols[0], node_cols[1], node_cols[1]] * 3*J*K)),
+                             marker=dict(size = 20, color=([node_cols[0], node_cols[1], node_cols[1]] * 3*J*K)),
                              hoverinfo='none',
                              mode='markers'))
     
@@ -303,8 +305,8 @@ def plot_elbow_pca(X, n_comp=10, mcol=None):
     
     return fig
 
-def fclust_scree(mat, max_t = 10):
-    d = pdist(mat, 'cosine')
+def plot_fclust_scree(mat, metric = 'cosine', max_t = 10):
+    d = pdist(mat, metric)
     Z = linkage(d, "ward")
     # from fcluster docs
     # flat clusters so that the original observations in 
@@ -313,3 +315,6 @@ def fclust_scree(mat, max_t = 10):
     fig = go.Figure(go.Scatter(y = n_clust, x = np.arange(1,max_t)))
     fig.update_layout(yaxis_title = "number of clusters", xaxis_title="dendrogram cutoff")
     return fig
+
+def plot_separation(sigs):
+    None
