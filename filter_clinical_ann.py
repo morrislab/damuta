@@ -2,9 +2,9 @@
 import pandas as pd
 
 # filter annotations for useful info
-clinical_ann = pd.read_csv('data/clinical_ann_merged.csv')
+clinical_ann = pd.read_csv('data/clinical_ann_merged.csv', index_col = 0)
 clinical_ann = clinical_ann[[
-    'tumour_aliquot_id',
+    'type',
     'tumour_type',
     'project_code',
     'reported_sex',
@@ -29,5 +29,4 @@ clinical_ann = clinical_ann[[
     'alcohol_history_intensity'
 ]]
 
-clinical_ann = clinical_ann.set_index('tumour_aliquot_id')
 clinical_ann.to_csv('data/clinical_ann_filtered.csv')
