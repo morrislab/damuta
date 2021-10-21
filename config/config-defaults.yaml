@@ -7,7 +7,7 @@ dataset:
     data_seed: 97
     counts_fp: data/mutation_types_raw_counts.csv
     annotation_fp: data/pcawg_cancer_types.csv
-    annotation_subset: ['Colo']
+    annotation_subset: ['Breast', 'Prostate', 'Kidney', 'Panc']
 
   sim_from_sigs:
     sig_defs_fp: data/COSMIC_v3.2_SBS_GRCh37.txt
@@ -29,19 +29,20 @@ dataset:
     sim_beta_bias: 1
 
 model:
-  model_sel: vanilla_lda
+  model_sel: tandtiss_lda
   model_seed: 42
-  J: 8
-  K: 6
+  J: 20
+  K: 15
   alpha_bias: 1
   psi_bias: 0.1
   gamma_bias: 0.5
   beta_bias: 1
-  init_strategy: uniform
+  lambda_bias: 0.1
+  init_strategy: kmeans
   #log_every: 10000
 
 pymc3:
-  n: 300
+  n: 20000
   method: advi
   random_seed: 34
   #obj_optimizer: [pm.adam, pm.sgd, pm.adagrad, pm.adadelta]

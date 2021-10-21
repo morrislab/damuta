@@ -1,8 +1,9 @@
 # sim.py
 from .utils import *
 
-def sim_from_sigs(tau, tau_hyperprior, S, N, I=None, rng=np.random.default_rng()):
+def sim_from_sigs(tau, tau_hyperprior, S, N, I=None, seed=None):
     # simulate from a predefined set of signatures (cosmic format)
+    rng=np.random.default_rng(seed)
     
     if I:
         tau = tau.sample(n=I, random_state = rng.bit_generator)
@@ -21,8 +22,11 @@ def sim_from_sigs(tau, tau_hyperprior, S, N, I=None, rng=np.random.default_rng()
 
     return data, {'tau':tau, 'tau_activities': tau_activities}
 
-def sim_parametric(J,K,S,N,alpha_bias,psi_bias,gamma_bias,beta_bias,rng=np.random.default_rng()):
+def sim_parametric(J,K,S,N,alpha_bias,psi_bias,gamma_bias,beta_bias,seed=None):
     # simulate from generated phi and eta
+    
+    rng=np.random.default_rng(seed)
+    
     # Hyper-parameter for priors
     alpha = np.ones(C) * alpha_bias
     psi = np.ones(J) * psi_bias
@@ -47,7 +51,6 @@ def sim_parametric(J,K,S,N,alpha_bias,psi_bias,gamma_bias,beta_bias,rng=np.rando
     
     return data, {'phi': phi, 'theta': theta, 'A': A, 'eta': eta, 'B': B,
                   'alpha': alpha, 'psi': psi, 'gamma': gamma, 'beta': beta}
-
 
 def encode_counts(counts):
     # turn counts of position into word-style encoding

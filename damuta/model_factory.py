@@ -5,6 +5,7 @@ from theano.tensor import batched_dot
 
 # note: model factories will be depricated in the future of pymc3
 
+
 def ch_dirichlet(node_name, a, shape, scale=1, testval = None):
     # dirichlet reparameterized here because of stickbreaking bug
     # https://github.com/pymc-devs/pymc3/issues/4733
@@ -12,13 +13,13 @@ def ch_dirichlet(node_name, a, shape, scale=1, testval = None):
     Y = pm.Deterministic(node_name, (X/X.sum(axis = (X.ndim-1))[...,None]))
     return Y
 
-def tandem_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, model_rng = None, 
+def tandem_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, model_seed = 42, 
                phi_obs=None, etaC_obs=None, etaT_obs=None, init_strategy = 'uniform', tau = None, cbs=None):
     # latent dirichlet allocation with tandem signautres of damage and repair
 
     S = train.shape[0]
     N = train.sum(1).reshape(S,1)
-    phi_init, etaC_init, etaT_init = init_sigs(init_strategy, data=train, J=J, K=K, tau=tau, rng=model_rng)
+    phi_init, etaC_init, etaT_init = init_sigs(init_strategy, data=train, J=J, K=K, tau=tau, seed=model_seed)
     
     with pm.Model() as model:
         
@@ -41,13 +42,13 @@ def tandem_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, model_r
     return model
 
 def tandtiss_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, lambda_bias,
-                 type_codes, model_rng = None, init_strategy = 'uniform', tau = None, cbs=None):
+                 type_codes, model_seed=42, init_strategy = 'uniform', tau = None, cbs=None):
     # latent dirichlet allocation with tandem signautres of damage and repair
     # and hirearchical tissue-specific priors
     
     S = train.shape[0]
     N = train.sum(1).reshape(S,1)
-    phi_init, etaC_init, etaT_init = init_sigs(init_strategy, data=train, J=J, K=K, tau=tau, rng=model_rng)
+    phi_init, etaC_init, etaT_init = init_sigs(init_strategy, data=train, J=J, K=K, tau=tau, seed=model_seed)
     
     with pm.Model() as model:
         
@@ -76,8 +77,7 @@ def tandtiss_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, lambd
 
     return model
     
-def vanilla_lda(train, I, alpha_bias, psi_bias, model_rng = None, 
-                tau = None, cbs=None):
+def vanilla_lda(train, I, alpha_bias, psi_bias, **kwargs):
     
     S = train.shape[0]
     N = train.sum(1).reshape(S,1)
@@ -94,11 +94,21 @@ def vanilla_lda(train, I, alpha_bias, psi_bias, model_rng = None,
     return model
 
 def vanilla_nmf(train, I):
+    raise NotImplemented
     model = NMF(n_components=I, init='random', random_state=0)
     W = model.fit_transform(train)
     H = model.components_
 
-def init_sigs(strategy, data=None, J=None, K=None, tau=None, rng=np.random.default_rng()):
+
+models = {'vanilla_lda': vanilla_lda,
+          'tandem_lda': tandem_lda,
+          'tandtiss_lda': tandtiss_lda,
+         }
+
+
+def init_sigs(strategy, data=None, J=None, K=None, tau=None, seed=42):
+    
+    rng=np.random.default_rng(seed)
     
     strats = ['kmeans', 'supply_tau', 'uniform', 'random']
     assert strategy in strats, f'strategy should be one of {strats}'

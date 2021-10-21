@@ -80,9 +80,9 @@ def load_config(config_fp):
     # update dataset args to subsetted list
     config.update({'dataset': ds[ds['dataset_sel']]})
     
-    # handle seeding
-    config['dataset'].update({'data_rng': np.random.default_rng(config['dataset']['data_seed'])})
-    config['model'].update({'model_rng': np.random.default_rng(config['model']['model_seed'])})
+    ## handle seeding
+    #config['dataset'].update({'data_rng': np.random.default_rng(config['dataset']['data_seed'])})
+    #config['model'].update({'model_rng': np.random.default_rng(config['model']['model_seed'])})
     
     return config['dataset'], config['model'], config['pymc3']
     
@@ -175,15 +175,45 @@ def subset_samples(dataset, annotation, annotation_subset, sel_idx = 0):
     dataset = dataset.loc[annotation.index[sel]]
     return dataset
 
-def save_checkpoint(fp, model, trace, dataset_args, model_args, pymc3_args): 
+def save_checkpoint(fp, model, trace, dataset_args, model_args, pymc3_args, run_id): 
     with open(f'{fp}', 'wb') as buff:
         pickle.dump({'model': model, 'trace': trace, 'dataset_args': dataset_args, 
-                     'model_args': model_args, 'pymc3_args': pymc3_args}, buff)
-        
+                     'model_args': model_args, 'pymc3_args': pymc3_args, 'run_id': run_id}, buff)
+    print(f'checkpoint saved to {fp}') 
+       
 def load_checkpoint(fn):
     with open(fn, 'rb') as buff:
         data = pickle.load(buff)
-        return data['model'], data['trace'], data['dataset_args'], data['model_args'], data['pymc3_args'] 
+        print(f'checkpoint loaded from {fn}') 
+        wandb.init(id=data['run_id'], resume='allow')
+        return data['model'], data['trace'], data['dataset_args'], data['model_args'], data['pymc3_args'], data['run_id'] 
+
+def load_dataset(dataset_sel, counts_fp=None, annotation_fp=None, annotation_subset=None, seed=None,
+                 data_seed = None, sig_defs_fp=None, sim_S=None, sim_N=None, sim_I=None, sim_tau_hyperprior=None,
+                 sim_J=None, sim_K=None, sim_alpha_bias=None, sim_psi_bias=None, sim_gamma_bias=None, sim_beta_bias=None):
+    # load counts, or simulated data - as specified by dataset_sel
+    # seed -> rng as per https://albertcthomas.github.io/good-practices-random-number-generators/
+    
+    if dataset_sel == 'load_counts':
+        dataset = load_counts(counts_fp)
+        annotation = pd.read_csv(annotation_fp, index_col = 0, header = 0)
+        dataset = subset_samples(dataset, annotation, annotation_subset)
+        return dataset, annotation
+        
+    elif dataset_sel == 'sim_from_sigs':
+        sig_defs = load_sigs(sig_defs_fp)
+        dataset, sim_params = sim_from_sigs(sig_defs, sim_tau_hyperprior, sim_S, sim_N, sim_I, seed)
+        return dataset, sim_params
+    
+    elif dataset_sel == 'sim_parametric':
+        dataset, sim_params = sim_parametric(sim_J,sim_K,sim_S,sim_N,sim_alpha_bias,sim_psi_bias,sim_gamma_bias,sim_beta_bias,seed)
+        return dataset, sim_params
+    
+    else:
+        assert False, 'dataset selection not recognized'
+    
+
+
 
 def split_by_count(data, fraction, rng):
     # assumes data is a pandas df
