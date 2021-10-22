@@ -27,3 +27,13 @@ pcawg-wgs-rnaseq-mirna.csv | Sample sheet for WGS | [ICGC data portal](https://d
 clinical_ann_merged.csv | merged data | created with `merge_clinical_ann.py`, combines  icgc_sample_annotations_summary_table.txt, pcawg_supplement_table1.csv, pcawg_donor_clinical_August2016_v9.csv (in that priority order)
 clinical_ann_filtered.csv | merged and filtered data | created with `filter_clinical_ann.py`, subsets to select columns and uses aliquot ids to identify rows
 
+## mutation counts
+
+Raw counts of 96 SBS mutation types. 
+
+file name | contents |  source  
+---       |  ---        | --- 
+mutation_types_raw_counts.csv | mutation type counts for 2778 PCAWG samples| Gurnit
+hmf.mut-type.RData | Rdata of mutation type counts for Hartwig | Wei
+hartwig_counts.csv | mutation type counts for 2472 Hartwig samples | created with `filter_hartwig.R` 
+
