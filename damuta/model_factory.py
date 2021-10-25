@@ -56,12 +56,11 @@ def tandtiss_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, lambd
         phi = ch_dirichlet('phi', a = np.ones(C) * alpha_bias, shape=(J, C), testval = phi_init)
         theta = ch_dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
         
-        
-        a_t = pm.Gamma('a_t',1,1,shape = (max(type_codes + 1),K))
-        b_t = pm.Gamma('b_t',1,1,shape = (max(type_codes + 1),K))
-        g = pm.Gamma('gamma', alpha = a_t[type_codes], beta = b_t[type_codes], shape = (S,K))
-        m = ch_dirichlet('M', a=np.ones(K) * lambda_bias, shape = (J,K))
-        A = ch_dirichlet("A", a = (m[None,:,:] * g[:,None,:]), shape = (S, J, K))
+        a_t = pm.Gamma('a_t',1,1,shape = (max(type_codes + 1),J,K))
+        b_t = pm.Gamma('b_t',1,1,shape = (max(type_codes + 1),J,K))
+        g = pm.Gamma('gamma', alpha = a_t[type_codes], beta = b_t[type_codes], shape = (S,J,K))
+        #m = ch_dirichlet('M', a=np.ones(K) * lambda_bias, shape = (J,K))
+        A = ch_dirichlet("A", a = g, shape = (S, J, K))
 
         # 4 is constant for ACGT
         beta = np.ones(4) * beta_bias

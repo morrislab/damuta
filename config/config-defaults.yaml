@@ -37,7 +37,6 @@ model:
   psi_bias: 0.1
   gamma_bias: 0.5
   beta_bias: 1
-  lambda_bias: 0.1
   init_strategy: kmeans
   #log_every: 10000
 
