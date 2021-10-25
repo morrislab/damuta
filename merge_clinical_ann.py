@@ -33,4 +33,32 @@ clinical_ann = clinical_ann.merge(donor_clinical, how = 'left', on  = ['icgc_don
 
 clinical_ann = clinical_ann.set_index('tumour_aliquot_id')
 clinical_ann = dt_types.merge(clinical_ann, right_index = True, left_index = True)
-clinical_ann.to_csv('data/clinical_ann_merged.csv')
+#clinical_ann.to_csv('data/clinical_ann_merged.csv')
+
+clinical_ann = clinical_ann[[
+    'type',
+    'tumour_type',
+    'project_code',
+    'reported_sex',
+    'donor_survival_time',
+    'donor_age_at_diagnosis',
+    'tumour_stage',
+    'tumour_grade',
+    'first_therapy_type',
+    'first_therapy_response',
+    'specimen_donor_treatment_type',
+    'histology_tier1',
+    'histology_tier2',
+    'histology_tier3',
+    'histology_tier4',
+    'tumour_histological_type',
+    'ancestry_primary',
+    'donor_vital_status',
+    'donor_interval_of_last_followup',
+    'tobacco_smoking_history_indicator',
+    'tobacco_smoking_intensity',
+    'alcohol_history',
+    'alcohol_history_intensity'
+]]
+
+clinical_ann.to_csv('data/pcawg_clinical_ann.csv')
