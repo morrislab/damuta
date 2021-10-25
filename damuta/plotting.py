@@ -145,10 +145,12 @@ def plot_cossim(tau_gt, tau_hat):
     return fig
     
     
-def save_gv(model, fn = 'model_graph'):
+def save_gv(model):
+    # render doen't work well. use `dot -Tpng model_graph > foo.png` instead
     gv = pm.model_graph.model_to_graphviz(model)
     gv.format = 'png'
-    return gv.render(filename=fn)
+    gv.name = 'model_graph'
+    gv.render()
 
 
 def plot_bipartite(w, rescale = 10, main = '', ah=0, thresh = 0.01,
