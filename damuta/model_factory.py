@@ -41,7 +41,7 @@ def tandem_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, model_s
 
     return model
 
-def tandtiss_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, lambda_bias,
+def tandtiss_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, 
                  type_codes, model_seed=42, init_strategy = 'uniform', tau = None, cbs=None):
     # latent dirichlet allocation with tandem signautres of damage and repair
     # and hirearchical tissue-specific priors
@@ -59,7 +59,6 @@ def tandtiss_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, lambd
         a_t = pm.Gamma('a_t',1,1,shape = (max(type_codes + 1),J,K))
         b_t = pm.Gamma('b_t',1,1,shape = (max(type_codes + 1),J,K))
         g = pm.Gamma('gamma', alpha = a_t[type_codes], beta = b_t[type_codes], shape = (S,J,K))
-        #m = ch_dirichlet('M', a=np.ones(K) * lambda_bias, shape = (J,K))
         A = ch_dirichlet("A", a = g, shape = (S, J, K))
 
         # 4 is constant for ACGT
