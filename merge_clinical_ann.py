@@ -1,4 +1,4 @@
-# script to create clinical_ann_merged.csv
+# script to create pcawg_clinical_ann.csv
 import pandas as pd
 
 donor_clinical = pd.read_csv('data/pcawg_donor_clinical_August2016_v9.csv')
