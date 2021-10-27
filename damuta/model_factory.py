@@ -39,6 +39,8 @@ def tandem_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, model_s
         # mutation counts
         pm.Multinomial('corpus', n = N, p = B, observed=data)
 
+        
+
     return model
 
 def tandtiss_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias, 
@@ -56,19 +58,19 @@ def tandtiss_lda(train, J, K, alpha_bias, psi_bias, gamma_bias, beta_bias,
         phi = ch_dirichlet('phi', a = np.ones(C) * alpha_bias, shape=(J, C), testval = phi_init)
         theta = ch_dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
         
-        a_t = pm.Gamma('a_t',1,1,shape = (max(type_codes + 1),J,K))
-        b_t = pm.Gamma('b_t',1,1,shape = (max(type_codes + 1),J,K))
-        g = pm.Gamma('gamma', alpha = a_t[type_codes], beta = b_t[type_codes], shape = (S,J,K))
-        A = ch_dirichlet("A", a = g, shape = (S, J, K))
+        a_t = pm.Gamma('a_t',1,1,shape = (max(type_codes + 1),K))
+        b_t = pm.Gamma('b_t',1,1,shape = (max(type_codes + 1),K))
+        g = pm.Gamma('gamma', alpha = a_t[type_codes], beta = b_t[type_codes], shape = (S,K))
+        A = ch_dirichlet("A", a = g, shape = (J, S, K)).dimshuffle(1,0,2)
 
         # 4 is constant for ACGT
         beta = np.ones(4) * beta_bias
         etaC = ch_dirichlet("etaC", a=beta[[0,2,3]], shape=(K,M), testval = etaC_init)
         etaT = ch_dirichlet("etaT", a=beta[[0,1,2]], shape=(K,M), testval = etaT_init)
-        eta = pm.Deterministic('eta', pm.math.stack([etaC, etaT], axis=1))
+        eta = pm.Deterministic('eta', pm.math.stack([etaC, etaT], axis=1)).dimshuffle(1,0,2)
 
         B = pm.Deterministic("B", (pm.math.dot(theta, phi).reshape((S,2,16))[:,:,None,:] * \
-                                   pm.math.dot(batched_dot(theta,A), eta.dimshuffle(1,0,2))[:,:,:,None]).reshape((S, -1)))
+                                   pm.math.dot(batched_dot(theta,A), eta)[:,:,:,None]).reshape((S, -1)))
         
         # mutation counts
         pm.Multinomial('corpus', n = N, p = B, observed=data)
