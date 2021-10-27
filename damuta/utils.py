@@ -151,7 +151,7 @@ def subset_samples(dataset, annotation, annotation_subset, sel_idx = 0):
     # expect annotation_subset to be pd dataframe with ids as index
 
     if annotation_subset is None:
-        return dataset
+        return dataset, annotation
 
     # stop string being auto cast to list
     if type(annotation_subset) == str:
@@ -164,7 +164,7 @@ def subset_samples(dataset, annotation, annotation_subset, sel_idx = 0):
     assert dataset.index.isin(annotation.index).any(), 'No sample ID matches found in dataset for the provided annotation'
 
     # reoder annotation (with gaps) to match dataset
-    annotation = annotation.reindex(dataset.index).dropna()
+    annotation = annotation.reindex(dataset.index)
 
     # partial matches allowed
     sel = np.fromiter((map(any, zip(*[annotation[annotation.columns[sel_idx]].str.contains(x) for x in annotation_subset] ))), dtype = bool)
@@ -173,7 +173,8 @@ def subset_samples(dataset, annotation, annotation_subset, sel_idx = 0):
     assert sel.any(), 'Cancer type subsetting yielded no selection. Check keywords?'
 
     dataset = dataset.loc[annotation.index[sel]]
-    return dataset
+    annotation = annotation.loc[annotation.index[sel]]
+    return dataset, annotation
 
 def save_checkpoint(fp, model, trace, dataset_args, model_args, pymc3_args, run_id): 
     with open(f'{fp}', 'wb') as buff:
@@ -197,7 +198,7 @@ def load_dataset(dataset_sel, counts_fp=None, annotation_fp=None, annotation_sub
     if dataset_sel == 'load_counts':
         dataset = load_counts(counts_fp)
         annotation = pd.read_csv(annotation_fp, index_col = 0, header = 0)
-        dataset = subset_samples(dataset, annotation, annotation_subset)
+        dataset, annotation = subset_samples(dataset, annotation, annotation_subset)
         return dataset, annotation
         
     elif dataset_sel == 'sim_from_sigs':
@@ -212,8 +213,12 @@ def load_dataset(dataset_sel, counts_fp=None, annotation_fp=None, annotation_sub
     else:
         assert False, 'dataset selection not recognized'
     
-
-
+def load_datasets(dataset_args):
+    yargs = dataset_args.copy()
+    ca = [load_dataset(counts_fp = j[0], annotation_fp = j[1], **yargs) for j in zip(yargs.pop('counts_fp'), yargs.pop('annotation_fp'))]
+    counts = pd.concat([c[0] for c in ca ])
+    annotation = pd.concat([a[1] for a in ca])
+    return counts, annotation
 
 def split_by_count(data, fraction, rng):
     # assumes data is a pandas df
