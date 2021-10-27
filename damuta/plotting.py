@@ -6,7 +6,11 @@ import plotly as plt
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from plotly.colors import n_colors
+import seaborn as sns
+
 plt.io.templates.default = "none"
+sns.set_style("white")
+sns.despine()
 
 
 tau_col = np.repeat(['cyan', 'black', 'red', 'grey', 'lightgreen', 'pink'], 16)
@@ -148,9 +152,7 @@ def plot_cossim(tau_gt, tau_hat):
 def save_gv(model):
     # render doen't work well. use `dot -Tpng model_graph > foo.png` instead
     gv = pm.model_graph.model_to_graphviz(model)
-    gv.format = 'png'
-    gv.name = 'model_graph'
-    gv.render()
+    gv.render(format = 'png')
 
 
 def plot_bipartite(w, rescale = 10, main = '', ah=0, thresh = 0.01,
@@ -318,5 +320,24 @@ def plot_fclust_scree(mat, metric = 'cosine', max_t = 10):
     fig.update_layout(yaxis_title = "number of clusters", xaxis_title="dendrogram cutoff")
     return fig
 
-def plot_separation(sigs):
-    None
+def pick_cutoff(a, metric='cosine', thresh=5):
+    d = pdist(a, metric)
+    Z = linkage(d, "ward")
+    n_clust = np.array([fcluster(Z, t=t, criterion='distance').max() for t in np.arange(1,20)])
+    return np.argmax(n_clust < thresh)
+
+
+def map_to_palette(annotation, pal_list = ['Dark2','Set1','Set2','Set3']):
+    # map all columns to a pallet entry
+    # make sure to subset columns of annotation appropriately
+    # ie. only categorical
+    i=0
+    luts = []
+    for col in annotation.columns:
+        lut = dict(zip(annotation[col].unique(), sns.color_palette(pal_list[i])))   
+        annotation[col] = annotation[col].map(lut)
+        luts.append(lut)
+        i+=1
+        i%=4
+    
+    return annotation, luts

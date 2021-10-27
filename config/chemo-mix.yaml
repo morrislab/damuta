@@ -5,9 +5,9 @@ dataset:
 
   load_counts:
     data_seed: 97
-    counts_fp: ["data/pcawg_counts.csv", "data/hartwig_counts.csv"]
+    counts_fp: ["data/pcawg_counts.csv","data/hartwig_counts.csv" ]
     annotation_fp: ["data/pcawg_clinical_ann.csv", "data/hartwig_clinical_ann.csv"]
-    annotation_subset: null
+    annotation_subset: "Breast"
 
   sim_from_sigs:
     sig_defs_fp: data/COSMIC_v3.2_SBS_GRCh37.txt
@@ -31,8 +31,8 @@ dataset:
 model:
   model_sel: tandtiss_lda
   model_seed: 42
-  J: 4
-  K: 3
+  J: 8
+  K: 5
   alpha_bias: 1
   psi_bias: 0.1
   gamma_bias: 0.5
