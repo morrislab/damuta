@@ -1,6 +1,7 @@
-# script to create pcawg_clinical_ann.csv
+# script to create pcawg_clinical_ann.csv and hartwig_clinical_ann.csv
 import pandas as pd
 
+## pcawg
 donor_clinical = pd.read_csv('data/pcawg_donor_clinical_August2016_v9.csv')
 icgc_annotations = pd.read_csv('data/icgc_sample_annotations_summary_table.txt', sep = '\t').set_index('tumour_aliquot_id')
 pcawg_annotations = pd.read_csv('data/pcawg_supplement_table1.csv').set_index('tumour_specimen_aliquot_id')
@@ -36,7 +37,7 @@ clinical_ann = dt_types.merge(clinical_ann, right_index = True, left_index = Tru
 #clinical_ann.to_csv('data/clinical_ann_merged.csv')
 
 clinical_ann = clinical_ann[[
-    'type',
+    'pcawgClass',
     'tumour_type',
     'project_code',
     'reported_sex',
@@ -62,3 +63,8 @@ clinical_ann = clinical_ann[[
 ]]
 
 clinical_ann.to_csv('data/pcawg_clinical_ann.csv')
+
+## hartwig
+hw = pd.read_csv('data/sample.cancertype.mapping.csv', index_col=0)
+hw = hw[['pcawgClass','primaryTumorLocation', 'cancerSubtype', 'tumourPurity']]
+hw.to_csv('data/hartwig_clinical_ann.csv')

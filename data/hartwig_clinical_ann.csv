@@ -1,0 +1,2473 @@
+,pcawgClass,primaryTumorLocation,cancerSubtype,tumourPurity
+sample283,Prost-AdenoCA,Prostate,,0.87
+sample282,Prost-AdenoCA,Prostate,,0.64
+sample285,Others,Bone/Soft tissue,Leiomyosarcoma,0.66
+sample284,Kidney,Kidney,Renal cell,0.26
+sample287,Liver-HCC,Liver,Hepatocellular,0.36
+sample280,Liver-HCC,Liver,Hepatocellular,0.39
+sample2248,ColoRect-AdenoCA,Colon/Rectum,,0.65
+sample2249,Eso-AdenoCA,Esophagus,,0.53
+sample2648,Kidney,Kidney,,0.75
+sample2649,Ovary-AdenoCA,Ovary,,0.77
+sample2163,Ovary-AdenoCA,Ovary,,0.61
+sample2640,Prost-AdenoCA,Prostate,,0.62
+sample2641,Others,Unknown,CUP,0.91
+sample2642,ColoRect-AdenoCA,Colon/Rectum,,0.64
+sample286,Lung,Lung,Non-Small cell,0.28
+sample2644,ColoRect-AdenoCA,Colon/Rectum,,0.8
+sample2645,Lung,Lung,Small Cell,0.44
+sample2647,Eso-AdenoCA,Esophagus,,0.64
+sample919,Stomach-AdenoCA,Stomach,,0.46
+sample449,Kidney,Kidney,Renal cell,0.21
+sample448,Eso-AdenoCA,Esophagus,,0.42
+sample288,Others,NET,Small Intestinal,0.69
+sample443,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.44
+sample442,Kidney,Kidney,Renal cell,0.58
+sample441,Uterus-AdenoCA,Uterus,Endometrial,0.88
+sample440,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.4
+sample447,Prost-AdenoCA,Prostate,,0.36
+sample445,Prost-AdenoCA,Prostate,,0.63
+sample444,Skin-Melanoma,Skin,Melanoma,0.5
+sample2169,Breast-AdenoCA,Breast,,0.63
+sample2168,Others,Urinary tract,Urethra,0.56
+sample2242,Others,Unknown,Tractus Genitalis,0.51
+sample2370,Others,Urinary tract,Bladder,0.82
+sample2243,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.87
+sample1515,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.93
+sample1517,Eso-AdenoCA,Esophagus,,0.65
+sample1511,ColoRect-AdenoCA,Colon/Rectum,,0.61
+sample1512,Lung,Lung,Non-Small cell,0.82
+sample1518,Panc-AdenoCA,Pancreas,,0.31
+sample2082,Others,Unknown,CUP,0.93
+sample2083,Others,Urinary tract,Bladder,0.46
+sample2080,Others,Unknown,CUP,0.71
+sample2081,Lymphoid,Lymphoid,Non-Hodgkin,0.6
+sample2086,Others,Biliary,Cholangiocarcinoma,0.36
+sample2087,ColoRect-AdenoCA,Colon/Rectum,,0.52
+sample2084,Ovary-AdenoCA,Ovary,Tuba,0.48
+sample2085,Uterus-AdenoCA,Uterus,Endometrial,0.93
+sample2088,Skin-Melanoma,Skin,Melanoma,0.74
+sample2089,Lung,Lung,Small Cell,0.66
+sample2372,Uterus-AdenoCA,Uterus,Endometrial,0.63
+sample1209,ColoRect-AdenoCA,Colon/Rectum,,0.56
+sample1208,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.7
+sample1201,Lung,Lung,Non-Small cell,0.19
+sample1200,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.47
+sample1203,Head-SCC,Head and neck,Nasal cavity and paranasal sinuses,0.4
+sample1202,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.51
+sample1205,Eso-AdenoCA,Esophagus,,0.18
+sample1204,Panc-AdenoCA,Pancreas,,0.49
+sample1206,Breast-AdenoCA,Breast,Triple negative,0.74
+sample1344,ColoRect-AdenoCA,Colon/Rectum,,0.47
+sample1345,Lung,Lung,Small Cell,0.88
+sample1346,Eso-AdenoCA,Esophagus,,0.52
+sample1347,Breast-AdenoCA,Breast,Triple negative,0.61
+sample1340,ColoRect-AdenoCA,Colon/Rectum,,0.6
+sample1341,ColoRect-AdenoCA,Colon/Rectum,,0.33
+sample1342,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample1348,Lung,Lung,Non-Small cell,0.28
+sample1349,Others,Penile,,0.27
+sample2643,Prost-AdenoCA,Prostate,,0.3
+sample918,Uterus-AdenoCA,Uterus,Cervical,0.63
+sample2888,Prost-AdenoCA,Prostate,,0.5
+sample2253,Others,Urinary tract,Bladder,0.37
+sample2889,ColoRect-AdenoCA,Colon/Rectum,,0.65
+sample911,Prost-AdenoCA,Prostate,,0.69
+sample910,Prost-AdenoCA,Prostate,,0.3
+sample913,Prost-AdenoCA,Prostate,,0.91
+sample915,Breast-AdenoCA,Breast,ER-positive/HER2 unknown,0.12
+sample914,ColoRect-AdenoCA,Colon/Rectum,,0.86
+sample917,Skin-Melanoma,Skin,Melanoma,0.27
+sample916,Uterus-AdenoCA,Uterus,Endometrial,0.17
+sample1838,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.79
+sample1839,Others,Bone/Soft tissue,Leiomyosarcoma,0.7
+sample1832,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.43
+sample1833,Panc-AdenoCA,Pancreas,,0.32
+sample1830,Ovary-AdenoCA,Ovary,,0.31
+sample1831,Others,NET,Small Intestinal,0.56
+sample1836,Lung,Lung,Non-Small cell,0.11
+sample1837,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.55
+sample1834,Lung,Lung,Non-Small cell,0.68
+sample2877,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.82
+sample2876,Prost-AdenoCA,Prostate,,0.82
+sample2875,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.65
+sample2874,Panc-Endocrine,NET,Pancreatic,0.62
+sample2873,Eso-AdenoCA,Esophagus,,0.66
+sample2871,Eso-AdenoCA,Esophagus,,0.21
+sample2870,Eso-AdenoCA,Esophagus,,0.89
+sample2879,Thy-AdenoCA,Thyroid,,0.33
+sample2878,Skin-Melanoma,Skin,Melanoma,0.24
+sample2507,ColoRect-AdenoCA,Colon/Rectum,,0.3
+sample2506,Others,Biliary,Cholangiocarcinoma,0.17
+sample2505,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.48
+sample2504,Lung,Lung,Small Cell,0.14
+sample2503,Lung,Lung,Lung Cancer: Non-Small Cell,0.18
+sample2502,Stomach-AdenoCA,Stomach,,0.37
+sample2501,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.62
+sample2500,Ovary-AdenoCA,Ovary,,0.7
+sample1290,Stomach-AdenoCA,Stomach,,0.33
+sample2509,Kidney,Kidney,Renal cell,0.32
+sample2508,Prost-AdenoCA,Prostate,,0.78
+sample704,Others,Urinary tract,Bladder,0.24
+sample705,Uterus-AdenoCA,Uterus,Cervical,0.77
+sample706,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.75
+sample707,Head-SCC,Head and neck,Salivary Gland,0.22
+sample700,ColoRect-AdenoCA,Colon/Rectum,,0.73
+sample701,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.83
+sample702,ColoRect-AdenoCA,Colon/Rectum,,0.45
+sample703,Others,Biliary,Gall bladder,0.46
+sample878,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.6
+sample879,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.55
+sample708,Others,Urinary tract,Bladder,0.65
+sample709,Eso-AdenoCA,Esophagus,,0.34
+sample1740,Panc-Endocrine,NET,Pancreatic,0.5
+sample1627,Others,Mesothelioma,,0.46
+sample1742,Kidney,Kidney,Renal cell,0.42
+sample1743,Others,Biliary,Cholangiocarcinoma,0.35
+sample1744,Others,Urinary tract,Other,0.62
+sample1745,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.66
+sample1746,ColoRect-AdenoCA,Colon/Rectum,,0.82
+sample1626,Lung,Lung,Small Cell,0.39
+sample1748,Ovary-AdenoCA,Ovary,,0.62
+sample1749,Lung,Lung,Non-Small cell,0.4
+sample1624,Skin-Melanoma,Skin,Melanoma,0.66
+sample1623,ColoRect-AdenoCA,Colon/Rectum,,0.53
+sample1298,Others,Biliary,Cholangiocarcinoma,0.38
+sample1622,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample2479,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.83
+sample1621,Lung,Lung,Non-Small cell,0.2
+sample2473,ColoRect-AdenoCA,Colon/Rectum,,0.8
+sample2472,Kidney,Kidney,Renal cell,0.2
+sample2471,Skin-Melanoma,Skin,Melanoma,0.56
+sample2477,ColoRect-AdenoCA,Colon/Rectum,,0.85
+sample2259,Eso-AdenoCA,Esophagus,,0.82
+sample2475,Lung,Lung,Non-Small cell,0.44
+sample2474,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.36
+sample678,Ovary-AdenoCA,Ovary,,0.44
+sample679,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.58
+sample670,Breast-AdenoCA,Breast,ER-positive/HER2 unknown,0.73
+sample671,Others,Urinary tract,Pyelum,0.3
+sample672,Panc-AdenoCA,Pancreas,,0.73
+sample673,Liver-HCC,Liver,Hepatocellular,0.88
+sample674,Others,NET,,0.53
+sample675,Prost-AdenoCA,Prostate,,0.38
+sample676,Head-SCC,Head and neck,Oropharynx,0.32
+sample677,Lung,Lung,Non-Small cell,0.12
+sample290,Skin-Melanoma,Skin,Melanoma,0.8
+sample291,Others,Bone/Soft tissue,Leiomyosarcoma,0.79
+sample296,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.18
+sample297,Ovary-AdenoCA,Ovary,,0.96
+sample295,Skin-Melanoma,Skin,Melanoma,0.24
+sample299,ColoRect-AdenoCA,Colon/Rectum,,0.37
+sample1458,Ovary-AdenoCA,Ovary,,0.29
+sample1459,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.89
+sample1696,ColoRect-AdenoCA,Colon/Rectum,,0.16
+sample1697,Skin-Melanoma,Skin,Melanoma,0.74
+sample1694,ColoRect-AdenoCA,Colon/Rectum,,0.51
+sample1695,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.21
+sample1692,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.28
+sample1693,Others,Urinary tract,Urethra,0.87
+sample1690,Others,Biliary,Gall bladder,0.38
+sample1691,Lymphoid,Lymphoid,Non-Hodgkin,0.29
+sample2657,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.93
+sample2656,Ovary-AdenoCA,Ovary,,0.78
+sample2655,Panc-AdenoCA,Pancreas,,0.4
+sample2654,Stomach-AdenoCA,Stomach,,0.23
+sample2653,Panc-AdenoCA,Pancreas,,0.3
+sample2652,Lung,Lung,Non-Small cell,0.56
+sample1698,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.38
+sample1699,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.75
+sample2899,Skin-Melanoma,Skin,Melanoma,0.87
+sample2898,Lung,Lung,Non-Small cell,0.4
+sample908,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.46
+sample909,Prost-AdenoCA,Prostate,,0.63
+sample458,ColoRect-AdenoCA,Colon/Rectum,,0.42
+sample459,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.23
+sample454,Skin-Melanoma,Skin,Melanoma,0.55
+sample455,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample456,Ovary-AdenoCA,Ovary,,0.72
+sample457,Head-SCC,Head and neck,Salivary Gland,0.87
+sample450,Skin-Melanoma,Skin,Melanoma,0.48
+sample451,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.63
+sample452,ColoRect-AdenoCA,Colon/Rectum,,0.8
+sample905,Lung,Lung,Non-Small cell,0.25
+sample2489,ColoRect-AdenoCA,Colon/Rectum,,0.44
+sample2333,Lung,Lung,Non-Small cell,0.44
+sample1450,Skin-Melanoma,Skin,Melanoma,0.59
+sample1451,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.32
+sample1528,ColoRect-AdenoCA,Colon/Rectum,,0.38
+sample1529,Others,Unknown,CUP,0.84
+sample1520,ColoRect-AdenoCA,Colon/Rectum,Anal,0.57
+sample1521,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.43
+sample1522,Lung,Lung,Non-Small cell,0.26
+sample1523,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.56
+sample1524,ColoRect-AdenoCA,Colon/Rectum,Anal,0.73
+sample1525,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.56
+sample1526,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.73
+sample1527,ColoRect-AdenoCA,Colon/Rectum,,0.64
+sample2091,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.72
+sample2090,Kidney,Kidney,Renal cell,0.35
+sample2093,Others,Urinary tract,Bladder,0.36
+sample2092,Prost-AdenoCA,Prostate,,0.74
+sample2095,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.82
+sample2094,Prost-AdenoCA,Prostate,,0.42
+sample2097,Breast-AdenoCA,Breast,Triple negative,0.35
+sample2096,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.92
+sample2099,Prost-AdenoCA,Prostate,,0.4
+sample2098,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.28
+sample2920,Breast-AdenoCA,Breast,Subtype unknown,0.53
+sample1238,Prost-AdenoCA,Prostate,,0.69
+sample1239,Others,Bone/Soft tissue,Sarcoma,0.56
+sample1235,Eso-AdenoCA,Esophagus,,0.65
+sample1236,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.76
+sample1230,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.66
+sample1231,Lung,Lung,Non-Small cell,0.47
+sample1232,Uterus-AdenoCA,Uterus,Cervical,0.26
+sample1233,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.15
+sample1359,Breast-AdenoCA,Breast,Triple negative,0.34
+sample1353,Prost-AdenoCA,Prostate,,0.35
+sample1352,Skin-Melanoma,Skin,Melanoma,0.41
+sample1351,ColoRect-AdenoCA,Colon/Rectum,,0.4
+sample1350,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.59
+sample1357,Prost-AdenoCA,Prostate,,0.22
+sample1356,Others,Urinary tract,Bladder,0.19
+sample1355,Ovary-AdenoCA,Ovary,,0.7
+sample1354,Prost-AdenoCA,Prostate,,0.62
+sample1594,Others,Mesothelioma,,0.42
+sample2886,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.57
+sample882,Lung,Lung,Non-Small cell,0.25
+sample881,ColoRect-AdenoCA,Colon/Rectum,,0.32
+sample880,Uterus-AdenoCA,Uterus,Cervical,0.84
+sample2605,Skin-Melanoma,Skin,Basal cell carcinoma,0.34
+sample730,ColoRect-AdenoCA,Colon/Rectum,,0.15
+sample885,Others,Urinary tract,Bladder,0.33
+sample884,Others,Urinary tract,Bladder,0.62
+sample465,Prost-AdenoCA,Prostate,,0.53
+sample464,Lung,Lung,Adenoid Cystic,0.84
+sample395,Prost-AdenoCA,Prostate,,0.45
+sample466,Head-SCC,Head and neck,Oropharyngeal,0.86
+sample461,ColoRect-AdenoCA,Colon/Rectum,,0.28
+sample460,Lung,Lung,Small Cell,0.92
+sample463,Head-SCC,Head and neck,Nasal cavity and paranasal sinuses,0.64
+sample1498,Head-SCC,Head and neck,Tongue,0.5
+sample2345,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.45
+sample1829,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.16
+sample1828,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample1821,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.94
+sample1717,Others,Adrenal,Pheochromocytoma,0.57
+sample1823,Others,Urinary tract,Bladder,0.52
+sample1825,Prost-AdenoCA,Prostate,,0.56
+sample1824,ColoRect-AdenoCA,Colon/Rectum,,0.59
+sample1827,ColoRect-AdenoCA,Colon/Rectum,,0.5
+sample1716,Skin-Melanoma,Skin,Melanoma,0.73
+sample2344,Kidney,Kidney,Renal cell,0.43
+sample1715,ColoRect-AdenoCA,Colon/Rectum,Ascending,0.45
+sample1714,Panc-AdenoCA,Pancreas,,0.46
+sample2699,Lung,Lung,Non-Small cell,0.51
+sample2698,Breast-AdenoCA,Breast,Subtype unknown,0.83
+sample2346,Panc-AdenoCA,Pancreas,,0.13
+sample2371,Others,Mesothelioma,,0.72
+sample2691,Lung,Lung,Non-Small cell,0.19
+sample2603,Others,Urinary tract,Urethra,0.95
+sample2690,Lung,Lung,Small Cell,0.59
+sample2813,Breast-AdenoCA,Breast,Triple negative,0.53
+sample847,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.66
+sample846,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.23
+sample845,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.51
+sample843,Prost-AdenoCA,Prostate,,0.18
+sample842,Prost-AdenoCA,Prostate,,0.16
+sample841,Others,NET,Small Intestinal,0.37
+sample840,Eso-AdenoCA,Esophagus,,0.41
+sample849,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.59
+sample848,Others,Bone/Soft tissue,Angiosarcoma,0.46
+sample1759,Lung,Lung,Non-Small cell,0.76
+sample1758,Breast-AdenoCA,Breast,Triple negative,0.12
+sample2798,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample2799,Panc-Endocrine,NET,Pancreatic,0.34
+sample2796,Lung,Lung,Non-Small cell,0.24
+sample2797,Lung,Lung,Non-Small cell,0.24
+sample2794,Breast-AdenoCA,Breast,Triple negative,0.32
+sample2795,Lung,Lung,Non-Small cell,0.31
+sample2792,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample2793,Others,Biliary,Cholangiocarcinoma,0.89
+sample2790,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.55
+sample2791,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.48
+sample599,Liver-HCC,Liver,Hepatocellular,0.39
+sample2408,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.61
+sample2409,Prost-AdenoCA,Prostate,,0.93
+sample595,ColoRect-AdenoCA,Colon/Rectum,,0.55
+sample594,ColoRect-AdenoCA,Colon/Rectum,,0.46
+sample597,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.22
+sample596,Skin-Melanoma,Skin,Melanoma,0.86
+sample591,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.47
+sample590,Others,Biliary,Gall bladder,0.19
+sample593,Others,NET,Small Intestinal,0.79
+sample592,Ovary-AdenoCA,Ovary,,0.18
+sample2323,Lung,Lung,Non-Small cell,0.65
+sample609,ColoRect-AdenoCA,Colon/Rectum,,0.3
+sample608,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.6
+sample2322,ColoRect-AdenoCA,Colon/Rectum,,0.18
+sample605,ColoRect-AdenoCA,Colon/Rectum,,0.38
+sample604,Panc-Endocrine,NET,Pancreatic,0.41
+sample607,Ovary-AdenoCA,Ovary,,0.94
+sample606,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.44
+sample601,ColoRect-AdenoCA,Colon/Rectum,,0.3
+sample600,Head-SCC,Head and neck,Salivary Gland,0.8
+sample603,Others,Urinary tract,Bladder,0.8
+sample602,ColoRect-AdenoCA,Colon/Rectum,,0.45
+sample2226,Skin-Melanoma,Skin,Skin squamous cell carcinoma,0.18
+sample2227,ColoRect-AdenoCA,Colon/Rectum,,0.59
+sample2224,Others,Small intestine,Mixed NET/non-NET,0.45
+sample2225,ColoRect-AdenoCA,Colon/Rectum,Anal,0.47
+sample2222,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.61
+sample2223,Others,Mesothelioma,,0.78
+sample2220,Others,Bone/Soft tissue,Carcinosarcoma (Uterus),0.35
+sample2221,Breast-AdenoCA,Breast,Triple negative,0.52
+sample2327,Others,Unknown,CUP,0.3
+sample2228,Others,NET,Small Intestinal,0.97
+sample2229,ColoRect-AdenoCA,Colon/Rectum,,0.25
+sample2325,Others,Unknown,CUP,0.77
+sample2324,Others,Unknown,CUP,0.55
+sample1685,Prost-AdenoCA,Prostate,,0.79
+sample1687,Prost-AdenoCA,Prostate,,0.77
+sample1686,Others,Unknown,CUP,0.38
+sample1681,Breast-AdenoCA,Breast,,0.89
+sample1680,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.24
+sample1683,Stomach-AdenoCA,Stomach,,0.57
+sample947,Breast-AdenoCA,Breast,Triple negative,0.18
+sample1689,Others,Urinary tract,Bladder,0.84
+sample1688,Ovary-AdenoCA,Ovary,,0.62
+sample2312,Others,Bone/Soft tissue,Leiomyosarcoma,0.93
+sample2313,Others,Biliary,Cholangiocarcinoma,0.68
+sample2310,Others,Urinary tract,Other,0.32
+sample2311,Kidney,Kidney,Renal cell,0.35
+sample2316,Panc-AdenoCA,Pancreas,,0.35
+sample2317,Breast-AdenoCA,Breast,Triple negative,0.41
+sample939,Prost-AdenoCA,Prostate,,0.2
+sample938,Ovary-AdenoCA,Ovary,,0.48
+sample937,Prost-AdenoCA,Prostate,,0.34
+sample936,Head-SCC,Head and neck,Salivary Gland,0.79
+sample935,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample934,Others,Unknown,CUP,0.09
+sample933,ColoRect-AdenoCA,Colon/Rectum,,0.41
+sample932,ColoRect-AdenoCA,Colon/Rectum,,0.61
+sample931,Skin-Melanoma,Skin,Melanoma,0.43
+sample930,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.65
+sample2138,Others,Bone/Soft tissue,Sarcoma,0.85
+sample2139,Others,Bone/Soft tissue,Inflammatory myofibroblastic sarcoma,0.4
+sample2812,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.88
+sample2132,Lung,Lung,Small Cell,0.87
+sample2130,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.57
+sample2131,Others,Urinary tract,Other,0.35
+sample2136,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.35
+sample2137,Uterus-AdenoCA,Uterus,Cervical,0.87
+sample2134,Others,Bone/Soft tissue,Leiomyosarcoma,0.83
+sample2135,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.17
+sample339,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.4
+sample338,Prost-AdenoCA,Prostate,,0.62
+sample1538,Eso-AdenoCA,Esophagus,,0.31
+sample331,Others,NET,Small Intestinal,0.38
+sample330,Kidney,Kidney,Renal cell,0.17
+sample333,Panc-AdenoCA,Pancreas,,0.48
+sample332,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.09
+sample334,Others,NET,Small Intestinal,0.43
+sample336,Eso-AdenoCA,Esophagus,,0.64
+sample2802,ColoRect-AdenoCA,Colon/Rectum,,0.24
+sample2638,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.73
+sample431,Skin-Melanoma,Skin,Melanoma,0.84
+sample948,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.28
+sample949,ColoRect-AdenoCA,Colon/Rectum,,0.26
+sample2268,Skin-Melanoma,Skin,Melanoma,0.18
+sample1223,ColoRect-AdenoCA,Colon/Rectum,,0.43
+sample1222,Others,Unknown,CUP,0.73
+sample1221,Skin-Melanoma,Skin,Melanoma,0.6
+sample1220,Ovary-AdenoCA,Ovary,,0.6
+sample1227,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.66
+sample1225,Skin-Melanoma,Skin,Melanoma,0.86
+sample1229,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.53
+sample1228,Skin-Melanoma,Skin,Melanoma,0.93
+sample437,Prost-AdenoCA,Prostate,,0.63
+sample2262,Others,Small intestine,Duodenum,0.57
+sample2263,Others,Bone/Soft tissue,Sarcoma,0.52
+sample2260,Breast-AdenoCA,Breast,Triple negative,0.25
+sample2261,ColoRect-AdenoCA,Colon/Rectum,,0.51
+sample2266,Others,Mesothelioma,,0.42
+sample2264,ColoRect-AdenoCA,Colon/Rectum,,0.75
+sample1328,Skin-Melanoma,Skin,Melanoma,0.52
+sample1329,Liver-HCC,Liver,Hepatocellular,0.5
+sample1326,Lung,Lung,Non-Small cell,0.58
+sample1327,Kidney,Kidney,Renal cell,0.31
+sample1324,ColoRect-AdenoCA,Colon/Rectum,,0.84
+sample1325,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.65
+sample1322,Breast-AdenoCA,Breast,Subtype unknown,0.52
+sample1323,Panc-AdenoCA,Pancreas,,0.93
+sample1320,Ovary-AdenoCA,Ovary,,0.75
+sample1321,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.56
+sample1032,Panc-AdenoCA,Pancreas,,0.27
+sample1033,Breast-AdenoCA,Breast,Triple negative,0.52
+sample1030,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.46
+sample1031,Lung,Lung,Non-Small cell,0.56
+sample1037,ColoRect-AdenoCA,Colon/Rectum,,0.6
+sample1034,Others,Unknown,CUP,0.45
+sample1038,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.44
+sample1039,Lung,Lung,Non-Small cell,0.82
+sample2631,Others,Urinary tract,Bladder,0.58
+sample1989,Kidney,Kidney,Renal cell,0.18
+sample2630,Prost-AdenoCA,Prostate,,0.8
+sample2814,ColoRect-AdenoCA,Colon/Rectum,,0.48
+sample1818,ColoRect-AdenoCA,Colon/Rectum,,0.68
+sample1819,Prost-AdenoCA,Prostate,,0.47
+sample1814,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.22
+sample1815,Ovary-AdenoCA,Ovary,,0.32
+sample1816,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.25
+sample1817,Others,Unknown,CUP,0.82
+sample1810,Prost-AdenoCA,Prostate,,0.87
+sample1811,Uterus-AdenoCA,Uterus,Cervical,0.65
+sample1812,ColoRect-AdenoCA,Colon/Rectum,,0.43
+sample1813,Eso-AdenoCA,Esophagus,Esophagus-Gastric junction,0.35
+sample2632,Others,Biliary,Cholangiocarcinoma,0.31
+sample2666,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample2667,Others,NET,Small Intestinal,0.72
+sample2665,Breast-AdenoCA,Breast,Triple negative,0.1
+sample2635,Prost-AdenoCA,Prostate,,0.56
+sample2662,Skin-Melanoma,Skin,Melanoma,0.71
+sample2663,Breast-AdenoCA,Breast,Triple negative,0.36
+sample2660,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.41
+sample2661,Others,Bone/Soft tissue,Sarcoma,0.48
+sample2741,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.76
+sample2634,Others,Vulva,Squamous cell carcinoma in the vagina,0.8
+sample2216,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.3
+sample2743,Eso-AdenoCA,Esophagus,,0.34
+sample858,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample859,Others,Biliary,Gall bladder,0.69
+sample2742,ColoRect-AdenoCA,Colon/Rectum,,0.47
+sample850,Kidney,Kidney,Renal cell,0.74
+sample851,Lung,Lung,Non-Small cell,0.5
+sample852,Bone-Osteosarc,Bone/Soft tissue,Osteosarcoma (Bone Cancer),0.23
+sample853,Lung,Lung,Non-Small cell,0.62
+sample854,ColoRect-AdenoCA,Colon/Rectum,,0.72
+sample856,Liver-HCC,Liver,Hepatocellular,0.19
+sample857,Ovary-AdenoCA,Ovary,,0.62
+sample2747,Others,NET,Gastrinoma,0.92
+sample2210,Eso-AdenoCA,Esophagus,,0.55
+sample2355,Lung,Lung,Non-Small cell,0.6
+sample2636,Lung,Lung,Non-Small cell,0.32
+sample2788,Uterus-AdenoCA,Uterus,Endometrial,0.28
+sample2785,Prost-AdenoCA,Prostate,,0.46
+sample2784,Eso-AdenoCA,Esophagus,,0.42
+sample2787,Others,Biliary,Cholangiocarcinoma,0.34
+sample2352,ColoRect-AdenoCA,Colon/Rectum,,0.51
+sample2781,Stomach-AdenoCA,Stomach,Gastric,0.48
+sample2780,Breast-AdenoCA,Breast,Triple negative,0.76
+sample2783,Kidney,Kidney,Renal cell,0.18
+sample2782,Skin-Melanoma,Skin,Melanoma,0.23
+sample2419,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample2418,Lung,Lung,Non-Small cell,0.77
+sample588,Others,Biliary,Gall bladder,0.34
+sample589,Others,Biliary,Gall bladder,0.22
+sample587,Skin-Melanoma,Skin,Melanoma,0.32
+sample584,Others,Unknown,CUP,0.24
+sample585,ColoRect-AdenoCA,Colon/Rectum,,0.32
+sample582,ColoRect-AdenoCA,Colon/Rectum,Anal,0.82
+sample583,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.93
+sample580,Liver-HCC,Liver,Hepatocellular,0.43
+sample581,Skin-Melanoma,Skin,Melanoma,0.66
+sample618,Ovary-AdenoCA,Ovary,,0.75
+sample619,Ovary-AdenoCA,Ovary,,0.62
+sample616,Skin-Melanoma,Skin,Melanoma,0.14
+sample617,Eso-AdenoCA,Esophagus,,0.21
+sample614,ColoRect-AdenoCA,Colon/Rectum,,0.34
+sample615,Prost-AdenoCA,Prostate,,0.72
+sample612,Skin-Melanoma,Skin,Melanoma,0.92
+sample613,Lung,Lung,Non-Small cell,0.89
+sample610,Others,Unknown,CUP,0.53
+sample611,Kidney,Kidney,Renal cell,0.73
+sample2234,Prost-AdenoCA,Prostate,,0.56
+sample2237,Lung,Lung,Small Cell,0.97
+sample2236,ColoRect-AdenoCA,Colon/Rectum,,0.64
+sample2231,Panc-AdenoCA,Pancreas,,0.25
+sample2230,Lung,Lung,Small Cell,0.98
+sample2233,ColoRect-AdenoCA,Colon/Rectum,Anal,0.72
+sample2232,Eso-AdenoCA,Esophagus,,0.3
+sample2238,Others,Urinary tract,Other,0.16
+sample1592,Others,NET,Bladder,0.46
+sample920,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.77
+sample921,Panc-AdenoCA,Pancreas,,0.6
+sample922,Skin-Melanoma,Skin,Merkel-cell,0.35
+sample923,Ovary-AdenoCA,Ovary,,0.33
+sample924,Breast-AdenoCA,Breast,,0.69
+sample925,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.64
+sample926,Breast-AdenoCA,Breast,Triple negative,0.81
+sample927,Skin-Melanoma,Skin,Melanoma,0.48
+sample928,Others,Bone/Soft tissue,Myofibroblastar sarcoma,0.45
+sample929,ColoRect-AdenoCA,Colon/Rectum,,0.21
+sample2129,Panc-AdenoCA,Pancreas,,0.36
+sample2128,ColoRect-AdenoCA,Colon/Rectum,,0.18
+sample2121,Thy-AdenoCA,Thyroid,,0.93
+sample2120,Skin-Melanoma,Skin,Melanoma,0.42
+sample2123,Uterus-AdenoCA,Uterus,Probably Endometrium,0.4
+sample2122,Prost-AdenoCA,Prostate,,0.48
+sample2124,Others,Biliary,Choledochuscarcinoma,0.18
+sample2127,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.96
+sample2126,Prost-AdenoCA,Prostate,,0.69
+sample2740,Skin-Melanoma,Skin,Melanoma,0.37
+sample329,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.5
+sample323,ColoRect-AdenoCA,Colon/Rectum,,0.78
+sample326,Breast-AdenoCA,Breast,Triple negative,0.81
+sample327,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.6
+sample324,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.63
+sample325,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.71
+sample1788,Others,Urinary tract,Bladder,0.18
+sample1789,Others,NET,,0.77
+sample1784,Skin-Melanoma,Skin,Melanoma,0.62
+sample1785,ColoRect-AdenoCA,Colon/Rectum,,0.47
+sample1786,Panc-AdenoCA,Pancreas,,0.37
+sample1787,Lung,Lung,Non-Small cell,0.41
+sample1780,Others,Bone/Soft tissue,Leiomyosarcoma,0.53
+sample1781,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.88
+sample1782,Skin-Melanoma,Skin,Melanoma,0.95
+sample1783,Panc-AdenoCA,Pancreas,,0.78
+sample423,Prost-AdenoCA,Prostate,,0.63
+sample2627,ColoRect-AdenoCA,Colon/Rectum,,0.26
+sample2406,Eso-AdenoCA,Esophagus,,0.52
+sample1725,Others,Biliary,Cholangiocarcinoma,0.25
+sample1256,Skin-Melanoma,Skin,Melanoma,0.26
+sample1257,Eso-AdenoCA,Esophagus,,0.75
+sample1254,Others,Unknown,CUP,0.62
+sample1255,Lung,Lung,Non-Small cell,0.28
+sample1252,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.31
+sample1253,ColoRect-AdenoCA,Colon/Rectum,,0.62
+sample1250,Eso-AdenoCA,Esophagus,,0.2
+sample1251,Others,Urinary tract,Bladder,0.62
+sample1258,Stomach-AdenoCA,Stomach,,0.35
+sample2407,ColoRect-AdenoCA,Colon/Rectum,,0.19
+sample1537,Kidney,Kidney,Renal cell,0.31
+sample2744,Myeloid-MPN,Myeloid,Multiple Myeloma: Morbus Kahler,0.71
+sample1339,ColoRect-AdenoCA,Colon/Rectum,,0.81
+sample1338,Prost-AdenoCA,Prostate,,0.92
+sample1335,ColoRect-AdenoCA,Colon/Rectum,,0.37
+sample1337,Others,NET,Small Intestinal,0.79
+sample1336,Others,Unknown,CUP,0.84
+sample1331,Prost-AdenoCA,Prostate,,0.54
+sample1330,Others,Urinary tract,Bladder,0.51
+sample1333,Head-SCC,Head and neck,Salivary Gland,0.71
+sample1332,Others,Urinary tract,Bladder,0.23
+sample2786,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.17
+sample2733,Breast-AdenoCA,Breast,Triple negative,0.19
+sample1728,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.66
+sample427,Skin-Melanoma,Skin,Melanoma,0.55
+sample2746,Ovary-AdenoCA,Ovary,,0.65
+sample2803,Eso-AdenoCA,Esophagus,,0.51
+sample1021,Breast-AdenoCA,Breast,Triple negative,0.41
+sample1020,ColoRect-AdenoCA,Colon/Rectum,,0.45
+sample1023,Others,Bone/Soft tissue,Leiomyosarcoma,0.86
+sample1022,Ovary-AdenoCA,Ovary,,0.25
+sample1025,Prost-AdenoCA,Prostate,,0.45
+sample1024,Skin-Melanoma,Skin,Melanoma,0.26
+sample1027,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.62
+sample1026,Lung,Lung,Non-Small cell,0.67
+sample1029,Uterus-AdenoCA,Uterus,Cervical,0.6
+sample2303,Lung,Lung,Small Cell,0.97
+sample2415,Lung,Lung,Non-Small cell,0.68
+sample2414,Panc-AdenoCA,Pancreas,,0.39
+sample2416,ColoRect-AdenoCA,Colon/Rectum,,0.73
+sample2411,ColoRect-AdenoCA,Colon/Rectum,,0.14
+sample2246,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.35
+sample2410,Kidney,Kidney,Renal cell,0.27
+sample2413,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.75
+sample2412,ColoRect-AdenoCA,Colon/Rectum,,0.52
+sample2891,Skin-Melanoma,Skin,Merkelcell carcinoma,0.76
+sample2622,Panc-AdenoCA,Pancreas,,0.49
+sample1803,Stomach-AdenoCA,Stomach,,0.25
+sample1802,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample1801,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.42
+sample1800,ColoRect-AdenoCA,Colon/Rectum,Anal,0.61
+sample1807,Ovary-AdenoCA,Ovary,,0.42
+sample1806,Others,Urinary tract,Bladder,0.73
+sample1805,Lymphoid,Lymphoid,Non-Hodgkin,0.79
+sample1804,ColoRect-AdenoCA,Colon/Rectum,,0.24
+sample2623,Prost-AdenoCA,Prostate,,0.43
+sample1809,Others,Urinary tract,Bladder,0.3
+sample1808,Others,Unknown,CUP,0.88
+sample2620,Lung,Lung,Non-Small cell,0.68
+sample2892,Ovary-AdenoCA,Ovary,,0.34
+sample2621,Others,Mesothelioma,,0.75
+sample2895,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.37
+sample2626,Ovary-AdenoCA,Ovary,,0.55
+sample829,ColoRect-AdenoCA,Colon/Rectum,,0.43
+sample828,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.63
+sample825,Others,Biliary,Gall bladder,0.83
+sample824,ColoRect-AdenoCA,Colon/Rectum,,0.68
+sample827,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.67
+sample826,ColoRect-AdenoCA,Colon/Rectum,,0.49
+sample821,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.43
+sample820,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.42
+sample823,Skin-Melanoma,Skin,Melanoma,0.81
+sample822,ColoRect-AdenoCA,Colon/Rectum,,0.33
+sample2894,Skin-Melanoma,Skin,Melanoma,0.63
+sample2321,Lung,Lung,Small Cell,0.37
+sample2897,Lung,Lung,Non-Small cell,0.16
+sample2420,Others,NET,Rectum,0.4
+sample2421,Eso-AdenoCA,Esophagus,,0.6
+sample2422,Skin-Melanoma,Skin,Skin squamous cell carcinoma,0.31
+sample2423,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample2424,ColoRect-AdenoCA,Colon/Rectum,,0.13
+sample2425,Others,Bone/Soft tissue,Leiomyosarcoma,0.91
+sample2426,Breast-AdenoCA,Breast,,0.55
+sample2427,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.49
+sample2428,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.21
+sample2429,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.75
+sample2320,Uterus-AdenoCA,Uterus,Endometrial,0.52
+sample623,Liver-HCC,Liver,Hepatocellular,0.62
+sample622,Kidney,Kidney,Renal cell,0.62
+sample621,Panc-AdenoCA,Pancreas,,0.25
+sample627,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.21
+sample626,Ovary-AdenoCA,Ovary,,0.72
+sample625,Liver-HCC,Liver,Hepatocellular,0.27
+sample624,Ovary-AdenoCA,Ovary,,0.83
+sample629,Breast-AdenoCA,Breast,Subtype unknown,0.68
+sample628,Others,Bone/Soft tissue,Undifferentiated sarcoma,0.44
+sample559,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.93
+sample558,Panc-AdenoCA,Pancreas,,0.23
+sample551,Others,Mesothelioma,,0.34
+sample550,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.23
+sample553,Lung,Lung,Non-Small cell,0.56
+sample552,Prost-AdenoCA,Prostate,,0.4
+sample555,Lung,Lung,Non-Small cell,0.11
+sample554,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.4
+sample557,Thy-AdenoCA,Thyroid,,0.82
+sample556,Lung,Lung,Non-Small cell,0.5
+sample2684,Eso-AdenoCA,Esophagus,,0.24
+sample2685,Stomach-AdenoCA,Stomach,,0.12
+sample2686,ColoRect-AdenoCA,Colon/Rectum,,0.53
+sample2687,Prost-AdenoCA,Prostate,,0.82
+sample2680,Kidney,Kidney,Renal cell,0.25
+sample2681,Others,Small intestine,Duodenum,0.65
+sample2682,Skin-Melanoma,Skin,Melanoma,0.4
+sample2326,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.34
+sample2688,Prost-AdenoCA,Prostate,,0.76
+sample2689,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.81
+sample487,Others,Unknown,CUP,0.11
+sample486,Others,Vulva,,0.16
+sample484,ColoRect-AdenoCA,Colon/Rectum,,0.58
+sample483,Ovary-AdenoCA,Ovary,,0.98
+sample482,Prost-AdenoCA,Prostate,,0.62
+sample481,Prost-AdenoCA,Prostate,,0.61
+sample480,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.45
+sample959,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.69
+sample958,ColoRect-AdenoCA,Colon/Rectum,,0.6
+sample489,Others,Biliary,Cholangiocarcinoma,0.14
+sample488,Prost-AdenoCA,Prostate,,0.62
+sample2118,Ovary-AdenoCA,Ovary,,0.33
+sample2114,ColoRect-AdenoCA,Colon/Rectum,,0.79
+sample2115,ColoRect-AdenoCA,Colon/Rectum,,0.35
+sample2116,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.44
+sample2117,Lung,Lung,Non-Small cell,0.59
+sample2110,Skin-Melanoma,Skin,Melanoma,0.14
+sample2112,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.92
+sample2113,Lung,Lung,Small Cell,0.95
+sample319,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.49
+sample318,Lung,Lung,Non-Small cell,0.7
+sample317,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.71
+sample316,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.25
+sample315,Skin-Melanoma,Skin,Melanoma,0.74
+sample314,Kidney,Kidney,Renal cell,0.57
+sample311,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.44
+sample310,ColoRect-AdenoCA,Colon/Rectum,,0.28
+sample1793,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.36
+sample1792,Uterus-AdenoCA,Uterus,Endometrial,0.51
+sample1790,Ovary-AdenoCA,Ovary,,0.87
+sample1797,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample1796,Panc-Endocrine,NET,Pancreatic,0.69
+sample1794,Kidney,Kidney,Renal cell,0.24
+sample1799,Breast-AdenoCA,Breast,Triple negative,0.37
+sample1798,Thy-AdenoCA,Thyroid,,0.93
+sample2208,Panc-AdenoCA,Pancreas,,0.25
+sample2209,ColoRect-AdenoCA,Colon/Rectum,,0.85
+sample2758,Lung,Lung,Small Cell,0.43
+sample2759,Prost-AdenoCA,Prostate,,0.64
+sample2200,Lung,Lung,Small Cell,0.76
+sample2201,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.22
+sample2202,Others,Vulva,,0.19
+sample2203,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.8
+sample2204,Others,Biliary,Cholangiocarcinoma,0.22
+sample2205,Kidney,Kidney,Renal cell,0.41
+sample2206,Ovary-AdenoCA,Ovary,,0.83
+sample2207,Lung,Lung,Non-Small cell,0.3
+sample2486,ColoRect-AdenoCA,Colon/Rectum,,0.38
+sample1712,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.83
+sample1245,Prost-AdenoCA,Prostate,,0.48
+sample1244,Prost-AdenoCA,Prostate,,0.89
+sample1241,Prost-AdenoCA,Prostate,,0.78
+sample1240,Prost-AdenoCA,Prostate,,0.75
+sample1243,Panc-AdenoCA,Pancreas,,0.29
+sample1242,Breast-AdenoCA,Breast,Triple negative,0.47
+sample1249,Eso-AdenoCA,Esophagus,,0.16
+sample2302,Prost-AdenoCA,Prostate,,0.23
+sample2305,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.75
+sample2751,Lung,Lung,Small Cell,0.71
+sample2304,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.76
+sample2307,Ovary-AdenoCA,Ovary,,0.39
+sample2306,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample1300,Head-SCC,Head and neck,Hypopharyngeal,0.44
+sample1301,ColoRect-AdenoCA,Colon/Rectum,,0.49
+sample1302,Kidney,Kidney,Renal cell,0.19
+sample1303,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.42
+sample1304,Kidney,Kidney,Renal cell,0.55
+sample1305,ColoRect-AdenoCA,Colon/Rectum,,0.17
+sample1306,ColoRect-AdenoCA,Colon/Rectum,,0.49
+sample1307,Stomach-AdenoCA,Stomach,,0.82
+sample1308,Others,Nervous system,Neuroblastoma,0.7
+sample1309,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.65
+sample2245,Skin-Melanoma,Skin,Melanoma,0.33
+sample2757,Panc-Endocrine,NET,Pancreatic,0.73
+sample1014,Uterus-AdenoCA,Uterus,Cervical,0.53
+sample1015,ColoRect-AdenoCA,Colon/Rectum,,0.31
+sample1016,Others,Unknown,CUP,0.54
+sample1017,Uterus-AdenoCA,Uterus,Cervical,0.61
+sample1010,ColoRect-AdenoCA,Colon/Rectum,,0.63
+sample1012,Bone-Osteosarc,Bone/Soft tissue,Osteosarcoma (Bone Cancer),0.65
+sample1013,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.23
+sample1018,Others,Urinary tract,Pyelum,0.22
+sample1019,Others,Bone/Soft tissue,Sarcoma,0.22
+sample1418,Others,Urinary tract,Bladder,0.4
+sample2755,Lung,Lung,Mix of SCLC & NSCLC,0.64
+sample2476,Others,Biliary,Cholangiocarcinoma,0.35
+sample1842,ColoRect-AdenoCA,Colon/Rectum,,0.16
+sample241,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.3
+sample1877,Others,Unknown,CUP,0.57
+sample1874,ColoRect-AdenoCA,Colon/Rectum,,0.35
+sample1875,Prost-AdenoCA,Prostate,,0.81
+sample1872,ColoRect-AdenoCA,Colon/Rectum,,0.16
+sample1873,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.87
+sample1870,Lung,Lung,Small Cell,0.54
+sample1871,Others,Biliary,Cholangiocarcinoma,0.24
+sample1878,Others,Urinary tract,Bladder,0.2
+sample1879,Others,NET,Small Intestinal,0.66
+sample2882,Panc-AdenoCA,Pancreas,,0.17
+sample249,Liver-HCC,Liver,Hepatocellular,0.46
+sample2883,Liver-HCC,Liver,Hepatocellular,0.72
+sample1908,Lymphoid,Lymphoid,Other,0.89
+sample1909,ColoRect-AdenoCA,Colon/Rectum,,0.34
+sample1424,Others,Bone/Soft tissue,Sarcoma,0.64
+sample1902,Lymphoid,Lymphoid,Non-Hodgkin,0.37
+sample1903,Lymphoid,Lymphoid,Non-Hodgkin,0.72
+sample1900,Eso-AdenoCA,Esophagus,,0.53
+sample1901,ColoRect-AdenoCA,Colon/Rectum,,0.53
+sample1906,ColoRect-AdenoCA,Colon/Rectum,,0.49
+sample1907,ColoRect-AdenoCA,Colon/Rectum,,0.34
+sample1904,Lung,Lung,Non-Small cell,0.2
+sample1905,Lung,Lung,Small Cell,0.68
+sample2880,Eso-AdenoCA,Esophagus,,0.23
+sample838,Prost-AdenoCA,Prostate,,0.82
+sample839,Thy-AdenoCA,Thyroid,,0.54
+sample836,Prost-AdenoCA,Prostate,,0.52
+sample837,Lymphoid,Lymphoid,Hodgkin,0.28
+sample834,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.81
+sample835,ColoRect-AdenoCA,Colon/Rectum,,0.69
+sample832,Head-SCC,Head and neck,Nasal cavity and paranasal sinuses,0.28
+sample833,ColoRect-AdenoCA,Colon/Rectum,,0.43
+sample830,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.94
+sample831,Prost-AdenoCA,Prostate,,0.5
+sample2881,ColoRect-AdenoCA,Colon/Rectum,,0.28
+sample1428,Panc-AdenoCA,Pancreas,,0.45
+sample2437,ColoRect-AdenoCA,Colon/Rectum,Anal,0.78
+sample2436,Others,Unknown,CUP,0.78
+sample2435,ColoRect-AdenoCA,Colon/Rectum,Anal,0.46
+sample2434,Panc-AdenoCA,Pancreas,,0.14
+sample2433,Kidney,Kidney,,0.62
+sample2432,Others,Small intestine,Duodenum,0.88
+sample2431,Prost-AdenoCA,Prostate,,0.9
+sample2430,Prost-AdenoCA,Prostate,,0.82
+sample2887,Others,Urinary tract,Bladder,0.29
+sample2439,Others,Bone/Soft tissue,Sarcoma,0.96
+sample2438,Stomach-AdenoCA,Stomach,,0.22
+sample634,Skin-Melanoma,Skin,Melanoma,0.24
+sample635,Skin-Melanoma,Skin,Skin squamous cell carcinoma,0.75
+sample636,Prost-AdenoCA,Prostate,,0.57
+sample637,Prost-AdenoCA,Prostate,,0.29
+sample631,Liver-HCC,Liver,Hepatocellular,0.87
+sample632,Breast-AdenoCA,Breast,Triple negative,0.34
+sample638,ColoRect-AdenoCA,Colon/Rectum,Anal,0.55
+sample639,Others,Bone/Soft tissue,Liposarcoma,0.78
+sample1490,Skin-Melanoma,Skin,Melanoma,0.85
+sample1491,Lung,Lung,Small Cell,0.95
+sample548,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.31
+sample1494,Others,Urinary tract,Bladder,0.25
+sample1495,ColoRect-AdenoCA,Colon/Rectum,,0.33
+sample1496,Ovary-AdenoCA,Ovary,,0.54
+sample1497,Uterus-AdenoCA,Uterus,Endometrial,0.25
+sample542,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.53
+sample543,ColoRect-AdenoCA,Colon/Rectum,,0.71
+sample540,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.9
+sample541,Eso-AdenoCA,Esophagus,,0.26
+sample546,Panc-AdenoCA,Pancreas,,0.81
+sample547,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.82
+sample544,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.2
+sample545,Kidney,Kidney,Renal cell,0.1
+sample1652,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.63
+sample1653,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.32
+sample1650,Uterus-AdenoCA,Uterus,Cervical,0.24
+sample1651,Uterus-AdenoCA,Uterus,Endometrial,0.68
+sample1656,Ovary-AdenoCA,Ovary,,0.73
+sample1657,ColoRect-AdenoCA,Colon/Rectum,,0.42
+sample1654,Skin-Melanoma,Skin,Melanoma,0.42
+sample1655,Head-SCC,Head and neck,Salivary Gland,0.92
+sample2693,Eso-AdenoCA,Esophagus,,0.16
+sample1658,Others,Nervous system,Glioma,0.88
+sample2697,ColoRect-AdenoCA,Colon/Rectum,,0.67
+sample2696,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample2695,ColoRect-AdenoCA,Colon/Rectum,,0.39
+sample2694,Uterus-AdenoCA,Uterus,Cervical,0.53
+sample498,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.57
+sample499,Kidney,Kidney,Renal cell,0.84
+sample2329,Prost-AdenoCA,Prostate,,0.71
+sample2328,Eso-AdenoCA,Esophagus,,0.43
+sample490,Uterus-AdenoCA,Uterus,Cervical,0.48
+sample492,Others,Unknown,CUP,0.16
+sample493,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.25
+sample494,Prost-AdenoCA,Prostate,,0.57
+sample495,Skin-Melanoma,Skin,Melanoma,0.57
+sample496,Lung,Lung,Non-Small cell,0.46
+sample497,Ovary-AdenoCA,Ovary,,0.33
+sample944,Panc-AdenoCA,Pancreas,,0.66
+sample945,Others,Unknown,CUP,0.52
+sample942,Lymphoid,Lymphoid,Non-Hodgkin,0.23
+sample943,Lung,Lung,Non-Small cell,0.57
+sample940,Eso-AdenoCA,Esophagus,,0.16
+sample941,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample2103,ColoRect-AdenoCA,Colon/Rectum,,0.19
+sample2102,Others,Unknown,CUP,0.54
+sample2101,ColoRect-AdenoCA,Colon/Rectum,,0.33
+sample2100,Eso-AdenoCA,Esophagus,,0.39
+sample2107,Breast-AdenoCA,Breast,Triple negative,0.39
+sample2106,Skin-Melanoma,Skin,Melanoma,0.39
+sample2105,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.82
+sample2104,Others,Bone/Soft tissue,Sarcoma,0.92
+sample2109,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.41
+sample2108,Others,Biliary,Cholangiocarcinoma,0.79
+sample300,ColoRect-AdenoCA,Colon/Rectum,,0.27
+sample301,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.36
+sample302,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.53
+sample303,Lung,Lung,Non-Small cell,0.67
+sample304,Breast-AdenoCA,Breast,Subtype unknown,0.46
+sample305,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.37
+sample306,Ovary-AdenoCA,Ovary,,0.64
+sample307,Others,Biliary,Gall bladder,0.22
+sample2441,Uterus-AdenoCA,Uterus,Cervical,0.2
+sample872,Lung,Lung,Small Cell,0.96
+sample873,ColoRect-AdenoCA,Colon/Rectum,,0.34
+sample870,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.54
+sample2749,Liver-HCC,Liver,Hepatocellular,0.33
+sample2748,Ovary-AdenoCA,Ovary,,0.69
+sample871,Head-SCC,Head and neck,Lip and Oral Cavity,0.19
+sample2219,Others,Bone/Soft tissue,Uterine sarcoma,0.73
+sample2218,Others,Biliary,Cholangiocarcinoma,0.39
+sample2217,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.79
+sample876,Prost-AdenoCA,Prostate,,0.59
+sample2215,Others,Unknown,CUP,0.18
+sample2214,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.84
+sample2213,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.44
+sample2212,ColoRect-AdenoCA,Colon/Rectum,,0.44
+sample2211,Eso-AdenoCA,Esophagus,,0.75
+sample877,Others,Mesothelioma,,0.24
+sample874,Lung,Lung,Non-Small cell,0.83
+sample875,ColoRect-AdenoCA,Colon/Rectum,,0.24
+sample1278,Prost-AdenoCA,Prostate,,0.81
+sample1279,Lung,Lung,Non-Small cell,0.19
+sample1416,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.21
+sample1270,Panc-Endocrine,NET,Pancreatic,0.85
+sample1271,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.74
+sample1272,Eso-AdenoCA,Esophagus,,0.42
+sample1273,Others,Urinary tract,Bladder,0.6
+sample1274,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.43
+sample1275,Others,Unknown,CUP,0.86
+sample1276,Eso-AdenoCA,Esophagus,,0.83
+sample1277,Prost-AdenoCA,Prostate,,0.23
+sample1478,Others,Urinary tract,Bladder,0.61
+sample1479,Eso-AdenoCA,Esophagus,,0.63
+sample1472,Kidney,Kidney,Renal cell,0.26
+sample1473,Others,Urinary tract,Bladder,0.31
+sample1471,Panc-AdenoCA,Pancreas,,0.3
+sample1476,Skin-Melanoma,Skin,Melanoma,0.77
+sample1477,ColoRect-AdenoCA,Colon/Rectum,,0.56
+sample1475,Prost-AdenoCA,Prostate,,0.81
+sample2353,Panc-AdenoCA,Pancreas,,0.48
+sample281,Lung,Lung,Non-Small cell,0.21
+sample1741,Skin-Melanoma,Skin,Melanoma,0.69
+sample1669,Ovary-AdenoCA,Ovary,,0.68
+sample1317,Skin-Melanoma,Skin,Melanoma,0.46
+sample1316,Skin-Melanoma,Skin,Melanoma,0.16
+sample1315,Others,Mesothelioma,,0.19
+sample1312,Others,Urinary tract,Bladder,0.21
+sample1311,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.61
+sample1310,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.71
+sample2482,ColoRect-AdenoCA,Colon/Rectum,,0.38
+sample1319,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.96
+sample1318,Skin-Melanoma,Skin,Melanoma,0.41
+sample2885,ColoRect-AdenoCA,Colon/Rectum,,0.7
+sample2480,Skin-Melanoma,Skin,Melanoma,0.9
+sample2495,Uterus-AdenoCA,Uterus,Cervical,0.75
+sample1747,Panc-Endocrine,NET,Pancreatic,0.83
+sample2241,Others,Bone/Soft tissue,Sarcoma,0.71
+sample2494,Eso-AdenoCA,Esophagus,,0.4
+sample1667,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.72
+sample1666,ColoRect-AdenoCA,Colon/Rectum,,0.27
+sample1009,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.31
+sample1008,Others,Biliary,Gall bladder,0.41
+sample2488,ColoRect-AdenoCA,Colon/Rectum,,0.78
+sample1003,Skin-Melanoma,Skin,Melanoma,0.54
+sample1002,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.68
+sample1001,Kidney,Kidney,Renal cell,0.1
+sample1000,ColoRect-AdenoCA,Colon/Rectum,,0.73
+sample1007,Others,Small intestine,Duodenum,0.76
+sample1006,Others,NET,Small Intestinal,0.45
+sample1005,Others,NET,,0.19
+sample1004,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.68
+sample2497,Eso-AdenoCA,Esophagus,,0.3
+sample2330,Prost-AdenoCA,Prostate,,0.44
+sample2381,Stomach-AdenoCA,Stomach,,0.52
+sample2496,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.7
+sample2800,Breast-AdenoCA,Breast,Triple negative,0.23
+sample2331,Others,Urinary tract,Bladder,0.48
+sample2350,Skin-Melanoma,Skin,Melanoma,0.59
+sample2491,ColoRect-AdenoCA,Colon/Rectum,,0.44
+sample2332,Ovary-AdenoCA,Ovary,,0.95
+sample2836,Head-SCC,Head and neck,Oropharyngeal,0.27
+sample2490,ColoRect-AdenoCA,Colon/Rectum,,0.3
+sample1865,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.84
+sample1864,Lung,Lung,Non-Small cell,0.66
+sample1867,Others,Urinary tract,Bladder,0.4
+sample1866,Lung,Lung,Non-Small cell,0.17
+sample1861,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.68
+sample1860,Breast-AdenoCA,Breast,Triple negative,0.73
+sample1863,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.55
+sample1862,Prost-AdenoCA,Prostate,,0.74
+sample1869,Eso-AdenoCA,Esophagus,,0.6
+sample1868,ColoRect-AdenoCA,Colon/Rectum,,0.37
+sample2373,ColoRect-AdenoCA,Colon/Rectum,,0.43
+sample2374,Others,Urinary tract,Bladder,0.34
+sample2493,Others,Unknown,Biliary tract,0.23
+sample2375,Prost-AdenoCA,Prostate,,0.37
+sample2376,ColoRect-AdenoCA,Colon/Rectum,,0.84
+sample2377,Others,Biliary,Cholangiocarcinoma,0.54
+sample2817,Skin-Melanoma,Skin,Skin squamous cell carcinoma,0.78
+sample2378,ColoRect-AdenoCA,Colon/Rectum,,0.22
+sample2379,Others,Bone/Soft tissue,Leiomyosarcoma,0.42
+sample2492,Others,Urinary tract,Other,0.48
+sample1919,Head-SCC,Head and neck,Nasal cavity and paranasal sinuses,0.24
+sample1918,Breast-AdenoCA,Breast,Triple negative,0.2
+sample2470,Skin-Melanoma,Skin,Melanoma,0.33
+sample1911,Others,Biliary,Cholangiocarcinoma,0.64
+sample1910,Others,Urinary tract,Urethra,0.33
+sample1913,ColoRect-AdenoCA,Colon/Rectum,,0.31
+sample1912,Skin-Melanoma,Skin,Melanoma,0.4
+sample1915,Breast-AdenoCA,Breast,Triple negative,0.78
+sample1914,ColoRect-AdenoCA,Colon/Rectum,,0.52
+sample1917,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.47
+sample1916,ColoRect-AdenoCA,Colon/Rectum,,0.63
+sample2801,Others,Biliary,Gall bladder,0.27
+sample803,ColoRect-AdenoCA,Colon/Rectum,,0.35
+sample802,Prost-AdenoCA,Prostate,,0.44
+sample801,Others,Biliary,Gall bladder,0.24
+sample800,Panc-AdenoCA,Pancreas,,0.17
+sample807,Lung,Lung,Non-Small cell,0.6
+sample806,ColoRect-AdenoCA,Colon/Rectum,,0.32
+sample804,Lung,Lung,Non-Small cell,0.27
+sample809,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.14
+sample808,ColoRect-AdenoCA,Colon/Rectum,,0.52
+sample2570,Lung,Lung,Non-Small cell,0.16
+sample2571,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample2576,Ovary-AdenoCA,Ovary,,0.94
+sample2577,Panc-AdenoCA,Pancreas,,0.24
+sample799,Others,Urinary tract,Bladder,0.42
+sample798,ColoRect-AdenoCA,Colon/Rectum,Anal,0.5
+sample793,ColoRect-AdenoCA,Colon/Rectum,,0.81
+sample792,Kidney,Kidney,Renal cell,0.69
+sample791,Liver-HCC,Liver,Hepatocellular,0.2
+sample790,Skin-Melanoma,Skin,Melanoma,0.5
+sample797,Head-SCC,Head and neck,Lip and Oral Cavity,0.96
+sample796,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.34
+sample795,Liver-HCC,Liver,Hepatocellular,0.82
+sample2338,Breast-AdenoCA,Breast,Triple negative,0.72
+sample2578,Skin-Melanoma,Skin,Melanoma,0.49
+sample2915,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.65
+sample2916,Prost-AdenoCA,Prostate,,0.49
+sample2579,Stomach-AdenoCA,Stomach,,0.38
+sample2910,ColoRect-AdenoCA,Colon/Rectum,,0.31
+sample2911,Kidney,Kidney,Renal cell,0.46
+sample2913,Others,Urinary tract,Urethra,0.65
+sample2918,Kidney,Kidney,Renal cell,0.19
+sample2919,Eso-AdenoCA,Esophagus,,0.38
+sample2339,ColoRect-AdenoCA,Colon/Rectum,,0.69
+sample2467,Lung,Lung,Non-Small cell,0.43
+sample1487,Others,Urinary tract,Bladder,0.66
+sample1486,ColoRect-AdenoCA,Colon/Rectum,,0.61
+sample1485,Others,NET,Small Intestinal,0.47
+sample1483,Others,Unknown,CUP,0.32
+sample1482,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.47
+sample579,Kidney,Kidney,Renal cell,0.64
+sample578,Skin-Melanoma,Skin,Melanoma,0.92
+sample577,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.79
+sample576,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.71
+sample575,Skin-Melanoma,Skin,Melanoma,0.84
+sample574,Head-SCC,Head and neck,Lip and Oral Cavity,0.38
+sample573,ColoRect-AdenoCA,Colon/Rectum,,0.34
+sample572,ColoRect-AdenoCA,Colon/Rectum,,0.59
+sample571,Skin-Melanoma,Skin,Melanoma,0.57
+sample570,Skin-Melanoma,Skin,Melanoma,0.24
+sample1641,ColoRect-AdenoCA,Colon/Rectum,,0.59
+sample1640,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.63
+sample1643,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.3
+sample1642,Prost-AdenoCA,Prostate,,0.26
+sample1645,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.53
+sample1644,ColoRect-AdenoCA,Colon/Rectum,,0.11
+sample1647,ColoRect-AdenoCA,Colon/Rectum,,0.25
+sample1646,Prost-AdenoCA,Prostate,,0.24
+sample1649,Panc-AdenoCA,Pancreas,,0.21
+sample1648,Others,Urinary tract,Pyelum,0.17
+sample2256,Others,Bone/Soft tissue,Liposarcoma,0.55
+sample979,Others,Bone/Soft tissue,Leiomyosarcoma,0.85
+sample978,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.67
+sample2255,Skin-Melanoma,Skin,Melanoma,0.45
+sample2358,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.29
+sample2359,Uterus-AdenoCA,Uterus,Endometrial,0.71
+sample973,Prost-AdenoCA,Prostate,,0.89
+sample972,Others,Unknown,CUP,0.32
+sample971,Breast-AdenoCA,Breast,Triple negative,0.73
+sample970,Kidney,Kidney,Renal cell,0.69
+sample977,Head-SCC,Head and neck,Salivary Gland,0.46
+sample976,Prost-AdenoCA,Prostate,,0.49
+sample975,Others,Urinary tract,Bladder,0.38
+sample974,Prost-AdenoCA,Prostate,,0.31
+sample2598,ColoRect-AdenoCA,Colon/Rectum,,0.61
+sample421,Skin-Melanoma,Skin,Melanoma,0.73
+sample1189,Prost-AdenoCA,Prostate,,0.35
+sample420,Lung,Lung,Non-Small cell,0.46
+sample2176,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.39
+sample2177,ColoRect-AdenoCA,Colon/Rectum,,0.17
+sample2174,Ovary-AdenoCA,Ovary,,0.65
+sample422,Panc-AdenoCA,Pancreas,,0.42
+sample2172,Lung,Lung,Small Cell,0.77
+sample2173,Breast-AdenoCA,Breast,Subtype unknown,0.27
+sample2170,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.75
+sample425,Others,NET,Lung,0.77
+sample2178,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.5
+sample424,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample375,ColoRect-AdenoCA,Colon/Rectum,,0.17
+sample374,Others,Biliary,Gall bladder,0.11
+sample377,ColoRect-AdenoCA,Colon/Rectum,Anal,0.63
+sample376,Kidney,Kidney,Renal cell,0.6
+sample371,Others,Urinary tract,Bladder,0.69
+sample370,Others,Bone/Soft tissue,Sarcoma,0.6
+sample373,Others,Bone/Soft tissue,Leiomyosarcoma,0.82
+sample426,Lung,Lung,Non-Small cell,0.52
+sample379,Others,Testis,,0.83
+sample2778,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.97
+sample2779,Liver-HCC,Liver,Hepatocellular,0.71
+sample2774,Prost-AdenoCA,Prostate,,0.68
+sample2775,Ovary-AdenoCA,Ovary,,0.8
+sample2776,ColoRect-AdenoCA,Colon/Rectum,,0.47
+sample2777,Others,Urinary tract,Bladder,0.8
+sample2770,Skin-Melanoma,Skin,Melanoma,0.89
+sample2771,Prost-AdenoCA,Prostate,,0.48
+sample2772,Skin-Melanoma,Skin,Melanoma,0.64
+sample2773,ColoRect-AdenoCA,Colon/Rectum,,0.72
+sample2008,Skin-Melanoma,Skin,Melanoma,0.52
+sample2009,Others,Urinary tract,Bladder,0.3
+sample2002,Prost-AdenoCA,Prostate,,0.94
+sample2003,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.38
+sample2000,Eso-AdenoCA,Esophagus,,0.32
+sample2006,Others,NET,Lung or small intenstine,0.49
+sample2007,Others,Urinary tract,Pyelum,0.17
+sample2004,Skin-Melanoma,Skin,Melanoma,0.65
+sample2005,Lung,Lung,Non-Small cell,0.17
+sample1267,ColoRect-AdenoCA,Colon/Rectum,,0.26
+sample1266,Eso-AdenoCA,Esophagus,,0.43
+sample1265,Others,NET,Small Intestinal,0.53
+sample1263,ColoRect-AdenoCA,Colon/Rectum,,0.49
+sample1463,ColoRect-AdenoCA,Colon/Rectum,,0.11
+sample1462,Lung,Lung,Non-Small cell,0.47
+sample1465,ColoRect-AdenoCA,Colon/Rectum,,0.51
+sample1464,Lung,Lung,Non-Small cell,0.13
+sample1467,Kidney,Kidney,Renal cell,0.21
+sample1466,ColoRect-AdenoCA,Colon/Rectum,,0.6
+sample2658,Others,Bone/Soft tissue,Undifferentiated sarcoma,0.69
+sample2651,ColoRect-AdenoCA,Colon/Rectum,,0.37
+sample1078,ColoRect-AdenoCA,Colon/Rectum,,0.65
+sample1079,Kidney,Kidney,Renal cell,0.49
+sample1076,ColoRect-AdenoCA,Colon/Rectum,,0.35
+sample1077,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.21
+sample1074,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.29
+sample1075,Ovary-AdenoCA,Ovary,,0.81
+sample1072,ColoRect-AdenoCA,Colon/Rectum,,0.56
+sample1073,Lung,Lung,Non-Small cell,0.29
+sample1070,Ovary-AdenoCA,Ovary,,0.24
+sample1071,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.85
+sample2487,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.61
+sample2252,Lung,Lung,Non-Small cell,0.26
+sample2713,Lung,Lung,Non-Small cell,0.16
+sample902,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.73
+sample2484,Panc-AdenoCA,Pancreas,,0.43
+sample2251,Liver-HCC,Liver,Hepatocellular,0.74
+sample900,Prost-AdenoCA,Prostate,,0.74
+sample1102,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.17
+sample1103,Others,Biliary,Gall bladder,0.61
+sample1100,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.52
+sample1101,Head-SCC,Head and neck,Lip and Oral Cavity,0.75
+sample1106,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample1107,Skin-Melanoma,Skin,Melanoma,0.37
+sample1104,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.76
+sample1105,ColoRect-AdenoCA,Colon/Rectum,,0.6
+sample906,ColoRect-AdenoCA,Colon/Rectum,,0.56
+sample1108,ColoRect-AdenoCA,Colon/Rectum,,0.44
+sample1109,Head-SCC,Head and neck,Lip and Oral Cavity,0.54
+sample907,Others,Unknown,CUP,0.94
+sample2485,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.47
+sample2250,Eso-AdenoCA,Esophagus,,0.58
+sample904,Ovary-AdenoCA,Ovary,,0.21
+sample453,Skin-Melanoma,Skin,Melanoma,0.91
+sample2257,ColoRect-AdenoCA,Colon/Rectum,,0.48
+sample2483,Ovary-AdenoCA,Ovary,,0.54
+sample2553,Others,Small intestine,Duodenum,0.23
+sample1928,ColoRect-AdenoCA,Colon/Rectum,,0.39
+sample1929,Prost-AdenoCA,Prostate,,0.54
+sample1925,Others,Biliary,Cholangiocarcinoma,0.39
+sample1926,ColoRect-AdenoCA,Colon/Rectum,,0.19
+sample1927,Others,Unknown,CUP,0.46
+sample1920,Others,Biliary,Cholangiocarcinoma,0.41
+sample1921,Others,Small intestine,Adenocarcinoma,0.65
+sample1922,ColoRect-AdenoCA,Colon/Rectum,,0.8
+sample1923,ColoRect-AdenoCA,Colon/Rectum,,0.46
+sample814,Others,Urinary tract,Other,0.42
+sample815,ColoRect-AdenoCA,Colon/Rectum,,0.57
+sample816,Skin-Melanoma,Skin,Skin squamous cell carcinoma,0.38
+sample817,Thy-AdenoCA,Thyroid,,0.44
+sample810,Lung,Lung,Small Cell,0.96
+sample811,Others,Unknown,CUP,0.16
+sample812,Others,Biliary,Gall bladder,0.22
+sample813,Breast-AdenoCA,Breast,Triple negative,0.26
+sample2481,Skin-Melanoma,Skin,Melanoma,0.49
+sample2254,Others,Urinary tract,Other,0.3
+sample2308,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.61
+sample818,Stomach-AdenoCA,Stomach,,0.65
+sample819,ColoRect-AdenoCA,Colon/Rectum,,0.26
+sample1858,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.59
+sample1859,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.74
+sample2805,Others,Urinary tract,Bladder,0.19
+sample1850,ColoRect-AdenoCA,Colon/Rectum,,0.44
+sample1851,Skin-Melanoma,Skin,Melanoma,0.3
+sample1852,Others,Biliary,Cholangiocarcinoma,0.59
+sample1853,Skin-Melanoma,Skin,Melanoma,0.72
+sample1854,Ovary-AdenoCA,Ovary,,0.42
+sample1855,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.94
+sample1856,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.46
+sample1857,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.68
+sample229,Ovary-AdenoCA,Ovary,,0.88
+sample784,Eso-AdenoCA,Esophagus,,0.29
+sample785,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.55
+sample786,ColoRect-AdenoCA,Colon/Rectum,,0.34
+sample228,Lung,Lung,Non-Small cell,0.32
+sample780,Others,Urinary tract,Bladder,0.76
+sample781,Prost-AdenoCA,Prostate,,0.91
+sample783,Prost-AdenoCA,Prostate,,0.19
+sample1289,ColoRect-AdenoCA,Colon/Rectum,,0.38
+sample2909,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.71
+sample2908,Others,Bone/Soft tissue,Sarcoma,0.88
+sample1288,Others,Unknown,CUP,0.55
+sample2903,Lung,Lung,Non-Small cell,0.4
+sample2902,Others,Biliary,Cholangiocarcinoma,0.21
+sample2900,Lung,Lung,Non-Small cell,0.49
+sample2907,Lung,Lung,Non-Small cell,0.41
+sample2906,Others,Bone/Soft tissue,Chondrosarcoma,0.74
+sample2905,Prost-AdenoCA,Prostate,,0.58
+sample2904,Others,Nervous system,Plexuspapilloom,0.63
+sample560,Breast-AdenoCA,Breast,Subtype unknown,0.47
+sample561,Uterus-AdenoCA,Uterus,Cervical,0.15
+sample563,Skin-Melanoma,Skin,Melanoma,0.63
+sample564,Panc-AdenoCA,Pancreas,,0.85
+sample565,Lung,Lung,Non-Small cell,0.75
+sample566,Skin-Melanoma,Skin,Melanoma,0.19
+sample567,Prost-AdenoCA,Prostate,,0.84
+sample568,Prost-AdenoCA,Prostate,,0.6
+sample569,ColoRect-AdenoCA,Colon/Rectum,,0.33
+sample1441,Prost-AdenoCA,Prostate,,0.56
+sample1674,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.66
+sample1675,Others,Bone/Soft tissue,Sarcoma,0.9
+sample1676,Eso-AdenoCA,Esophagus,,0.61
+sample1440,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.7
+sample1670,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.51
+sample1507,Skin-Melanoma,Skin,Melanoma,0.19
+sample1672,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.67
+sample1447,ColoRect-AdenoCA,Colon/Rectum,Anal,0.83
+sample1678,Lung,Lung,Non-Small cell,0.77
+sample1679,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample1446,Others,NET,Small Intestinal,0.81
+sample2258,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample968,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.73
+sample969,Lung,Lung,Non-Small cell,0.26
+sample964,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.92
+sample965,Others,Mesothelioma,,0.58
+sample966,Head-SCC,Head and neck,Salivary Gland,0.74
+sample967,Skin-Melanoma,Skin,Melanoma,0.09
+sample960,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.69
+sample961,Eso-AdenoCA,Esophagus,Esophagus-Gastric junction,0.55
+sample962,Skin-Melanoma,Skin,Melanoma,0.12
+sample963,ColoRect-AdenoCA,Colon/Rectum,,0.58
+sample2387,Lung,Lung,Non-Small cell,0.26
+sample2165,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.71
+sample2164,Others,Biliary,Gall bladder,0.67
+sample2167,Liver-HCC,Liver,Cystadenocarcinoma,0.13
+sample2166,Skin-Melanoma,Skin,Melanoma,0.34
+sample2161,Panc-AdenoCA,Pancreas,,0.37
+sample2160,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.53
+sample1588,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.82
+sample1589,Skin-Melanoma,Skin,Melanoma,0.33
+sample1586,Thy-AdenoCA,Thyroid,,0.44
+sample1587,Skin-Melanoma,Skin,Melanoma,0.58
+sample1584,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.68
+sample1585,Panc-Endocrine,NET,Pancreatic,0.76
+sample1582,ColoRect-AdenoCA,Colon/Rectum,,0.48
+sample1583,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.45
+sample1580,ColoRect-AdenoCA,Colon/Rectum,,0.83
+sample1581,Skin-Melanoma,Skin,Melanoma,0.91
+sample366,Kidney,Kidney,Renal cell,0.63
+sample367,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.89
+sample364,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.49
+sample362,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.62
+sample363,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.62
+sample361,Breast-AdenoCA,Breast,Triple negative,0.7
+sample368,ColoRect-AdenoCA,Colon/Rectum,,0.45
+sample369,Others,Biliary,Gall bladder,0.18
+sample2763,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.72
+sample2762,Uterus-AdenoCA,Uterus,Endometrial,0.48
+sample2761,Prost-AdenoCA,Prostate,,0.65
+sample2760,Lung,Lung,Non-Small cell,0.39
+sample2767,Others,Bone/Soft tissue,Sarcoma,0.77
+sample2766,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.81
+sample2765,Others,Bone/Soft tissue,Sarcoma,0.5
+sample2764,Skin-Melanoma,Skin,Melanoma,0.3
+sample2769,Breast-AdenoCA,Breast,Triple negative,0.42
+sample2768,Others,Double primary,Bladder and Mesothelioma,0.59
+sample2019,ColoRect-AdenoCA,Colon/Rectum,,0.58
+sample2018,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.32
+sample2011,ColoRect-AdenoCA,Colon/Rectum,,0.37
+sample2010,ColoRect-AdenoCA,Colon/Rectum,,0.17
+sample2013,Breast-AdenoCA,Breast,Triple negative,0.33
+sample2012,ColoRect-AdenoCA,Colon/Rectum,,0.82
+sample2015,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.47
+sample2014,Prost-AdenoCA,Prostate,,0.21
+sample2017,Eso-AdenoCA,Esophagus,,0.69
+sample2016,Lung,Lung,Small Cell,0.91
+sample1292,Others,Adrenal,,0.88
+sample1293,ColoRect-AdenoCA,Colon/Rectum,,0.36
+sample1296,Lung,Lung,Non-Small cell,0.26
+sample1297,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.72
+sample1294,Ovary-AdenoCA,Ovary,,0.34
+sample1295,ColoRect-AdenoCA,Colon/Rectum,,0.31
+sample1454,Others,Bone/Soft tissue,Liposarcoma,0.22
+sample1455,ColoRect-AdenoCA,Colon/Rectum,,0.49
+sample1456,Ovary-AdenoCA,Ovary,,0.59
+sample1452,Others,NET,Small Intestinal,0.82
+sample1453,Panc-AdenoCA,Pancreas,,0.57
+sample2624,Prost-AdenoCA,Prostate,,0.58
+sample2625,Panc-AdenoCA,Pancreas,,0.31
+sample2076,Kidney,Kidney,Renal cell,0.5
+sample1069,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.45
+sample1068,ColoRect-AdenoCA,Colon/Rectum,,0.56
+sample346,Head-SCC,Head and neck,Lip and Oral Cavity,0.86
+sample727,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample1065,Eso-AdenoCA,Esophagus,,0.43
+sample1064,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.72
+sample1067,Skin-Melanoma,Skin,Melanoma,0.6
+sample1066,Others,Biliary,Cholangiocarcinoma,0.36
+sample1061,ColoRect-AdenoCA,Colon/Rectum,,0.25
+sample1060,ColoRect-AdenoCA,Colon/Rectum,,0.82
+sample1063,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.62
+sample1062,Breast-AdenoCA,Breast,Triple negative,0.7
+sample725,Kidney,Kidney,Renal cell,0.9
+sample722,Eso-AdenoCA,Esophagus,,0.48
+sample723,Breast-AdenoCA,Breast,Triple negative,0.69
+sample720,ColoRect-AdenoCA,Colon/Rectum,,0.47
+sample2175,ColoRect-AdenoCA,Colon/Rectum,,0.46
+sample721,Breast-AdenoCA,Breast,Subtype unknown,0.86
+sample2890,ColoRect-AdenoCA,Colon/Rectum,,0.63
+sample2563,Prost-AdenoCA,Prostate,,0.8
+sample2917,Eso-AdenoCA,Esophagus,,0.19
+sample1111,Eso-AdenoCA,Esophagus,,0.75
+sample1110,ColoRect-AdenoCA,Colon/Rectum,,0.62
+sample1113,Head-SCC,Head and neck,Hypopharyngeal,0.48
+sample1112,Skin-Melanoma,Skin,Melanoma,0.41
+sample1115,Skin-Melanoma,Skin,Melanoma,0.38
+sample1114,Breast-AdenoCA,Breast,Subtype unknown,0.61
+sample1117,Breast-AdenoCA,Breast,Triple negative,0.37
+sample1116,Liver-HCC,Liver,Hepatocellular,0.29
+sample1119,Prost-AdenoCA,Prostate,,0.46
+sample1118,Lung,Lung,Small Cell,0.97
+sample1480,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.74
+sample1489,Liver-HCC,Liver,Hepatocellular,0.24
+sample1488,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.54
+sample1933,ColoRect-AdenoCA,Colon/Rectum,,0.48
+sample1930,Breast-AdenoCA,Breast,Triple negative,0.18
+sample1937,Prost-AdenoCA,Prostate,,0.52
+sample1936,ColoRect-AdenoCA,Colon/Rectum,,0.62
+sample1934,ColoRect-AdenoCA,Colon/Rectum,,0.45
+sample1939,ColoRect-AdenoCA,Colon/Rectum,,0.5
+sample1938,Prost-AdenoCA,Prostate,,0.76
+sample2148,Lung,Lung,Non-Small cell,0.48
+sample2271,Lung,Lung,Non-Small cell,0.31
+sample1849,Skin-Melanoma,Skin,Melanoma,0.62
+sample1848,ColoRect-AdenoCA,Colon/Rectum,,0.58
+sample1847,Others,Urinary tract,Bladder,0.54
+sample1846,Head-SCC,Head and neck,Salivary Gland,0.83
+sample1844,Others,NET,Large cell,0.79
+sample1843,Prost-AdenoCA,Prostate,,0.6
+sample1682,Prost-AdenoCA,Prostate,,0.69
+sample1841,Prost-AdenoCA,Prostate,,0.37
+sample1840,ColoRect-AdenoCA,Colon/Rectum,,0.31
+sample771,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.76
+sample770,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.14
+sample773,Others,NET,Small Intestinal,0.88
+sample772,Skin-Melanoma,Skin,Melanoma,0.82
+sample775,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.47
+sample774,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.47
+sample777,Others,Unknown,CUP,0.74
+sample776,ColoRect-AdenoCA,Colon/Rectum,,0.48
+sample779,ColoRect-AdenoCA,Colon/Rectum,,0.41
+sample778,Others,Bone/Soft tissue,Leiomyosarcoma,0.93
+sample2356,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.82
+sample2244,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.81
+sample2357,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.87
+sample2354,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.95
+sample515,Kidney,Kidney,Renal cell,0.56
+sample514,Ovary-AdenoCA,Ovary,,0.83
+sample517,Others,Testis,,0.9
+sample516,Skin-Melanoma,Skin,Skin squamous cell carcinoma,0.91
+sample511,Eso-AdenoCA,Esophagus,,0.37
+sample512,Skin-Melanoma,Skin,Melanoma,0.25
+sample1663,ColoRect-AdenoCA,Colon/Rectum,Anal,0.91
+sample1662,Others,Nervous system,Glioma,0.78
+sample1660,ColoRect-AdenoCA,Colon/Rectum,,0.61
+sample519,Skin-Melanoma,Skin,Skin squamous cell carcinoma,0.37
+sample518,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.52
+sample1665,Eso-AdenoCA,Esophagus,,0.62
+sample1664,Breast-AdenoCA,Breast,Subtype unknown,0.5
+sample685,Head-SCC,Head and neck,Nasal cavity and paranasal sinuses,0.79
+sample684,ColoRect-AdenoCA,Colon/Rectum,,0.68
+sample687,Eso-AdenoCA,Esophagus,,0.34
+sample686,Panc-AdenoCA,Pancreas,,0.16
+sample680,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.73
+sample683,ColoRect-AdenoCA,Colon/Rectum,,0.16
+sample682,Prost-AdenoCA,Prostate,,0.71
+sample2351,Others,Biliary,Ampulla of Vater or distal choledochus,0.41
+sample689,Prost-AdenoCA,Prostate,,0.6
+sample688,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.64
+sample991,Lung,Lung,Non-Small cell,0.54
+sample990,ColoRect-AdenoCA,Colon/Rectum,,0.62
+sample993,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.6
+sample992,ColoRect-AdenoCA,Colon/Rectum,,0.55
+sample995,Prost-AdenoCA,Prostate,,0.58
+sample994,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.54
+sample997,Others,Urinary tract,Bladder,0.43
+sample996,Others,Bone/Soft tissue,Sarcoma,0.85
+sample999,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.22
+sample998,Panc-AdenoCA,Pancreas,,0.29
+sample2808,Breast-AdenoCA,Breast,Triple negative,0.67
+sample2809,Lung,Lung,Non-Small cell,0.89
+sample429,Skin-Melanoma,Skin,Melanoma,0.85
+sample428,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.56
+sample359,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.78
+sample358,Others,Bone/Soft tissue,Solitary fibrous tumor,0.58
+sample1599,Ovary-AdenoCA,Ovary,,0.65
+sample1598,Head-SCC,Head and neck,Lip and Oral Cavity,0.16
+sample353,Skin-Melanoma,Skin,Melanoma,0.72
+sample352,Others,Bone/Soft tissue,Angiosarcoma,0.18
+sample351,ColoRect-AdenoCA,Colon/Rectum,,0.75
+sample350,Prost-AdenoCA,Prostate,,0.26
+sample357,Others,Bone/Soft tissue,Liposarcoma,0.5
+sample356,Others,Bone/Soft tissue,Cutaneous angiosarcoma,0.57
+sample354,ColoRect-AdenoCA,Colon/Rectum,,0.09
+sample2591,Others,Biliary,Cholangiocarcinoma,0.23
+sample2815,Others,Biliary,Gall bladder,0.89
+sample2594,Prost-AdenoCA,Prostate,,0.71
+sample2240,Ovary-AdenoCA,Ovary,,0.56
+sample2595,Prost-AdenoCA,Prostate,,0.63
+sample2716,Lung,Lung,Non-Small cell,0.49
+sample2717,Lung,Lung,Non-Small cell,0.43
+sample2714,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.78
+sample2715,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.61
+sample2712,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.77
+sample2596,Skin-Melanoma,Skin,Melanoma,0.51
+sample2710,Eso-AdenoCA,Esophagus,,0.75
+sample2711,Thy-AdenoCA,Thyroid,,0.59
+sample2597,Prost-AdenoCA,Prostate,,0.64
+sample2718,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.92
+sample2719,Ovary-AdenoCA,Ovary,,0.83
+sample2028,Breast-AdenoCA,Breast,Triple negative,0.62
+sample2029,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.86
+sample2024,Others,Nervous system,Glioma: anaplastic astrocytoma-like,0.71
+sample2025,Ovary-AdenoCA,Ovary,,0.67
+sample2026,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.38
+sample2027,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.56
+sample2020,ColoRect-AdenoCA,Colon/Rectum,,0.27
+sample2021,ColoRect-AdenoCA,Colon/Rectum,,0.46
+sample2022,ColoRect-AdenoCA,Colon/Rectum,,0.3
+sample2023,Breast-AdenoCA,Breast,Subtype unknown,0.9
+sample1281,Breast-AdenoCA,Breast,Triple negative,0.41
+sample1280,Breast-AdenoCA,Breast,Triple negative,0.43
+sample1283,Stomach-AdenoCA,Stomach,,0.73
+sample1282,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.4
+sample1285,ColoRect-AdenoCA,Colon/Rectum,,0.33
+sample1284,Lung,Lung,Non-Small cell,0.26
+sample1287,Eso-AdenoCA,Esophagus,,0.22
+sample1286,Breast-AdenoCA,Breast,Triple negative,0.57
+sample1449,Lung,Lung,Small Cell,0.28
+sample1448,ColoRect-AdenoCA,Colon/Rectum,,0.33
+sample2158,Prost-AdenoCA,Prostate,,0.66
+sample2159,Others,NET,,0.84
+sample2628,Ovary-AdenoCA,Ovary,,0.41
+sample2629,Lung,Lung,Non-Small cell,0.3
+sample2270,Ovary-AdenoCA,Ovary,,0.51
+sample2150,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.27
+sample2151,Panc-AdenoCA,Pancreas,,0.36
+sample2152,ColoRect-AdenoCA,Colon/Rectum,,0.41
+sample2153,ColoRect-AdenoCA,Colon/Rectum,,0.73
+sample2154,Prost-AdenoCA,Prostate,,0.51
+sample2155,Prost-AdenoCA,Prostate,,0.91
+sample2156,Prost-AdenoCA,Prostate,,0.74
+sample2157,Eso-AdenoCA,Esophagus,,0.5
+sample2272,ColoRect-AdenoCA,Colon/Rectum,,0.68
+sample2275,ColoRect-AdenoCA,Colon/Rectum,,0.2
+sample2274,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.47
+sample2277,Panc-Endocrine,NET,Pancreatic,0.22
+sample2179,ColoRect-AdenoCA,Colon/Rectum,,0.53
+sample2865,Eso-AdenoCA,Esophagus,,0.5
+sample1050,Others,NET,,0.24
+sample1051,ColoRect-AdenoCA,Colon/Rectum,,0.84
+sample1052,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.19
+sample1053,ColoRect-AdenoCA,Colon/Rectum,,0.38
+sample1057,ColoRect-AdenoCA,Colon/Rectum,,0.32
+sample1058,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.48
+sample2162,Eso-AdenoCA,Esophagus,,0.74
+sample1481,Ovary-AdenoCA,Ovary,,0.63
+sample2572,ColoRect-AdenoCA,Colon/Rectum,,0.6
+sample2573,ColoRect-AdenoCA,Colon/Rectum,,0.72
+sample1124,Head-SCC,Head and neck,Nasal cavity and paranasal sinuses,0.77
+sample1126,Liver-HCC,Liver,Hepatocellular,0.7
+sample1127,Kidney,Kidney,Renal cell,0.21
+sample1120,Eso-AdenoCA,Esophagus,,0.73
+sample1121,Skin-Melanoma,Skin,Melanoma,0.77
+sample1122,ColoRect-AdenoCA,Colon/Rectum,,0.47
+sample1123,Eso-AdenoCA,Esophagus,,0.61
+sample1128,ColoRect-AdenoCA,Colon/Rectum,,0.52
+sample1129,ColoRect-AdenoCA,Colon/Rectum,,0.71
+sample1442,Others,Nervous system,Oligodendroglioma,0.73
+sample2675,Eso-AdenoCA,Esophagus,,0.26
+sample2674,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.65
+sample2670,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.41
+sample1946,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.67
+sample1947,Others,Bone/Soft tissue,Sarcoma,0.53
+sample1944,Others,Bone/Soft tissue,Rhabdomyosarcoma,0.55
+sample1945,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.65
+sample1943,Skin-Melanoma,Skin,Melanoma,0.68
+sample1940,Skin-Melanoma,Skin,Sweat glands,0.39
+sample1948,Skin-Melanoma,Skin,Melanoma,0.7
+sample1949,Ovary-AdenoCA,Ovary,,0.86
+sample2679,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.35
+sample2678,Prost-AdenoCA,Prostate,,0.54
+sample762,ColoRect-AdenoCA,Colon/Rectum,,0.23
+sample763,Others,Bone/Soft tissue,Desmoid,0.88
+sample760,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.7
+sample761,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.32
+sample766,Prost-AdenoCA,Prostate,,0.44
+sample767,Breast-AdenoCA,Breast,,0.54
+sample764,Prost-AdenoCA,Prostate,,0.28
+sample765,Panc-AdenoCA,Pancreas,,0.2
+sample2575,Eso-AdenoCA,Esophagus,,0.25
+sample769,Ovary-AdenoCA,Ovary,,0.68
+sample1445,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.7
+sample1444,Kidney,Kidney,Renal cell,0.26
+sample507,ColoRect-AdenoCA,Colon/Rectum,,0.38
+sample504,Others,Bone/Soft tissue,Rhabdomyosarcoma,0.73
+sample505,ColoRect-AdenoCA,Colon/Rectum,,0.32
+sample502,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.62
+sample503,Others,Biliary,Gall bladder,0.17
+sample500,Lung,Lung,Non-Small cell,0.1
+sample501,Ovary-AdenoCA,Ovary,,0.25
+sample1616,Panc-AdenoCA,Pancreas,,0.35
+sample1617,ColoRect-AdenoCA,Colon/Rectum,,0.6
+sample1614,Others,Bone/Soft tissue,Sarcoma,0.88
+sample1615,Others,NET,Small Intestinal,0.88
+sample1612,Others,Biliary,Cholangiocarcinoma,0.69
+sample1613,ColoRect-AdenoCA,Colon/Rectum,,0.47
+sample509,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.31
+sample696,ColoRect-AdenoCA,Colon/Rectum,,0.61
+sample697,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.34
+sample694,Others,Unknown,CUP,0.68
+sample695,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample692,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.52
+sample693,Breast-AdenoCA,Breast,Triple negative,0.47
+sample690,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.25
+sample691,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.71
+sample1751,ColoRect-AdenoCA,Colon/Rectum,,0.34
+sample698,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.32
+sample699,Uterus-AdenoCA,Uterus,Endometrial,0.27
+sample982,Head-SCC,Head and neck,Lip and Oral Cavity,0.28
+sample983,Bone-Osteosarc,Bone/Soft tissue,Osteosarcoma (Bone Cancer),0.73
+sample980,Skin-Melanoma,Skin,Melanoma,0.65
+sample981,Stomach-AdenoCA,Stomach,Cardiacarcinoma,0.22
+sample986,Lung,Lung,Non-Small cell,0.22
+sample987,Lung,Lung,Non-Small cell,0.44
+sample984,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.62
+sample985,Skin-Melanoma,Skin,Melanoma,0.22
+sample2819,Lung,Lung,Non-Small cell,0.63
+sample2818,Others,Urinary tract,Pyelum,0.33
+sample988,ColoRect-AdenoCA,Colon/Rectum,,0.29
+sample989,Skin-Melanoma,Skin,Melanoma,0.73
+sample2369,ColoRect-AdenoCA,Colon/Rectum,,0.71
+sample2368,Stomach-AdenoCA,Stomach,,0.48
+sample2568,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.44
+sample1750,Others,Biliary,Cholangiocarcinoma,0.46
+sample2389,Prost-AdenoCA,Prostate,,0.27
+sample438,Prost-AdenoCA,Prostate,,0.95
+sample439,Prost-AdenoCA,Prostate,,0.81
+sample348,Liver-HCC,Liver,Hepatocellular,0.18
+sample349,Thy-AdenoCA,Thyroid,,0.62
+sample432,Others,Urinary tract,Pyelum,0.48
+sample433,Breast-AdenoCA,Breast,Triple negative,0.62
+sample430,Others,Urinary tract,Urethra,0.13
+sample347,Others,Unknown,CUP,0.57
+sample436,Others,Urinary tract,Bladder,0.44
+sample341,Others,Bone/Soft tissue,Ewing sarcoma,0.54
+sample434,Breast-AdenoCA,Breast,Triple negative,0.38
+sample435,Others,Penile,,0.55
+sample1722,Skin-Melanoma,Skin,Atypical Fibroxanthoma,0.36
+sample1726,Breast-AdenoCA,Breast,Triple negative,0.82
+sample1727,Prost-AdenoCA,Prostate,,0.73
+sample1724,ColoRect-AdenoCA,Colon/Rectum,,0.44
+sample2273,Lung,Lung,Non-Small cell,0.27
+sample1264,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.87
+sample1262,Prost-AdenoCA,Prostate,,0.77
+sample2705,Breast-AdenoCA,Breast,,0.38
+sample2704,Skin-Melanoma,Skin,Melanoma,0.54
+sample2707,Others,Bone/Soft tissue,Sarcoma,0.55
+sample2706,Prost-AdenoCA,Prostate,,0.84
+sample2701,Eso-AdenoCA,Esophagus,,0.22
+sample1261,Liver-HCC,Liver,Hepatocellular,0.4
+sample2703,Skin-Melanoma,Skin,Melanoma,0.26
+sample2702,Eso-AdenoCA,Esophagus,,0.61
+sample1260,Others,NET,Small Intestinal,0.71
+sample2709,Others,Testis,,0.46
+sample2033,Eso-AdenoCA,Esophagus,,0.83
+sample1469,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.83
+sample2031,Ovary-AdenoCA,Ovary,,0.45
+sample2030,ColoRect-AdenoCA,Colon/Rectum,,0.62
+sample2037,Skin-Melanoma,Skin,Melanoma,0.72
+sample2036,Others,Nervous system,Glioma,0.22
+sample1468,Prost-AdenoCA,Prostate,,0.3
+sample2039,Prost-AdenoCA,Prostate,,0.33
+sample2038,Others,Urinary tract,Bladder,0.44
+sample2806,Breast-AdenoCA,Breast,Triple negative,0.36
+sample230,Prost-AdenoCA,Prostate,,0.6
+sample231,Lung,Lung,Non-Small cell,0.45
+sample234,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.12
+sample236,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.37
+sample237,Others,Unknown,CUP,0.3
+sample238,Lung,Lung,Non-Small cell,0.62
+sample1436,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.88
+sample1437,Others,Bone/Soft tissue,Sarcoma,0.71
+sample1434,ColoRect-AdenoCA,Colon/Rectum,,0.64
+sample1435,ColoRect-AdenoCA,Colon/Rectum,,0.23
+sample1432,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.72
+sample1433,Kidney,Kidney,Renal cell,0.17
+sample1430,Skin-Melanoma,Skin,Melanoma,0.74
+sample1431,ColoRect-AdenoCA,Colon/Rectum,,0.55
+sample1501,ColoRect-AdenoCA,Colon/Rectum,,0.56
+sample2807,Breast-AdenoCA,Breast,Subtype unknown,0.65
+sample1438,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.52
+sample1439,Others,Nervous system,Astrocytoma,0.68
+sample2639,ColoRect-AdenoCA,Colon/Rectum,,0.6
+sample1461,ColoRect-AdenoCA,Colon/Rectum,,0.44
+sample2149,Lung,Lung,Small Cell,0.3
+sample1460,Lung,Lung,Non-Small cell,0.87
+sample2147,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.69
+sample2146,Uterus-AdenoCA,Uterus,Cervical,0.63
+sample2145,Panc-AdenoCA,Pancreas,,0.4
+sample2144,ColoRect-AdenoCA,Colon/Rectum,,0.91
+sample2143,Kidney,Kidney,Renal cell,0.41
+sample2142,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.44
+sample2141,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.72
+sample2140,Others,Unknown,CUP,0.58
+sample2804,Stomach-AdenoCA,Stomach,,0.09
+sample1492,Others,NET,Small Intestinal,0.84
+sample2831,Others,Biliary,Cholangiocarcinoma,0.46
+sample1548,Kidney,Kidney,Renal cell,0.21
+sample1542,ColoRect-AdenoCA,Colon/Rectum,,0.71
+sample1543,Breast-AdenoCA,Breast,Triple negative,0.59
+sample1540,Panc-AdenoCA,Pancreas,,0.46
+sample1541,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.49
+sample1546,Lung,Lung,Non-Small cell,0.38
+sample1547,Uterus-AdenoCA,Uterus,Cervical,0.78
+sample1544,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.73
+sample1545,Lung,Lung,Non-Small cell,0.13
+sample2276,Prost-AdenoCA,Prostate,,0.88
+sample1493,Others,Biliary,Cholangiocarcinoma,0.2
+sample1047,Uterus-AdenoCA,Uterus,Endometrial,0.97
+sample1045,Uterus-AdenoCA,Uterus,Cervical,0.32
+sample1044,ColoRect-AdenoCA,Colon/Rectum,,0.3
+sample1043,Ovary-AdenoCA,Ovary,Extra ovarial serous carcinoma,0.31
+sample1042,Lung,Lung,Non-Small cell,0.25
+sample1041,ColoRect-AdenoCA,Colon/Rectum,,0.77
+sample1040,Head-SCC,Head and neck,Laryngeal,0.5
+sample1049,Prost-AdenoCA,Prostate,,0.77
+sample1048,Lung,Lung,Non-Small cell,0.79
+sample2070,Lung,Lung,Non-Small cell,0.39
+sample2319,Breast-AdenoCA,Breast,,0.67
+sample1139,Prost-AdenoCA,Prostate,,0.82
+sample1138,Others,Mesothelioma,,0.39
+sample1133,Panc-AdenoCA,Pancreas,,0.67
+sample1132,Stomach-AdenoCA,Stomach,,0.43
+sample1131,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.54
+sample1130,Skin-Melanoma,Skin,Melanoma,0.72
+sample1137,Prost-AdenoCA,Prostate,,0.69
+sample1136,ColoRect-AdenoCA,Colon/Rectum,,0.33
+sample1135,Uterus-AdenoCA,Uterus,Cervical,0.72
+sample1134,Prost-AdenoCA,Prostate,,0.78
+sample2380,Thy-AdenoCA,Thyroid,,0.8
+sample787,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.57
+sample2383,Prost-AdenoCA,Prostate,,0.48
+sample2382,Ovary-AdenoCA,Ovary,Serous carcinoma,0.68
+sample1955,ColoRect-AdenoCA,Colon/Rectum,,0.69
+sample1954,Others,Unknown,CUP,0.2
+sample1956,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.43
+sample1951,Lung,Lung,Non-Small cell,0.71
+sample1953,Panc-AdenoCA,Pancreas,,0.27
+sample1952,Panc-AdenoCA,Pancreas,,0.34
+sample1959,Kidney,Kidney,Renal cell,0.39
+sample1958,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.37
+sample2478,Others,Unknown,CUP,0.65
+sample2385,Lung,Lung,Small Cell,0.92
+sample2650,Eso-AdenoCA,Esophagus,,0.17
+sample2384,Lung,Lung,Non-Small cell,0.26
+sample2334,Skin-Melanoma,Skin,Melanoma,0.16
+sample757,Lung,Lung,Non-Small cell,0.31
+sample756,Prost-AdenoCA,Prostate,,0.32
+sample755,Breast-AdenoCA,Breast,Triple negative,0.11
+sample754,Others,Biliary,Cholangiocarcinoma,0.31
+sample753,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.72
+sample752,Breast-AdenoCA,Breast,Triple negative,0.33
+sample751,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.44
+sample759,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.6
+sample758,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.91
+sample2589,Prost-AdenoCA,Prostate,,0.9
+sample2386,Lung,Lung,Non-Small cell,0.18
+sample2588,ColoRect-AdenoCA,Colon/Rectum,,0.82
+sample1609,ColoRect-AdenoCA,Colon/Rectum,,0.23
+sample1608,Others,NET,Small Intestinal,0.73
+sample1605,Skin-Melanoma,Skin,Melanoma,0.57
+sample1604,Prost-AdenoCA,Prostate,,0.77
+sample1607,Prost-AdenoCA,Prostate,,0.27
+sample1606,Thy-AdenoCA,Thyroid,,0.16
+sample1601,Kidney,Kidney,Renal cell,0.7
+sample1600,Panc-AdenoCA,Pancreas,,0.12
+sample1603,Kidney,Kidney,Renal cell,0.87
+sample1602,Prost-AdenoCA,Prostate,,0.83
+sample2824,Breast-AdenoCA,Breast,Triple negative,0.52
+sample2825,Skin-Melanoma,Skin,Melanoma,0.76
+sample2826,Others,Unknown,Possibly SCLC,0.94
+sample2827,Bone-Osteosarc,Bone/Soft tissue,Osteosarcoma (Bone Cancer),0.49
+sample2820,Eso-AdenoCA,Esophagus,,0.77
+sample2821,ColoRect-AdenoCA,Colon/Rectum,,0.56
+sample2822,Lung,Lung,Non-Small cell,0.88
+sample2823,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.34
+sample2828,Others,Bone/Soft tissue,Sarcoma,0.4
+sample2829,Prost-AdenoCA,Prostate,,0.55
+sample2554,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.31
+sample2555,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.66
+sample2556,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.71
+sample2557,Skin-Melanoma,Skin,Melanoma,0.29
+sample2550,Others,Urinary tract,Other,0.56
+sample2551,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.71
+sample2552,Prost-AdenoCA,Prostate,,0.87
+sample1820,Uterus-AdenoCA,Uterus,Endometrial,0.91
+sample2558,Others,Nervous system,Solitair fibreuze tumor in brain,0.92
+sample2559,ColoRect-AdenoCA,Colon/Rectum,,0.63
+sample409,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.77
+sample408,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.39
+sample407,Prost-AdenoCA,Prostate,,0.5
+sample406,Skin-Melanoma,Skin,Melanoma,0.17
+sample405,Kidney,Kidney,Renal cell,0.93
+sample404,Lung,Lung,Non-Small cell,0.33
+sample403,Prost-AdenoCA,Prostate,,0.91
+sample402,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.7
+sample401,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.3
+sample400,Eso-AdenoCA,Esophagus,,0.45
+sample1731,Stomach-AdenoCA,Stomach,,0.48
+sample1730,Others,Nervous system,Meningeoma,0.53
+sample1733,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.62
+sample1732,Panc-AdenoCA,Pancreas,,0.22
+sample1735,ColoRect-AdenoCA,Colon/Rectum,,0.79
+sample1734,ColoRect-AdenoCA,Colon/Rectum,,0.24
+sample1737,Lung,Lung,Non-Small cell,0.27
+sample1736,Skin-Melanoma,Skin,Melanoma,0.71
+sample1826,Others,Urinary tract,Bladder,0.59
+sample2739,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.76
+sample2730,ColoRect-AdenoCA,Colon/Rectum,,0.22
+sample2732,Prost-AdenoCA,Prostate,,0.19
+sample2734,Eso-AdenoCA,Esophagus,,0.13
+sample2735,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.21
+sample2736,Others,Bone/Soft tissue,Liposarcoma,0.79
+sample539,ColoRect-AdenoCA,Colon/Rectum,,0.65
+sample538,ColoRect-AdenoCA,Colon/Rectum,,0.22
+sample533,Skin-Melanoma,Skin,Melanoma,0.3
+sample532,Skin-Melanoma,Skin,Melanoma,0.63
+sample530,Others,Bone/Soft tissue,Rhabdomyosarcoma,0.4
+sample537,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.84
+sample536,Others,NET,,0.66
+sample535,Prost-AdenoCA,Prostate,,0.68
+sample2046,Lung,Lung,Non-Small cell,0.94
+sample2047,Uterus-AdenoCA,Uterus,Cervical,0.85
+sample2044,Prost-AdenoCA,Prostate,,0.56
+sample2045,Others,Urinary tract,Bladder,0.71
+sample2042,Others,Urinary tract,Other,0.52
+sample2043,Others,Urinary tract,Bladder,0.5
+sample2040,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.53
+sample2041,Eso-AdenoCA,Esophagus,,0.74
+sample1595,ColoRect-AdenoCA,Colon/Rectum,,0.73
+sample2048,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.45
+sample2049,Breast-AdenoCA,Breast,Triple negative,0.27
+sample245,Others,Biliary,Gall bladder,0.25
+sample244,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.71
+sample247,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.92
+sample246,Others,Testis,,0.52
+sample243,Skin-Melanoma,Skin,Melanoma,0.82
+sample242,Eso-AdenoCA,Esophagus,,0.65
+sample248,ColoRect-AdenoCA,Colon/Rectum,,0.86
+sample1425,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.73
+sample955,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.13
+sample1427,ColoRect-AdenoCA,Colon/Rectum,,0.16
+sample1426,Others,Bone/Soft tissue,Sarcoma,0.29
+sample1421,Eso-AdenoCA,Esophagus,,0.28
+sample1420,Eso-AdenoCA,Esophagus,,0.8
+sample954,Eso-AdenoCA,Esophagus,,0.26
+sample1429,Skin-Melanoma,Skin,Melanoma,0.86
+sample957,ColoRect-AdenoCA,Colon/Rectum,,0.85
+sample2608,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.88
+sample2609,Ovary-AdenoCA,Ovary,,0.74
+sample2309,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.7
+sample2604,Ovary-AdenoCA,Ovary,,0.45
+sample951,Stomach-AdenoCA,Stomach,,0.22
+sample2606,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.8
+sample2607,ColoRect-AdenoCA,Colon/Rectum,,0.51
+sample2600,Prost-AdenoCA,Prostate,,0.44
+sample2601,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.92
+sample2602,Lung,Lung,Non-Small cell,0.31
+sample950,ColoRect-AdenoCA,Colon/Rectum,,0.76
+sample1597,Eso-AdenoCA,Esophagus,,0.22
+sample953,Lung,Lung,Non-Small cell,0.35
+sample2581,ColoRect-AdenoCA,Colon/Rectum,,0.26
+sample952,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.27
+sample2398,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample1559,Lung,Lung,Non-Small cell,0.23
+sample1558,Skin-Melanoma,Skin,Melanoma,0.31
+sample1596,ColoRect-AdenoCA,Colon/Rectum,,0.23
+sample1550,Ovary-AdenoCA,Ovary,,0.19
+sample1553,Breast-AdenoCA,Breast,Subtype unknown,0.61
+sample1552,Ovary-AdenoCA,Ovary,,0.48
+sample1555,Breast-AdenoCA,Breast,Subtype unknown,0.51
+sample1554,Others,NET,Colon/Rectum,0.69
+sample1557,Lung,Lung,Small Cell,0.91
+sample1556,Breast-AdenoCA,Breast,Triple negative,0.62
+sample2399,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample1591,Prost-AdenoCA,Prostate,,0.7
+sample901,ColoRect-AdenoCA,Colon/Rectum,,0.65
+sample1590,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample2265,Skin-Melanoma,Skin,Melanoma,0.47
+sample1593,ColoRect-AdenoCA,Colon/Rectum,,0.37
+sample1148,Lung,Lung,Non-Small cell,0.73
+sample1149,Others,Urinary tract,Bladder,0.8
+sample1146,Others,Urinary tract,Bladder,0.2
+sample1144,Others,NET,Small Intestinal,0.87
+sample1145,Others,Unknown,CUP,0.43
+sample1143,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.58
+sample1140,Kidney,Kidney,Renal cell,0.48
+sample1388,Eso-AdenoCA,Esophagus,,0.42
+sample1419,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.33
+sample1380,Liver-HCC,Liver,Mixed Hepatocellular and Cholangio,0.37
+sample1381,Lung,Lung,Non-Small cell,0.23
+sample1382,Lung,Lung,Non-Small cell,0.14
+sample1383,Prost-AdenoCA,Prostate,,0.64
+sample1384,Stomach-AdenoCA,Stomach,,0.51
+sample1385,Panc-Endocrine,NET,Pancreatic,0.39
+sample1386,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.21
+sample1387,ColoRect-AdenoCA,Colon/Rectum,,0.72
+sample2392,Stomach-AdenoCA,Stomach,,0.4
+sample2393,ColoRect-AdenoCA,Colon/Rectum,,0.42
+sample2599,Eso-AdenoCA,Esophagus,,0.68
+sample1098,ColoRect-AdenoCA,Colon/Rectum,,0.71
+sample1099,ColoRect-AdenoCA,Colon/Rectum,,0.48
+sample1094,Lung,Lung,Non-Small cell,0.11
+sample1095,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample1096,Skin-Melanoma,Skin,Melanoma,0.3
+sample1097,ColoRect-AdenoCA,Colon/Rectum,,0.41
+sample1090,Uterus-AdenoCA,Uterus,Cervical,0.18
+sample1091,Others,Unknown,CUP,0.55
+sample1092,Breast-AdenoCA,Breast,Subtype unknown,0.64
+sample1093,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.95
+sample2390,Others,Unknown,Possibly Head and neck,0.72
+sample2394,Breast-AdenoCA,Breast,Triple negative,0.27
+sample2391,Lung,Lung,Non-Small cell,0.21
+sample1894,Head-SCC,Head and neck,Salivary Gland,0.33
+sample1895,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.5
+sample1896,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.75
+sample1897,ColoRect-AdenoCA,Colon/Rectum,,0.45
+sample1890,ColoRect-AdenoCA,Colon/Rectum,,0.38
+sample1891,Head-SCC,Head and neck,Nasal cavity and paranasal sinuses,0.94
+sample1892,Prost-AdenoCA,Prostate,,0.76
+sample1893,Panc-AdenoCA,Pancreas,,0.3
+sample1898,Others,NET,Small Intestinal,0.31
+sample1899,ColoRect-AdenoCA,Colon/Rectum,,0.47
+sample2396,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.55
+sample2397,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.67
+sample2592,Ovary-AdenoCA,Ovary,,0.51
+sample1968,Others,Urinary tract,Bladder,0.39
+sample1969,Breast-AdenoCA,Breast,Subtype unknown,0.18
+sample1960,Prost-AdenoCA,Prostate,,0.49
+sample1961,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.63
+sample1962,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.68
+sample1963,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.81
+sample1964,Uterus-AdenoCA,Uterus,Endometrial,0.79
+sample1965,Stomach-AdenoCA,Stomach,,0.82
+sample1966,Lung,Lung,Non-Small cell,0.27
+sample1967,ColoRect-AdenoCA,Colon/Rectum,,0.55
+sample1630,ColoRect-AdenoCA,Colon/Rectum,,0.3
+sample1631,Eso-AdenoCA,Esophagus,,0.54
+sample1633,Others,NET,Lung,0.74
+sample1634,Others,Biliary,Gall bladder,0.17
+sample1635,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.81
+sample1636,Liver-HCC,Liver,Hepatocellular,0.73
+sample1637,Panc-AdenoCA,Pancreas,,0.53
+sample1638,ColoRect-AdenoCA,Colon/Rectum,,0.64
+sample1639,Others,Unknown,CUP,0.19
+sample2752,ColoRect-AdenoCA,Colon/Rectum,,0.58
+sample2839,Ovary-AdenoCA,Ovary,,0.57
+sample2838,Prost-AdenoCA,Prostate,,0.65
+sample2833,Others,Mesothelioma,,0.84
+sample2832,Others,NET,Small Intestinal,0.64
+sample2395,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.73
+sample2830,Others,Biliary,Gall bladder,0.6
+sample2837,Skin-Melanoma,Skin,Basal cell carcinoma,0.41
+sample2750,Breast-AdenoCA,Breast,,0.31
+sample2835,Kidney,Kidney,Renal cell,0.42
+sample2834,Uterus-AdenoCA,Uterus,Cervical,0.64
+sample2549,ColoRect-AdenoCA,Colon/Rectum,,0.28
+sample2548,ColoRect-AdenoCA,Colon/Rectum,,0.2
+sample2543,Others,Bone/Soft tissue,Leiomyosarcoma,0.96
+sample2541,Lung,Lung,Non-Small cell,0.41
+sample2540,Lung,Lung,Non-Small cell,0.12
+sample2547,Prost-AdenoCA,Prostate,,0.27
+sample2546,Prost-AdenoCA,Prostate,,0.6
+sample2545,Lung,Lung,Non-Small cell,0.49
+sample2544,Others,Biliary,Cholangiocarcinoma,0.62
+sample748,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.83
+sample749,ColoRect-AdenoCA,Colon/Rectum,,0.74
+sample2754,ColoRect-AdenoCA,Colon/Rectum,,0.27
+sample740,Prost-AdenoCA,Prostate,,0.63
+sample741,Others,Urinary tract,Bladder,0.43
+sample742,Others,NET,,0.55
+sample743,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.78
+sample744,Others,Unknown,CUP,0.37
+sample745,Others,NET,Small Intestinal,0.84
+sample746,Ovary-AdenoCA,Ovary,,0.89
+sample747,Others,Biliary,Cholangiocarcinoma,0.17
+sample410,Others,Bone/Soft tissue,Leiomyosarcoma,0.75
+sample411,Others,Bone/Soft tissue,Myofibroblastar sarcoma,0.22
+sample412,Lung,Lung,Non-Small cell,0.18
+sample414,Others,Bone/Soft tissue,Sarcoma,0.44
+sample415,Lung,Lung,Non-Small cell,0.29
+sample416,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.7
+sample417,Lung,Lung,Non-Small cell,0.22
+sample418,Prost-AdenoCA,Prostate,,0.92
+sample419,Ovary-AdenoCA,Ovary,,0.25
+sample1704,ColoRect-AdenoCA,Colon/Rectum,,0.55
+sample1705,Lung,Lung,Non-Small cell,0.47
+sample1706,Kidney,Kidney,Renal cell,0.71
+sample1707,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.89
+sample1700,Skin-Melanoma,Skin,Melanoma,0.14
+sample1701,ColoRect-AdenoCA,Colon/Rectum,,0.26
+sample1702,ColoRect-AdenoCA,Colon/Rectum,,0.39
+sample1703,Skin-Melanoma,Skin,Melanoma,0.6
+sample1708,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.8
+sample1709,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.42
+sample2729,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.41
+sample2728,Others,Biliary,Gall bladder,0.83
+sample2727,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.23
+sample2726,Eso-AdenoCA,Esophagus,,0.34
+sample2725,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.93
+sample2724,Lung,Lung,Non-Small cell,0.16
+sample2723,Panc-Endocrine,NET,Pancreatic,0.36
+sample2722,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.35
+sample2721,Bone-Osteosarc,Bone/Soft tissue,Osteosarcoma (Bone Cancer),0.39
+sample2720,Uterus-AdenoCA,Uterus,Endometrial,0.72
+sample528,Eso-AdenoCA,Esophagus,,0.7
+sample529,Prost-AdenoCA,Prostate,,0.2
+sample524,Head-SCC,Head and neck,Salivary Gland,0.84
+sample525,Ovary-AdenoCA,Ovary,,0.22
+sample527,Skin-Melanoma,Skin,Melanoma,0.69
+sample520,Skin-Melanoma,Skin,Melanoma,0.87
+sample521,Prost-AdenoCA,Prostate,,0.73
+sample522,Skin-Melanoma,Skin,Basal cell carcinoma,0.86
+sample523,Kidney,Kidney,Renal cell,0.47
+sample2055,Stomach-AdenoCA,Stomach,Cardiacarcinoma,0.48
+sample2054,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.53
+sample2057,ColoRect-AdenoCA,Colon/Rectum,,0.39
+sample2056,ColoRect-AdenoCA,Colon/Rectum,,0.22
+sample2051,ColoRect-AdenoCA,Colon/Rectum,,0.45
+sample2050,Prost-AdenoCA,Prostate,,0.71
+sample2053,Ovary-AdenoCA,Ovary,,0.53
+sample2052,Uterus-AdenoCA,Uterus,Endometrial,0.76
+sample2059,Prost-AdenoCA,Prostate,,0.11
+sample2058,Eso-AdenoCA,Esophagus,,0.12
+sample256,Prost-AdenoCA,Prostate,,0.2
+sample257,Skin-Melanoma,Skin,Melanoma,0.71
+sample254,Liver-HCC,Liver,Hepatocellular,0.28
+sample255,Others,NET,Small Intestinal,0.56
+sample251,Others,Bone/Soft tissue,Leiomyosarcoma,0.72
+sample1410,Prost-AdenoCA,Prostate,,0.44
+sample1411,Others,Urinary tract,Bladder,0.4
+sample1412,Prost-AdenoCA,Prostate,,0.8
+sample1413,Uterus-AdenoCA,Uterus,Cervical,0.74
+sample1414,Head-SCC,Head and neck,Hypopharyngeal,0.47
+sample1415,Ovary-AdenoCA,Ovary,,0.7
+sample259,Eso-AdenoCA,Esophagus,,0.51
+sample2612,Eso-AdenoCA,Esophagus,,0.69
+sample2617,Eso-AdenoCA,Esophagus,,0.94
+sample2616,Lung,Lung,Non-Small cell,0.43
+sample2615,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.28
+sample2614,ColoRect-AdenoCA,Colon/Rectum,,0.53
+sample2619,Others,Mesothelioma,,0.49
+sample2618,Others,Vulva,,0.16
+sample1757,Others,Biliary,Cholangiocarcinoma,0.38
+sample1756,Others,Urinary tract,Bladder,0.16
+sample1755,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.56
+sample1754,Eso-AdenoCA,Esophagus,,0.38
+sample1753,Lung,Lung,Small Cell,0.58
+sample1752,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample1568,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample1569,Prost-AdenoCA,Prostate,,0.72
+sample1564,Others,Urinary tract,Bladder,0.53
+sample1566,Prost-AdenoCA,Prostate,,0.43
+sample1567,Ovary-AdenoCA,Ovary,,0.21
+sample1560,ColoRect-AdenoCA,Colon/Rectum,,0.23
+sample1561,Stomach-AdenoCA,Stomach,,0.63
+sample1562,Skin-Melanoma,Skin,Melanoma,0.32
+sample1563,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.67
+sample2499,Thy-AdenoCA,Thyroid,,0.42
+sample1247,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.63
+sample2498,ColoRect-AdenoCA,Colon/Rectum,,0.78
+sample1246,Others,Urinary tract,Pyelum,0.29
+sample1610,Others,Urinary tract,Bladder,0.16
+sample1611,Others,Urinary tract,Bladder,0.33
+sample2590,Prost-AdenoCA,Prostate,,0.85
+sample1248,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.71
+sample1159,Breast-AdenoCA,Breast,Subtype unknown,0.47
+sample1154,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample1157,Liver-HCC,Liver,Hepatocellular,0.39
+sample1156,Eso-AdenoCA,Esophagus,,0.41
+sample1151,Ovary-AdenoCA,Ovary,,0.33
+sample1150,Ovary-AdenoCA,Ovary,,0.52
+sample1153,Skin-Melanoma,Skin,Melanoma,0.59
+sample1152,Kidney,Kidney,Renal cell,0.18
+sample1399,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.54
+sample1398,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.53
+sample1397,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.64
+sample1396,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.28
+sample1395,Others,Urinary tract,Other,0.61
+sample1394,Skin-Melanoma,Skin,Melanoma,0.16
+sample1392,Lung,Lung,Non-Small cell,0.14
+sample1391,Skin-Melanoma,Skin,Melanoma,0.64
+sample1390,ColoRect-AdenoCA,Colon/Rectum,,0.31
+sample2367,ColoRect-AdenoCA,Colon/Rectum,,0.46
+sample2366,Others,Vulva,,0.27
+sample2365,Head-SCC,Head and neck,Salivary Gland,0.51
+sample2364,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.33
+sample2363,Panc-AdenoCA,Pancreas,,0.29
+sample2362,Skin-Melanoma,Skin,Melanoma,0.7
+sample2361,Others,Unknown,CUP,0.88
+sample2360,ColoRect-AdenoCA,Colon/Rectum,,0.59
+sample1083,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.78
+sample1082,Others,Bone/Soft tissue,Leiomyosarcoma,0.6
+sample1080,Prost-AdenoCA,Prostate,,0.33
+sample1087,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.48
+sample1086,ColoRect-AdenoCA,Colon/Rectum,,0.7
+sample1085,Others,NET,Small Intestinal,0.44
+sample1084,Others,NET,Small Intestinal,0.45
+sample1089,Lung,Lung,Non-Small cell,0.17
+sample1088,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.53
+sample2404,Eso-AdenoCA,Esophagus,,0.38
+sample2405,Skin-Melanoma,Skin,Melanoma,0.36
+sample2402,Panc-AdenoCA,Pancreas,,0.51
+sample2403,Panc-Endocrine,NET,Pancreatic,0.55
+sample2400,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.76
+sample2401,Skin-Melanoma,Skin,Melanoma,0.14
+sample2561,ColoRect-AdenoCA,Colon/Rectum,,0.71
+sample1889,Skin-Melanoma,Skin,Melanoma,0.26
+sample1888,Prost-AdenoCA,Prostate,,0.84
+sample1883,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.46
+sample1882,Others,NET,Thymus,0.38
+sample1881,Others,Biliary,Cholangiocarcinoma,0.52
+sample1880,Others,NET,,0.28
+sample1887,Prost-AdenoCA,Prostate,,0.78
+sample1886,Others,NET,Small Intestinal,0.62
+sample1884,ColoRect-AdenoCA,Colon/Rectum,,0.51
+sample2562,Stomach-AdenoCA,Stomach,,0.25
+sample2565,Others,Bone/Soft tissue,Liposarcoma,0.55
+sample2564,ColoRect-AdenoCA,Colon/Rectum,,0.28
+sample2567,Ovary-AdenoCA,Ovary,,0.23
+sample1619,Others,NET,Small Intestinal,0.21
+sample2566,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.86
+sample1979,Lung,Lung,Non-Small cell,0.16
+sample1978,Head-SCC,Head and neck,Oropharyngeal,0.32
+sample1977,ColoRect-AdenoCA,Colon/Rectum,,0.73
+sample1976,Uterus-AdenoCA,Uterus,Cervical,0.51
+sample1975,ColoRect-AdenoCA,Colon/Rectum,,0.5
+sample1974,Others,Urinary tract,Bladder,0.26
+sample1973,Prost-AdenoCA,Prostate,,0.67
+sample1972,Prost-AdenoCA,Prostate,,0.88
+sample1971,ColoRect-AdenoCA,Colon/Rectum,,0.54
+sample1970,Lung,Lung,Non-Small cell,0.35
+sample641,Head-SCC,Head and neck,Oropharyngeal,0.27
+sample640,Liver-HCC,Liver,Hepatocellular,0.34
+sample643,Others,Urinary tract,Bladder,0.68
+sample642,Others,Biliary,Gall bladder,0.11
+sample645,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.29
+sample647,Lung,Lung,Non-Small cell,0.23
+sample646,Others,Urinary tract,Pyelum,0.25
+sample648,Lung,Lung,Non-Small cell,0.24
+sample1629,ColoRect-AdenoCA,Colon/Rectum,,0.39
+sample2848,Skin-Melanoma,Skin,Melanoma,0.19
+sample2849,Lung,Lung,Non-Small cell,0.88
+sample2846,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample2847,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.55
+sample2844,ColoRect-AdenoCA,Colon/Rectum,,0.61
+sample2845,ColoRect-AdenoCA,Colon/Rectum,,0.56
+sample2842,ColoRect-AdenoCA,Colon/Rectum,,0.3
+sample2843,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.36
+sample2840,ColoRect-AdenoCA,Colon/Rectum,,0.5
+sample2841,Ovary-AdenoCA,Ovary,,0.54
+sample2538,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.55
+sample2539,Others,Bone/Soft tissue,Liposarcoma,0.72
+sample2536,Panc-AdenoCA,Pancreas,,0.3
+sample2537,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.75
+sample2534,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample2535,ColoRect-AdenoCA,Colon/Rectum,,0.84
+sample2532,Head-SCC,Head and neck,Hypopharyngeal,0.5
+sample2533,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample2530,Eso-AdenoCA,Esophagus,,0.18
+sample2531,Eso-AdenoCA,Esophagus,,0.72
+sample344,Lung,Lung,Non-Small cell,0.41
+sample889,Lung,Lung,Non-Small cell,0.21
+sample888,ColoRect-AdenoCA,Colon/Rectum,,0.22
+sample739,ColoRect-AdenoCA,Colon/Rectum,,0.46
+sample738,Skin-Melanoma,Skin,Melanoma,0.76
+sample345,Skin-Melanoma,Skin,Melanoma,0.32
+sample735,Kidney,Kidney,Renal cell,0.16
+sample734,Panc-AdenoCA,Pancreas,,0.21
+sample737,Panc-AdenoCA,Pancreas,,0.72
+sample736,Eso-AdenoCA,Esophagus,,0.17
+sample887,Skin-Melanoma,Skin,Melanoma,0.31
+sample886,Skin-Melanoma,Skin,Melanoma,0.53
+sample733,Others,Urinary tract,Bladder,0.09
+sample732,ColoRect-AdenoCA,Colon/Rectum,,0.69
+sample397,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.24
+sample396,Others,Unknown,CUP,0.37
+sample467,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.53
+sample394,Others,NET,Small Intestinal,0.59
+sample393,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.3
+sample392,ColoRect-AdenoCA,Colon/Rectum,,0.48
+sample391,Others,Bone/Soft tissue,Leiomyosarcoma,0.55
+sample390,Ovary-AdenoCA,Ovary,,0.61
+sample1713,Prost-AdenoCA,Prostate,,0.78
+sample1711,ColoRect-AdenoCA,Colon/Rectum,,0.52
+sample1710,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.63
+sample469,Panc-Endocrine,NET,Pancreatic,0.29
+sample468,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.56
+sample399,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.28
+sample398,Others,Urinary tract,Bladder,0.24
+sample2745,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.69
+sample343,Skin-Melanoma,Skin,Melanoma,0.85
+sample2280,Breast-AdenoCA,Breast,Triple negative,0.67
+sample2281,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.26
+sample2282,Prost-AdenoCA,Prostate,,0.16
+sample2283,ColoRect-AdenoCA,Colon/Rectum,,0.42
+sample2284,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.64
+sample2285,Lung,Lung,Non-Small cell,0.22
+sample2286,ColoRect-AdenoCA,Colon/Rectum,,0.83
+sample1723,ColoRect-AdenoCA,Colon/Rectum,,0.7
+sample2288,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.26
+sample2289,Lung,Lung,Non-Small cell,0.58
+sample1720,Skin-Melanoma,Skin,Melanoma,0.73
+sample2442,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.26
+sample2443,Others,Biliary,Cholangiocarcinoma,0.2
+sample2440,Liver-HCC,Liver,Hepatocellular,0.76
+sample1721,Others,Mesothelioma,,0.44
+sample2446,Bone-Osteosarc,Bone/Soft tissue,Osteosarcoma (Bone Cancer),0.58
+sample2447,Lung,Lung,Non-Small cell,0.63
+sample2444,Lung,Lung,Small Cell,0.77
+sample2445,ColoRect-AdenoCA,Colon/Rectum,,0.47
+sample2448,Others,NET,Small Intestinal,0.49
+sample2449,Others,NET,Small Intestinal,0.52
+sample268,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.34
+sample261,Kidney,Kidney,Renal cell,0.16
+sample260,ColoRect-AdenoCA,Colon/Rectum,,0.56
+sample267,Skin-Melanoma,Skin,Melanoma,0.28
+sample264,Liver-HCC,Liver,Hepatocellular,0.58
+sample1408,ColoRect-AdenoCA,Colon/Rectum,,0.67
+sample1407,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.74
+sample1406,Ovary-AdenoCA,Ovary,,0.33
+sample1405,ColoRect-AdenoCA,Colon/Rectum,,0.45
+sample1404,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.44
+sample1403,ColoRect-AdenoCA,Colon/Rectum,,0.41
+sample1402,Lung,Lung,Small Cell,0.55
+sample1401,Lymphoid,Lymphoid,Other,0.49
+sample1400,Others,Double primary,Endometrial and Ovarian,0.31
+sample1729,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.33
+sample1768,Lung,Lung,Small Cell,0.52
+sample2194,Others,Mesothelioma,,0.66
+sample2195,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.78
+sample2196,ColoRect-AdenoCA,Colon/Rectum,,0.53
+sample2197,Eso-AdenoCA,Esophagus,,0.38
+sample2190,Eso-AdenoCA,Esophagus,,0.18
+sample2191,Prost-AdenoCA,Prostate,,0.8
+sample2192,Prost-AdenoCA,Prostate,,0.69
+sample2193,Lung,Lung,Non-Small cell,0.12
+sample2198,ColoRect-AdenoCA,Colon/Rectum,,0.63
+sample2199,ColoRect-AdenoCA,Colon/Rectum,,0.41
+sample2669,Breast-AdenoCA,Breast,Triple negative,0.71
+sample1769,Prost-AdenoCA,Prostate,,0.77
+sample1684,Head-SCC,Head and neck,Tongue,0.35
+sample1573,Prost-AdenoCA,Prostate,,0.83
+sample1572,Prost-AdenoCA,Prostate,,0.23
+sample1571,Ovary-AdenoCA,Ovary,,0.51
+sample1576,Others,Unknown,CUP,0.18
+sample1575,Others,Urinary tract,Pyelum,0.45
+sample1574,Others,Bone/Soft tissue,Leiomyosarcoma,0.94
+sample1579,Others,Urinary tract,Bladder,0.53
+sample1578,Breast-AdenoCA,Breast,Triple negative,0.81
+sample2068,ColoRect-AdenoCA,Colon/Rectum,,0.47
+sample2069,Others,Biliary,Cholangiocarcinoma,0.27
+sample2060,Eso-AdenoCA,Esophagus,,0.43
+sample2061,Stomach-AdenoCA,Stomach,Gastric,0.72
+sample2062,ColoRect-AdenoCA,Colon/Rectum,,0.2
+sample2063,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.64
+sample2064,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.75
+sample2065,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.91
+sample2067,Lung,Lung,Small Cell,0.74
+sample2816,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.31
+sample2700,Skin-Melanoma,Skin,Melanoma,0.64
+sample2314,Panc-AdenoCA,Pancreas,,0.32
+sample2315,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.96
+sample1160,ColoRect-AdenoCA,Colon/Rectum,,0.11
+sample1161,Breast-AdenoCA,Breast,Triple negative,0.42
+sample1162,Lung,Lung,Non-Small cell,0.33
+sample1163,Prost-AdenoCA,Prostate,,0.69
+sample1164,Eso-AdenoCA,Esophagus,,0.42
+sample1165,Others,Urinary tract,Bladder,0.28
+sample1166,Lung,Lung,Adenocarcinoma,0.57
+sample1167,Kidney,Kidney,Renal cell,0.16
+sample1169,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.69
+sample2318,Others,Urinary tract,Urethra,0.65
+sample1362,Ovary-AdenoCA,Ovary,,0.57
+sample1363,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.85
+sample1360,Prost-AdenoCA,Prostate,,0.3
+sample1361,Lung,Lung,Non-Small cell,0.43
+sample1366,Head-SCC,Head and neck,Salivary Duct,0.17
+sample1367,Others,NET,,0.85
+sample1364,Prost-AdenoCA,Prostate,,0.76
+sample1365,ColoRect-AdenoCA,Colon/Rectum,,0.4
+sample1368,Kidney,Kidney,Renal cell,0.4
+sample1369,Others,Bone/Soft tissue,Sarcoma,0.92
+sample2032,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.78
+sample1760,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.83
+sample2034,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.35
+sample1761,Others,Thymus,,0.81
+sample1618,ColoRect-AdenoCA,Colon/Rectum,,0.52
+sample232,Lung,Lung,Non-Small cell,0.3
+sample1188,Prost-AdenoCA,Prostate,,0.84
+sample233,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.89
+sample1182,Lung,Lung,Small Cell,0.8
+sample1183,Others,Bone/Soft tissue,Carcinosarcoma (Uterus),0.38
+sample1180,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.61
+sample1181,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.56
+sample1186,Skin-Melanoma,Skin,Melanoma,0.29
+sample1187,Prost-AdenoCA,Prostate,,0.33
+sample1184,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample1185,Prost-AdenoCA,Prostate,,0.68
+sample1535,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.49
+sample789,Prost-AdenoCA,Prostate,,0.45
+sample1534,ColoRect-AdenoCA,Colon/Rectum,Anal,0.6
+sample1533,Prost-AdenoCA,Prostate,,0.48
+sample1982,Uterus-AdenoCA,Uterus,Cervical,0.37
+sample1983,ColoRect-AdenoCA,Colon/Rectum,Appendix,0.72
+sample1980,Lung,Lung,Non-Small cell,0.54
+sample1981,Skin-Melanoma,Skin,Melanoma,0.55
+sample1986,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.44
+sample1531,Eso-AdenoCA,Esophagus,,0.77
+sample1984,Others,Bone/Soft tissue,Sarcoma,0.62
+sample1985,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample1988,Ovary-AdenoCA,Ovary,,0.69
+sample1530,Eso-AdenoCA,Esophagus,,0.43
+sample652,Lung,Lung,Non-Small cell,0.69
+sample653,Others,Biliary,Gall bladder,0.25
+sample650,Lung,Lung,Non-Small cell,0.41
+sample651,Lung,Lung,Non-Small cell,0.23
+sample657,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.58
+sample654,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.21
+sample655,Prost-AdenoCA,Prostate,,0.41
+sample658,Liver-HCC,Liver,Hepatocellular,0.26
+sample659,ColoRect-AdenoCA,Colon/Rectum,,0.21
+sample2859,Others,Unknown,Probably rectum,0.95
+sample2858,Prost-AdenoCA,Prostate,,0.61
+sample2855,Lymphoid,Lymphoid,Other,0.96
+sample2854,Stomach-AdenoCA,Stomach,,0.41
+sample2857,Prost-AdenoCA,Prostate,,0.23
+sample2856,Others,Mesothelioma,,0.47
+sample2851,Panc-AdenoCA,Pancreas,,0.19
+sample2850,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.44
+sample2853,Breast-AdenoCA,Breast,Triple negative,0.66
+sample2852,Others,Urinary tract,Bladder,0.88
+sample2529,Others,Unknown,CUP,0.55
+sample2528,Skin-Melanoma,Skin,Melanoma,0.66
+sample2525,ColoRect-AdenoCA,Colon/Rectum,,0.26
+sample2524,Kidney,Kidney,Renal cell,0.41
+sample2527,Lung,Lung,Non-Small cell,0.31
+sample2521,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.44
+sample2520,Skin-Melanoma,Skin,Melanoma,0.89
+sample2523,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.68
+sample2522,Others,Urinary tract,Bladder,0.86
+sample898,Others,Biliary,Cholangiocarcinoma,0.34
+sample894,ColoRect-AdenoCA,Colon/Rectum,,0.39
+sample895,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.67
+sample896,Others,Unknown,CUP,0.74
+sample897,ColoRect-AdenoCA,Colon/Rectum,,0.55
+sample890,Skin-Melanoma,Skin,Melanoma,0.18
+sample893,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.57
+sample476,Head-SCC,Head and neck,Salivary Gland,0.75
+sample477,Prost-AdenoCA,Prostate,,0.8
+sample474,Others,Unknown,Adenocarcinoma,0.39
+sample475,Prost-AdenoCA,Prostate,,0.41
+sample472,Others,Bone/Soft tissue,Leiomyosarcoma,0.83
+sample473,Ovary-AdenoCA,Ovary,,0.75
+sample471,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.5
+sample1766,ColoRect-AdenoCA,Colon/Rectum,,0.62
+sample1767,Stomach-AdenoCA,Stomach,Non-Small cell NHL,0.97
+sample1764,Myeloid-MPN,Myeloid,Multiple Myeloma,0.56
+sample1765,Skin-Melanoma,Skin,Melanoma,0.13
+sample1762,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.51
+sample1763,Lung,Lung,Non-Small cell,0.21
+sample478,Prost-AdenoCA,Prostate,,0.24
+sample479,Breast-AdenoCA,Breast,Triple negative,0.36
+sample1719,Eso-AdenoCA,Esophagus,,0.6
+sample2297,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.41
+sample2295,Prost-AdenoCA,Prostate,,0.66
+sample2294,ColoRect-AdenoCA,Colon/Rectum,,0.28
+sample2293,Head-SCC,Head and neck,Salivary Gland,0.47
+sample2292,ColoRect-AdenoCA,Colon/Rectum,,0.58
+sample2291,Lung,Lung,Non-Small cell,0.52
+sample2290,ColoRect-AdenoCA,Colon/Rectum,Sigmoid,0.42
+sample2298,Prost-AdenoCA,Prostate,,0.64
+sample2451,Eso-AdenoCA,Esophagus,,0.52
+sample2450,ColoRect-AdenoCA,Colon/Rectum,,0.81
+sample2453,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.57
+sample2452,Skin-Melanoma,Skin,Melanoma,0.4
+sample2455,Others,NET,Lung,0.75
+sample2454,Prost-AdenoCA,Prostate,,0.91
+sample2457,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.76
+sample2456,Ovary-AdenoCA,Ovary,,0.21
+sample2459,ColoRect-AdenoCA,Colon/Rectum,,0.76
+sample2458,Thy-AdenoCA,Thyroid,,0.92
+sample1718,Skin-Melanoma,Skin,Melanoma,0.68
+sample2279,Others,NET,Small Intestinal,0.9
+sample2278,Others,NET,Small Intestinal,0.63
+sample278,Ovary-AdenoCA,Ovary,,0.71
+sample279,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.17
+sample274,Others,NET,Small Intestinal,0.66
+sample275,Lung,Lung,Non-Small cell,0.53
+sample276,Breast-AdenoCA,Breast,Triple negative,0.42
+sample270,Eso-AdenoCA,Esophagus,,0.85
+sample272,Breast-AdenoCA,Breast,Subtype unknown,0.38
+sample273,Breast-AdenoCA,Breast,ER-positive/HER2-positive,0.1
+sample2633,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.86
+sample2189,Skin-Melanoma,Skin,Melanoma,0.48
+sample2188,Prost-AdenoCA,Prostate,,0.45
+sample2182,Lung,Lung,Non-Small cell,0.37
+sample2181,Eso-AdenoCA,Esophagus,,0.78
+sample2180,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.85
+sample2187,Uterus-AdenoCA,Uterus,Endometrial,0.85
+sample2186,Others,Urinary tract,Pyelum,0.51
+sample2185,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.72
+sample2184,Others,Mesothelioma,,0.43
+sample389,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.24
+sample2677,Skin-Melanoma,Skin,Melanoma,0.14
+sample2676,Uterus-AdenoCA,Uterus,Endometrial,0.33
+sample2671,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.53
+sample2637,Ovary-AdenoCA,Ovary,,0.8
+sample2673,Skin-Melanoma,Skin,Melanoma,0.89
+sample2672,Lung,Lung,Non-Small cell,0.23
+sample380,Others,Biliary,Gall bladder,0.66
+sample381,Skin-Melanoma,Skin,Melanoma,0.23
+sample382,Prost-AdenoCA,Prostate,,0.89
+sample383,Prost-AdenoCA,Prostate,,0.42
+sample384,Skin-Melanoma,Skin,Melanoma,0.18
+sample386,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.55
+sample387,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.34
+sample1506,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.7
+sample713,Others,Unknown,CUP,0.84
+sample1505,ColoRect-AdenoCA,Colon/Rectum,,0.49
+sample1502,Kidney,Kidney,Renal cell,0.33
+sample1503,Others,Urinary tract,Bladder,0.78
+sample1500,Kidney,Kidney,Renal cell,0.56
+sample712,Prost-AdenoCA,Prostate,,0.64
+sample1508,Lung,Lung,Non-Small cell,0.14
+sample1509,Skin-Melanoma,Skin,Melanoma,0.54
+sample710,Eso-AdenoCA,Esophagus,,0.7
+sample2079,ColoRect-AdenoCA,Colon/Rectum,,0.59
+sample2078,Breast-AdenoCA,Breast,Subtype unknown,0.35
+sample2077,Others,Unknown,CUP,0.52
+sample717,Prost-AdenoCA,Prostate,,0.45
+sample2075,Prost-AdenoCA,Prostate,,0.4
+sample2074,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.49
+sample2073,Prost-AdenoCA,Prostate,,0.43
+sample2072,ColoRect-AdenoCA,Colon/Rectum,,0.66
+sample2071,Skin-Melanoma,Skin,Melanoma,0.18
+sample716,Prost-AdenoCA,Prostate,,0.61
+sample715,Others,Biliary,Gall bladder,0.6
+sample2810,Head-SCC,Head and neck,Nasopharyngeal,0.38
+sample714,Ovary-AdenoCA,Ovary,,0.48
+sample2884,ColoRect-AdenoCA,Colon/Rectum,,0.78
+sample1218,Others,Unknown,CUP,0.6
+sample1219,Others,Unknown,CUP,0.65
+sample1212,Skin-Melanoma,Skin,Melanoma,0.81
+sample1213,Skin-Melanoma,Skin,Melanoma,0.88
+sample1210,Head-SCC,Head and neck,Laryngeal,0.55
+sample1211,Head-SCC,Head and neck,Nasal cavity and paranasal sinuses,0.8
+sample1216,Others,Bone/Soft tissue,Carcinosarcoma,0.25
+sample1217,Breast-AdenoCA,Breast,Subtype unknown,0.56
+sample1214,Kidney,Kidney,Renal cell,0.18
+sample1215,Skin-Melanoma,Skin,Melanoma,0.85
+sample1177,Prost-AdenoCA,Prostate,,0.67
+sample1176,Eso-AdenoCA,Esophagus,,0.49
+sample1175,Skin-Melanoma,Skin,Melanoma,0.6
+sample1174,ColoRect-AdenoCA,Colon/Rectum,,0.19
+sample1173,Panc-Endocrine,NET,Pancreatic,0.92
+sample1172,Prost-AdenoCA,Prostate,,0.53
+sample1170,Bone-Osteosarc,Bone/Soft tissue,Osteosarcoma (Bone Cancer),0.71
+sample1179,Kidney,Kidney,Renal cell,0.52
+sample1178,Prost-AdenoCA,Prostate,,0.84
+sample1371,ColoRect-AdenoCA,Colon/Rectum,,0.24
+sample1370,Prost-AdenoCA,Prostate,,0.57
+sample1373,Skin-Melanoma,Skin,Melanoma,0.47
+sample1372,Panc-Endocrine,NET,Pancreatic,0.89
+sample1375,Prost-AdenoCA,Prostate,,0.25
+sample1374,Kidney,Kidney,Renal cell,0.42
+sample1377,Skin-Melanoma,Skin,Melanoma,0.8
+sample1376,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.66
+sample1379,Others,Unknown,CUP,0.36
+sample1378,ColoRect-AdenoCA,Colon/Rectum,,0.56
+sample1536,Eso-AdenoCA,Esophagus,,0.23
+sample1668,Skin-Melanoma,Skin,Melanoma,0.9
+sample1677,ColoRect-AdenoCA,Colon/Rectum,,0.5
+sample1671,Ovary-AdenoCA,Ovary,,0.35
+sample2335,ColoRect-AdenoCA,Colon/Rectum,,0.46
+sample2337,Others,Unknown,CUP,0.21
+sample1199,Skin-Melanoma,Skin,Melanoma,0.33
+sample1198,ColoRect-AdenoCA,Colon/Rectum,,0.69
+sample1191,Prost-AdenoCA,Prostate,,0.58
+sample1190,Prost-AdenoCA,Prostate,,0.17
+sample1193,Kidney,Kidney,Renal cell,0.46
+sample1192,Lung,Lung,Non-Small cell,0.5
+sample1195,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.9
+sample1194,Breast-AdenoCA,Breast,Subtype unknown,0.38
+sample1197,ColoRect-AdenoCA,Colon/Rectum,Anal,0.37
+sample1196,Ovary-AdenoCA,Ovary,,0.4
+sample2349,ColoRect-AdenoCA,Colon/Rectum,,0.64
+sample2348,ColoRect-AdenoCA,Colon/Rectum,,0.59
+sample1991,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.88
+sample1990,ColoRect-AdenoCA,Colon/Rectum,,0.72
+sample1993,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.65
+sample1992,Panc-AdenoCA,Pancreas,,0.39
+sample1995,ColoRect-AdenoCA,Colon/Rectum,,0.12
+sample1994,ColoRect-AdenoCA,Colon/Rectum,,0.26
+sample1997,Head-SCC,Head and neck,Nasal cavity and paranasal sinuses,0.55
+sample1996,ColoRect-AdenoCA,Colon/Rectum,,0.55
+sample1999,ColoRect-AdenoCA,Colon/Rectum,,0.65
+sample1998,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.89
+sample2347,ColoRect-AdenoCA,Colon/Rectum,,0.17
+sample667,Prost-AdenoCA,Prostate,,0.61
+sample666,ColoRect-AdenoCA,Colon/Rectum,,0.4
+sample665,Prost-AdenoCA,Prostate,,0.43
+sample664,ColoRect-AdenoCA,Colon/Rectum,,0.35
+sample663,Skin-Melanoma,Skin,Melanoma,0.39
+sample662,Skin-Melanoma,Skin,Melanoma,0.54
+sample661,Ovary-AdenoCA,Ovary,,0.84
+sample660,ColoRect-AdenoCA,Colon/Rectum,,0.78
+sample669,Lung,Lung,Non-Small cell,0.71
+sample668,Kidney,Kidney,Renal cell,0.39
+sample2860,Others,Biliary,Cholangiocarcinoma,0.62
+sample2861,Others,Bone/Soft tissue,Sarcoma,0.9
+sample2862,Others,Urinary tract,Bladder,0.39
+sample2863,Others,Urinary tract,Bladder,0.18
+sample2864,Skin-Melanoma,Skin,Melanoma,0.69
+sample2343,Lung,Lung,Non-Small cell,0.24
+sample2866,Others,Biliary,Cholangiocarcinoma,0.36
+sample2867,ColoRect-AdenoCA,Colon/Rectum,,0.48
+sample2868,Prost-AdenoCA,Prostate,,0.85
+sample2869,Others,Bone/Soft tissue,Rhabdomyosarcoma,0.89
+sample2336,Kidney,Kidney,Renal cell,0.23
+sample2342,Skin-Melanoma,Skin,Melanoma,0.79
+sample2510,Eso-AdenoCA,Esophagus,,0.64
+sample2511,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.8
+sample2512,Skin-Melanoma,Skin,Melanoma,0.28
+sample2513,CNS-GBM,Nervous system,Glioblastoma Multiforme,0.47
+sample2514,Panc-AdenoCA,Pancreas,,0.31
+sample2515,Breast-AdenoCA,Breast,Triple negative,0.54
+sample2516,ColoRect-AdenoCA,Colon/Rectum,,0.42
+sample2517,Skin-Melanoma,Skin,Melanoma,0.66
+sample2518,ColoRect-AdenoCA,Colon/Rectum,,0.58
+sample2519,Others,Urinary tract,Bladder,0.71
+sample861,Skin-Melanoma,Skin,Melanoma,0.67
+sample860,Others,Bone/Soft tissue,Gastrointestinal stromal tumor (GIST),0.82
+sample865,ColoRect-AdenoCA,Colon/Rectum,,0.83
+sample864,Panc-Endocrine,NET,Pancreatic,0.79
+sample867,ColoRect-AdenoCA,Colon/Rectum,,0.86
+sample866,Lung,Lung,Small Cell,0.9
+sample869,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.6
+sample868,ColoRect-AdenoCA,Colon/Rectum,,0.73
+sample719,Lung,Lung,Small Cell,0.98
+sample718,Kidney,Kidney,Renal cell,0.49
+sample1779,Prost-AdenoCA,Prostate,,0.6
+sample1778,Ovary-AdenoCA,Ovary,,0.29
+sample1775,Head-SCC,Head and neck,Nasal cavity and paranasal sinuses,0.53
+sample1774,Breast-AdenoCA,Breast,Triple negative,0.57
+sample1777,Breast-AdenoCA,Breast,,0.66
+sample1776,Uterus-AdenoCA,Uterus,Endometrial,0.64
+sample1771,ColoRect-AdenoCA,Colon/Rectum,,0.78
+sample1770,Panc-Endocrine,NET,Pancreatic,0.42
+sample1773,Others,Unknown,Most likely high tractus digestive tumor,0.72
+sample2587,Lung,Lung,Non-Small cell,0.58
+sample2586,Uterus-AdenoCA,Uterus,Cervical,0.3
+sample2585,Breast-AdenoCA,Breast,,0.73
+sample2584,Skin-Melanoma,Skin,Basal cell carcinoma,0.65
+sample2583,ColoRect-AdenoCA,Colon/Rectum,,0.43
+sample2582,Lung,Lung,Non-Small cell,0.54
+sample2464,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.86
+sample2465,Breast-AdenoCA,Breast,ER-negative/HER2-positive,0.43
+sample2466,Others,Unknown,CUP,0.57
+sample2287,ColoRect-AdenoCA,Colon/Rectum,,0.16
+sample2460,Prost-AdenoCA,Prostate,,0.65
+sample2461,Panc-Endocrine,NET,Pancreatic,0.3
+sample2462,Breast-AdenoCA,Breast,ER-positive/HER2-negative,0.52
+sample2463,ColoRect-AdenoCA,Colon/Rectum,,0.42
+sample2580,Ovary-AdenoCA,Ovary,,0.48
+sample2468,Prost-AdenoCA,Prostate,,0.81
+sample2469,Kidney,Kidney,Renal cell,0.39

@@ -12,7 +12,6 @@ pcawg_localsigs.csv | type/subtype | 222 | modified from [syn11853232](https://w
 degasperi_refsigs.csv | type/subtype | 41 | modified from [Degasperi et. al 2020](https://doi.org/10.1038/s43018-020-0027-5) supplementary table 4
 degasperi_localsigs.csv | type | 192 | [Degasperi et. al 2020](https://doi.org/10.1038/s43018-020-0027-5) supplementary table 2
 
-
 ## tumour meta data
 
 file name | contents |  source  
@@ -25,7 +24,8 @@ pcawg_donor_clinical_August2016_v9.csv | donor clinical information in PCAWG | [
 pcawg_supplement_table1.csv | Supplementary Table 1. Sample, demographic and basic mutation data for the 2,583 white-listed donors in the PCAWG data-set | [PCAWG paper](https://doi.org/10.1038/s41586-020-1969-6)
 pcawg-wgs-rnaseq-mirna.csv | Sample sheet for WGS | [ICGC data portal](https://dcc.icgc.org/releases/PCAWG/donors_and_biospecimens/)
 pcawg_clinical_ann.csv | merged and filtered data | created with `merge_clinical_ann.py`, combines  icgc_sample_annotations_summary_table.txt, pcawg_supplement_table1.csv, pcawg_donor_clinical_August2016_v9.csv (in that priority order)
-hartwig_sample.cancertype.mapping.csv | tumour type annotations | W.J.
+sample.cancertype.mapping.csv | tumour type annotations for Hartwig data| W.J.
+hartwig_clinical_ann.csv | tumour type annotations for Hartwig data| created with `merge_clinical_ann.py`, reorders data in sample.cancertype.mapping.csv
 
 ## mutation counts
 
@@ -33,7 +33,7 @@ Raw counts of 96 SBS mutation types.
 
 file name | contents |  source  
 ---       |  ---        | --- 
-pcawg_mutation_types_raw_counts.csv | mutation type counts for PCAWG | G.A.
+mutation_types_raw_counts.csv | mutation type counts for PCAWG | G.A.
 hmf.mut-type.RData | Rdata of mutation type counts for Hartwig | W.J.
 hartwig_counts.csv | mutation type counts for 2472 Hartwig samples | created with `restyle_counts.R` 
 pcawg_counts.csv | mutation type counts for 2778 PCAWG samples | created with `restyle_counts.R` 
