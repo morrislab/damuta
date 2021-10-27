@@ -30,7 +30,7 @@ if __name__ == "__main__":
     
     # transform type to categorical (only necessary for hirearchical model)
     if model_args['model_sel'] == 'tandtiss_lda':
-        model_args['type_codes'] = pd.Categorical(annotation.loc[trn.index]['pcawgClass']).codes
+        model_args['type_codes'] = pd.Categorical(annotation.loc[trn.index]['pcawg_class']).codes
 
     # perform inference
     # TODO: implement cbs that avoid pickle problem
