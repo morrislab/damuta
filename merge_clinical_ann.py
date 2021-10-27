@@ -37,7 +37,7 @@ clinical_ann = dt_types.merge(clinical_ann, right_index = True, left_index = Tru
 #clinical_ann.to_csv('data/clinical_ann_merged.csv')
 
 clinical_ann = clinical_ann[[
-    'pcawgClass',
+    'pcawg_class',
     'tumour_type',
     'project_code',
     'reported_sex',
@@ -67,4 +67,8 @@ clinical_ann.to_csv('data/pcawg_clinical_ann.csv')
 ## hartwig
 hw = pd.read_csv('data/sample.cancertype.mapping.csv', index_col=0)
 hw = hw[['pcawgClass','primaryTumorLocation', 'cancerSubtype', 'tumourPurity']]
+hw = hw.rename(columns = {'pcawgClass': 'pcawg_class',
+                    'primaryTumorLocation': 'primary_tumour_location', 
+                    'cancerSubtype': 'cancer_subtype', 
+                    'tumourPurity': 'tumour_purity'})
 hw.to_csv('data/hartwig_clinical_ann.csv')

@@ -1,4 +1,4 @@
-,pcawgClass,primaryTumorLocation,cancerSubtype,tumourPurity
+,pcawg_class,primary_tumour_location,cancer_subtype,tumour_purity
 sample283,Prost-AdenoCA,Prostate,,0.87
 sample282,Prost-AdenoCA,Prostate,,0.64
 sample285,Others,Bone/Soft tissue,Leiomyosarcoma,0.66
