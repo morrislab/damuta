@@ -11,6 +11,18 @@
 
 load the env used in development with `conda env create -f .env.yml`
 
+# theanorc
+
+To use the GPU, `~/.theanorc` should contain the following:
+
+```
+[global]
+floatX = float64
+device = cuda
+```
+
+Otherwise, device will decault to CPU. 
+
 # package dev references
 
 * https://python-packaging.readthedocs.io/en/latest/index.html
