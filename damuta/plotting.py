@@ -6,6 +6,8 @@ import plotly as plt
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from plotly.colors import n_colors
+import matplotlib.pyplot as pyplot
+from matplotlib.pyplot import gcf
 import seaborn as sns
 
 plt.io.templates.default = "none"
@@ -14,11 +16,11 @@ sns.despine()
 
 
 tau_col = np.repeat(['cyan', 'black', 'red', 'grey', 'lightgreen', 'pink'], 16)
-#phi_col = np.repeat(['green', 'blue'], 16)
-phi_col = np.repeat(['#a64d79'], 32)
+#phi_col = np.repeat(['orange', 'lightblue'], 16)
+phi_col = np.repeat(['#a64d79', '#c27ba0'], 16)
 #eta_col = np.repeat(['orange', 'lightblue'], 3)
 #eta_col = np.array(['cyan', 'black', 'red', 'grey', 'lightgreen', 'pink'])
-eta_col = np.repeat(['#45818e'], 6)
+eta_col = np.repeat(['#45818e', '#76a5af'], 3)
 
 def plot_sigs(sigs, xlab=None, cols=None, row_title='Sig'):
     assert len(sigs.shape) == 2
@@ -155,19 +157,16 @@ def save_gv(model):
     gv.render(format = 'png')
 
 
-def plot_bipartite(w, rescale = 10, main = '', ah=0, thresh = 0.01,
-                   edge_cols = '#000000', node_cols=['#a64d79', '#45818e']):
+def plot_bipartite(w, main = '', ah=0, thresh = 0.1, node_space=20,
+                   node_cols=['#a64d79', '#45818e']):
     # create fully connected, directional bipartite graph 
     # input is JxK matrix st w[j,k] gives the (possibly 0) weight 
     # of edge spannig nodes j to k. 
+    
+    thresh = max(0.1, thresh)
+    
     assert len(w.shape) == 2
     J,K = w.shape
-    
-    if isinstance(edge_cols, str):
-        edge_cols = [edge_cols] * J*K
-        
-    else: 
-        assert len(edge_cols) == J*K
         
     if np.any(w > 1):
         warnings.warn("Some w's >1. Edge width may be misleading.")
@@ -176,13 +175,17 @@ def plot_bipartite(w, rescale = 10, main = '', ah=0, thresh = 0.01,
         warnings.warn("Some w's <0. Edge width may be misleading")
     
     
-    y0s = np.arange(J) - np.arange(J).mean()
-    y1s = np.arange(K) - np.arange(K).mean()
+    y0s = np.flip(np.arange(0,J*node_space,step=node_space))
+    y0s = y0s - y0s.mean()
+    y1s = np.arange(0,K*node_space,step=node_space)
+    y1s = y1s - y1s.mean()
     node_y = np.array([[y0, y1, None] for y0 in y0s for y1 in y1s]).flatten()
     node_x = np.array([[0, 1, None] for y0 in y0s for y1 in y1s]).flatten()
     
     w = w.flatten()
-    edges = w / np.max(w) * 10
+    edges = w #/ np.max(w) * 10
+
+    edge_cols = [f'rgba(0,0,0,{ew})' for ew in (w / np.max(w))]
     
     fig = go.Figure()
     
@@ -195,7 +198,7 @@ def plot_bipartite(w, rescale = 10, main = '', ah=0, thresh = 0.01,
             source = (0.01, y0)
             target = (1-0.01, y1)
                 
-            if edges[i] > (thresh*10):
+            if edges[i] > (thresh):
                 fig.add_annotation(x=source[0], y = source[1],
                                    xref="x", yref="y",
                                    text="",
@@ -323,21 +326,47 @@ def plot_fclust_scree(mat, metric = 'cosine', max_t = 10):
 def pick_cutoff(a, metric='cosine', thresh=5):
     d = pdist(a, metric)
     Z = linkage(d, "ward")
-    n_clust = np.array([fcluster(Z, t=t, criterion='distance').max() for t in np.arange(1,20)])
-    return np.argmax(n_clust < thresh)
+    n_clust = np.array([fcluster(Z, t=t, criterion='distance').max() for t in np.arange(1,100)])
+    return np.where(n_clust < thresh)[0].min(0)
 
 
-def map_to_palette(annotation, pal_list = ['Dark2','Set1','Set2','Set3']):
+def map_to_palette(annotation, pal_list = ['Spectral','Dark2','Set1','Set2','Set3']):
     # map all columns to a pallet entry
     # make sure to subset columns of annotation appropriately
     # ie. only categorical
     i=0
     luts = []
     for col in annotation.columns:
-        lut = dict(zip(annotation[col].unique(), sns.color_palette(pal_list[i])))   
+        lut = dict(zip(annotation[col].unique(), sns.color_palette(pal_list[i], len(annotation[col].unique()) )))   
         annotation[col] = annotation[col].map(lut)
         luts.append(lut)
         i+=1
         i%=4
     
     return annotation, luts
+
+
+def plot_activity_clustermap(df, colour_annotation, lut, Z, **kwargs):
+    # https://stackoverflow.com/a/53217838
+    # only the colour values should be provided in colour_annotation
+    # get these from map_to_palette
+    # lut feeds only the legend
+    
+    colour_annotation = colour_annotation.loc[df.index]
+    fig=sns.clustermap(df, row_linkage = Z, col_cluster = False, 
+                       linewidths=0.0, rasterized=True,
+                       row_colors = colour_annotation, yticklabels=False,
+                       **kwargs)
+    pyplot.subplots_adjust(top = 0.85)
+    if lut is not None:
+        for label in list(lut[0].keys()):
+            fig.ax_col_dendrogram.bar(0, 0, color=lut[0][label], label=label, linewidth=0)
+        ll=fig.ax_col_dendrogram.legend(title='Tissue Type', loc="upper left", 
+                                        ncol= 2 if len(lut[0].keys()) < 10 else 4,
+                                        bbox_to_anchor=(0.25, 0.99), bbox_transform=gcf().transFigure)
+        if len(lut) > 1:
+            for label in list(lut[1].keys()):
+                fig.ax_row_dendrogram.bar(0, 0, color=lut[1][label], label=label, linewidth=0)
+            l2=fig.ax_row_dendrogram.legend(title='Dataset', loc="upper left", ncol=1, bbox_to_anchor=(0.05, 0.99), bbox_transform=gcf().transFigure)
+    
+    return fig
