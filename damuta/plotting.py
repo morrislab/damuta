@@ -177,7 +177,7 @@ def plot_bipartite(w, main = '', ah=0, thresh = 0.1, node_space=20,
     
     y0s = np.flip(np.arange(0,J*node_space,step=node_space))
     y0s = y0s - y0s.mean()
-    y1s = np.arange(0,K*node_space,step=node_space)
+    y1s = np.flip(np.arange(0,K*node_space,step=node_space))
     y1s = y1s - y1s.mean()
     node_y = np.array([[y0, y1, None] for y0 in y0s for y1 in y1s]).flatten()
     node_x = np.array([[0, 1, None] for y0 in y0s for y1 in y1s]).flatten()
@@ -185,7 +185,7 @@ def plot_bipartite(w, main = '', ah=0, thresh = 0.1, node_space=20,
     w = w.flatten()
     edges = w #/ np.max(w) * 10
 
-    edge_cols = [f'rgba(0,0,0,{ew})' for ew in (w / np.max(w))]
+    edge_cols = [f'rgba(0,0,0, {0.5*(ew+1)})' for ew in (w / np.max(w))]
     
     fig = go.Figure()
     
