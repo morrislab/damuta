@@ -8,7 +8,7 @@ import os
 
 if __name__ == "__main__":
 
-    dataset_args, model_args, pymc3_args = da.load_config("config/config-defaults.yaml")
+    dataset_args, model_args, pymc3_args = da.load_config("config/chemo-mix.yaml")
 
     # configure run with defaults and sweep args
     run = wandb.init()
@@ -22,12 +22,15 @@ if __name__ == "__main__":
             d[k] = run_config_d[k]
     
     # load data 
-    counts, annotation = da.load_dataset(**dataset_args)
+    # counts can be combined for free, annotation is ugly when columns don't match
+    counts, annotation = load_datasets(dataset_args)
+    
     trn, val, tst1, tst2 = da.split_data(counts, rng=np.random.default_rng(dataset_args['data_seed']))
     da.log_data_summary(trn, val, tst1, tst2)
     
     # transform type to categorical (only necessary for hirearchical model)
-    model_args['type_codes'] = pd.Categorical(annotation.loc[trn.index]['type']).codes
+    if model_args['model_sel'] == 'tandtiss_lda':
+        model_args['type_codes'] = pd.Categorical(annotation.loc[trn.index]['pcawg_class']).codes
 
     # perform inference
     # TODO: implement cbs that avoid pickle problem
