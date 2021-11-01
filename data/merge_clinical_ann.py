@@ -2,10 +2,10 @@
 import pandas as pd
 
 ## pcawg
-donor_clinical = pd.read_csv('data/pcawg_donor_clinical_August2016_v9.csv')
-icgc_annotations = pd.read_csv('data/icgc_sample_annotations_summary_table.txt', sep = '\t').set_index('tumour_aliquot_id')
-pcawg_annotations = pd.read_csv('data/pcawg_supplement_table1.csv').set_index('tumour_specimen_aliquot_id')
-dt_types = pd.read_csv('data/pcawg_cancer_types.csv', index_col=0)
+donor_clinical = pd.read_csv('pcawg_donor_clinical_August2016_v9.csv')
+icgc_annotations = pd.read_csv('icgc_sample_annotations_summary_table.txt', sep = '\t').set_index('tumour_aliquot_id')
+pcawg_annotations = pd.read_csv('pcawg_supplement_table1.csv').set_index('tumour_specimen_aliquot_id')
+dt_types = pd.read_csv('pcawg_cancer_types.csv', index_col=0)
 
 pcawg_annotations.update(icgc_annotations)
 icgc_annotations.update(pcawg_annotations)
@@ -34,7 +34,7 @@ clinical_ann = clinical_ann.merge(donor_clinical, how = 'left', on  = ['icgc_don
 
 clinical_ann = clinical_ann.set_index('tumour_aliquot_id')
 clinical_ann = dt_types.merge(clinical_ann, right_index = True, left_index = True)
-#clinical_ann.to_csv('data/clinical_ann_merged.csv')
+#clinical_ann.to_csv('clinical_ann_merged.csv')
 
 clinical_ann = clinical_ann[[
     'pcawg_class',
@@ -62,13 +62,13 @@ clinical_ann = clinical_ann[[
     'alcohol_history_intensity'
 ]]
 
-clinical_ann.to_csv('data/pcawg_clinical_ann.csv')
+clinical_ann.to_csv('pcawg_clinical_ann.csv')
 
 ## hartwig
-hw = pd.read_csv('data/sample.cancertype.mapping.csv', index_col=0)
+hw = pd.read_csv('sample.cancertype.mapping.csv', index_col=0)
 hw = hw[['pcawgClass','primaryTumorLocation', 'cancerSubtype', 'tumourPurity']]
 hw = hw.rename(columns = {'pcawgClass': 'pcawg_class',
                     'primaryTumorLocation': 'primary_tumour_location', 
                     'cancerSubtype': 'cancer_subtype', 
                     'tumourPurity': 'tumour_purity'})
-hw.to_csv('data/hartwig_clinical_ann.csv')
+hw.to_csv('hartwig_clinical_ann.csv')

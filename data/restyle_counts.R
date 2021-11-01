@@ -25,13 +25,13 @@ dt_to_cosmic <- function(df){
 }
 
 # PCAWG counts
-pcawg <- read.csv('data/pcawg_mutation_types_raw_counts.csv', row.names =1)
+pcawg <- read.csv('pcawg_mutation_types_raw_counts.csv', row.names =1)
 pcawg <- pcawg[1:2778,]
 pcawg <- dt_to_cosmic(pcawg)
-write.csv(file ='data/pcawg_counts.csv', pcawg, quote=F)
+write.csv(file ='pcawg_counts.csv', pcawg, quote=F)
 
 # Hartwig counts
-load('data/hmf.mut-type.RData')
+load('hmf.mut-type.RData')
 hw <- dt_to_cosmic(mut.df.ct)
 #rownames(hw) <- paste0('hw_', rownames(hw))
-write.csv(file ='data/hartwig_counts.csv', hw, quote=F)
+write.csv(file ='hartwig_counts.csv', hw, quote=F)
