@@ -24,7 +24,7 @@ floatX = float64
 device = cuda
 ```
 
-Otherwise, device will decault to CPU. 
+Otherwise, device will default to CPU. 
 
 # package dev references
 
