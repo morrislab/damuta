@@ -1,7 +1,7 @@
 # DAMUTA
 **D**irichlet **A**llocation of **muta**tions in cancer 
 
-![image](https://user-images.githubusercontent.com/23587234/139922534-69bd567f-8798-4cd8-a57c-7d9658c40526.png)
+![image](https://user-images.githubusercontent.com/23587234/140100948-98f10395-2bdb-4cf5-ac8b-fd66396d8d7f.png)
 
 
 # major dependencies 
