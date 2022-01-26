@@ -1,0 +1,45 @@
+dataset:
+  # select data source - one of load_counts, sim_cosmic, sim_parametric
+  # any parameters for non-selected data sources will be ignored
+  dataset_sel: load_counts
+
+  load_counts:
+    data_seed: 97
+    counts_fp: ["data/pcawg_counts.csv", "data/hartwig_counts.csv", ]
+    annotation_fp: ["data/pcawg_clinical_ann.csv", "data/hartwig_clinical_ann.csv"]
+    annotation_subset: null
+
+  sim_from_sigs:
+    sig_defs_fp: data/COSMIC_v3.2_SBS_GRCh37.txt
+    data_seed: 42
+    sim_S: 100
+    sim_N: 5000
+    sim_I: 4
+    sim_tau_hyperprior: 0.1
+
+  sim_parametric:
+    data_seed: 42
+    sim_J: 3
+    sim_K: 3
+    sim_S: 100
+    sim_N: 10000
+    sim_alpha_bias: 0.05
+    sim_psi_bias: 1
+    sim_gamma_bias: 0.1
+    sim_beta_bias: 1
+
+model:
+  model_sel: tandtiss_lda
+  model_seed: 723
+  J: 20
+  K: 6  
+  alpha_bias: 1
+  psi_bias: 0.1
+  gamma_bias: 0.5
+  beta_bias: 1
+  init_strategy: kmeans
+
+pymc3:
+  n: 15000
+  method: advi
+  random_seed: 23
