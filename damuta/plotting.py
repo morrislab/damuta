@@ -326,7 +326,7 @@ def plot_fclust_scree(mat, metric = 'cosine', max_t = 10):
 def pick_cutoff(a, metric='cosine', thresh=5):
     d = pdist(a, metric)
     Z = linkage(d, "ward")
-    n_clust = np.array([fcluster(Z, t=t, criterion='distance').max() for t in np.arange(1,100)])
+    n_clust = np.array([fcluster(Z, t=t, criterion='distance').max() for t in np.arange(0,100)])
     return np.where(n_clust < thresh)[0].min(0)
 
 
