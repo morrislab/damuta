@@ -7,7 +7,6 @@
 # major dependencies 
 
 * pymc3
-* numpy
 * theano
 * wandb
 * plotly
@@ -25,10 +24,3 @@ device = cuda
 ```
 
 Otherwise, device will default to CPU. 
-
-# package dev references
-
-* https://python-packaging.readthedocs.io/en/latest/index.html
-* https://packaging.python.org/tutorials/packaging-projects/
-* https://github.com/dvav/clonosGP
-* run `pytest tests -W ignore::DeprecationWarning` to run all tests with useful flag
