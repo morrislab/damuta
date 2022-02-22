@@ -11,6 +11,13 @@ Welcome to damuta's documentation!
    :caption: Contents:
 
 
+**Damuta** is a Python library for exploring mutational signatures in cancer. Damuta requires only mutation type counts to get started. You can optionally provide: 
+i) Custom signature definitions
+ii) Sample meta-data, such as tissue type, data source, driver mutations, and more.
+
+.. note::
+
+   This project is under active development.
 
 Indices and tables
 ==================
