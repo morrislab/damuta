@@ -1,5 +1,8 @@
 # DAMUTA
-**D**irichlet **A**llocation of **muta**tions in cancer 
+**D**irichlet **a**llocation of **muta**tions in cancer 
+
+[![Documentation Status](https://readthedocs.org/projects/damuta/badge/?version=latest)](https://damuta.readthedocs.io/en/latest/?badge=latest)
+      
 
 ![image](https://user-images.githubusercontent.com/23587234/140100948-98f10395-2bdb-4cf5-ac8b-fd66396d8d7f.png)
 
