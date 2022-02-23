@@ -1,5 +1,0 @@
-# Simulating data
-
-foo bar baz
-
-

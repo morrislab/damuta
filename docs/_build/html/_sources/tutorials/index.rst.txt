@@ -1,9 +1,0 @@
-Tutorials 
-===============================
-
-.. toctree::
-    :caption: Available tutorials
-    :maxdepth: 2
-
-    notebooks/quickstart
-    notebooks/data_loading
