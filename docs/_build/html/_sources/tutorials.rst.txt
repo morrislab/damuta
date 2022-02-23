@@ -3,5 +3,6 @@ Tutorials gallery
 
 .. nbgallery::
 
-   notebooks/quickstart.ipynb
+   notebooks/quickstart
+   notebooks/data_loading
 

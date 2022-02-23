@@ -1,5 +1,4 @@
 sphinx>=1.4
 ipykernel
 nbsphinx
-myst_parser
 sphinx-gallery

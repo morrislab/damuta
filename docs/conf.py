@@ -32,18 +32,8 @@ release = '0.0.1'
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
-    #"sphinx.ext.doctest",
-    #"sphinx.ext.viewcode",
-    #"sphinx_autodoc_typehints",
-    #"sphinx.ext.mathjax",
     "sphinx_rtd_theme",
-    #"sphinx.ext.intersphinx",
-    #"autodocsumm",
     "nbsphinx",
-    #"nbsphinx_link",
-    "myst_parser",
-    #'sphinx_gallery.load_style',
-    #"myst_nb"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
