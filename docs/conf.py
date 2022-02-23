@@ -42,7 +42,7 @@ extensions = [
     "nbsphinx",
     #"nbsphinx_link",
     "myst_parser",
-    'sphinx_gallery.load_style',
+    #'sphinx_gallery.load_style',
     #"myst_nb"
 ]
 

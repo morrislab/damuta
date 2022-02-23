@@ -24,6 +24,9 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
 
 
 .. nbgallery::
+   :caption: demo
+   :name: rst-gal
+   
    notebooks/data_loading
 
 
