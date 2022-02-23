@@ -5,8 +5,8 @@ foo
 .. nbgallery::
    :caption: demo
 
-   notebooks/quickstart
-   notebooks/data_loading
+   notebooks/quickstart.ipynb
+   notebooks/data_loading.ipynb
 
 
 PIP
