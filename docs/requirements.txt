@@ -3,3 +3,4 @@ ipykernel
 nbsphinx
 nbsphinx-link
 myst_parser
+sphinx-gallery
