@@ -5,5 +5,5 @@ Tutorials
     :caption: Available tutorials
     :maxdepth: 2
 
-    quickstart.ipynb
-    data_loading.ipynb
+    notebooks/quickstart.ipynb
+    notebooks/data_loading.ipynb
