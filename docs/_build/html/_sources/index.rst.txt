@@ -8,7 +8,7 @@
    :maxdepth: 2
 
    installation.md
-   tutorials/index
+   tutorials.md
 
 Welcome to damuta's documentation!
 ==================================
