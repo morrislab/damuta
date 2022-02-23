@@ -2,6 +2,5 @@ Tutorials gallery
 ==========================
 
 .. nbgallery::
-   notebooks/quickstart
+   notebooks/quickstart.ipynb
 
-   
