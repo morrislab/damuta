@@ -1,5 +1,5 @@
-Tutorials
-=============
+Tutorials 
+===============================
 
 .. toctree::
     :caption: Available tutorials
