@@ -1,8 +1,8 @@
-# Requirements
+# Installation
 
 foo bar
 
-# PIP
+## PIP
 
-# Conda
+## Conda
 

@@ -3,7 +3,7 @@ Tutorials
 
 .. toctree::
     :caption: Available tutorials
-    :maxdepth: 1
+    :maxdepth: 2
 
     quickstart.ipynb
     data_loading.ipynb
