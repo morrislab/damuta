@@ -8,7 +8,7 @@
    :maxdepth: 2
    :caption: Contents
 
-   installation.md
+   installation
    tutorials
 
 Welcome to damuta's documentation!
