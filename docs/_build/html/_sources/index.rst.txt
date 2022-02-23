@@ -3,13 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to damuta's documentation!
-==================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   installation.md
+   tutorials/index
 
+Welcome to damuta's documentation!
+==================================
 
 **Damuta** is a Python library for exploring mutational signatures in cancer. Damuta requires only mutation type counts to get started. You can optionally provide: 
 i) Custom signature definitions

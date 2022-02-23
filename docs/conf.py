@@ -33,7 +33,15 @@ release = '0.0.1'
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.doctest",
-    "sphinx_rtd_theme"
+    "sphinx.ext.viewcode",
+    #"sphinx_autodoc_typehints",
+    "sphinx.ext.mathjax",
+    "sphinx_rtd_theme",
+    "sphinx.ext.intersphinx",
+    #"autodocsumm",
+    "nbsphinx",
+    "nbsphinx_link",
+    "myst_parser"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
