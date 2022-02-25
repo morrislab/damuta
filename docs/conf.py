@@ -37,6 +37,17 @@ extensions = [
     'sphinx_gallery.load_style',
 ]
 
+
+nbsphinx_thumbnails = {
+    'notebooks/quickstart': 'thumbnails/quickstart.png',
+    'notebooks/config': 'thumbnails/config.png',
+    'notebooks/data': 'thumbnails/data.png',
+    'notebooks/models': 'thumbnails/models.png',
+    'notebooks/wandb': 'thumbnails/wandb.png',
+}
+
+
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

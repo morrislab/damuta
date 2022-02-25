@@ -1,9 +1,24 @@
-Tutorials gallery
+Tutorial Gallery
 ==========================
 
-.. nbgallery::
-   :caption: Available Tutorials
+.. toctree::
+   :maxdepth: 2
+   :caption: Available Tutorials 
+   :hidden: 
 
    notebooks/quickstart
-   notebooks/data_loading
+   notebooks/config
+   notebooks/data
+   notebooks/models
+   notebooks/wandb
+
+
+.. nbgallery::
+   :caption: 
+
+   notebooks/quickstart
+   notebooks/config
+   notebooks/data
+   notebooks/models
+   notebooks/wandb
 
