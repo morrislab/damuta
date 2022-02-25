@@ -23,6 +23,11 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
    This project is under active development.
 
 
+.. nbgallery::
+   :caption: Available Tutorials
+
+   notebooks/quickstart
+   notebooks/data_loading.ipynb
 
 
 Indices and tables
