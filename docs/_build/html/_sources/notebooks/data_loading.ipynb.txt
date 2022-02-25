@@ -4,7 +4,11 @@
    "cell_type": "code",
    "execution_count": 9,
    "id": "b60108b3",
-   "metadata": {},
+   "metadata": {
+    "tags": [
+     "nbsphinx-gallery"
+    ]
+   },
    "outputs": [
     {
      "data": {
@@ -81,6 +85,7 @@
   }
  ],
  "metadata": {
+  "celltoolbar": "Edit Metadata",
   "kernelspec": {
    "display_name": "Python 3 (ipykernel)",
    "language": "python",
