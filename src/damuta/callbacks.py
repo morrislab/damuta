@@ -1,7 +1,5 @@
 from .utils import *
 
-cosmic = load_sigs("data/COSMIC_v3.2_SBS_GRCh37.txt")
-
 def log_elbo(*args):
     approx, losses, i = args
     wandb.log({'ELBO': losses[-1]})

@@ -17,7 +17,10 @@ Description-Content-Type: text/markdown
 License-File: LICENSE
 
 # DAMUTA
-**D**irichlet **A**llocation of **muta**tions in cancer 
+**D**irichlet **a**llocation of **muta**tions in cancer 
+
+[![Documentation Status](https://readthedocs.org/projects/damuta/badge/?version=latest)](https://damuta.readthedocs.io/en/latest/?badge=latest)
+      
 
 ![image](https://user-images.githubusercontent.com/23587234/140100948-98f10395-2bdb-4cf5-ac8b-fd66396d8d7f.png)
 
@@ -44,11 +47,5 @@ device = cuda
 
 Otherwise, device will default to CPU. 
 
-# package dev references
-
-* https://python-packaging.readthedocs.io/en/latest/index.html
-* https://packaging.python.org/tutorials/packaging-projects/
-* https://github.com/dvav/clonosGP
-* run `pytest tests -W ignore::DeprecationWarning` to run all tests with useful flag
 
 

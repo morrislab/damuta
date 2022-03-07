@@ -6,6 +6,7 @@ src/damuta/__init__.py
 src/damuta/callbacks.py
 src/damuta/inference.py
 src/damuta/model_factory.py
+src/damuta/pkg_data.py
 src/damuta/plotting.py
 src/damuta/sim.py
 src/damuta/utils.py
@@ -13,10 +14,3 @@ src/damuta.egg-info/PKG-INFO
 src/damuta.egg-info/SOURCES.txt
 src/damuta.egg-info/dependency_links.txt
 src/damuta.egg-info/top_level.txt
-src/damuta/tests/__init__.py
-src/damuta/tests/conftest.py
-src/damuta/tests/test_checkpointing.py
-src/damuta/tests/test_load_sigs.py
-src/damuta/tests/test_model_init.py
-src/damuta/tests/test_simulation.py
-src/damuta/tests/test_subset_samples.py
