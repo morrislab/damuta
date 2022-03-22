@@ -1,0 +1,8 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+damuta/damuta.egg-info/PKG-INFO
+damuta/damuta.egg-info/SOURCES.txt
+damuta/damuta.egg-info/dependency_links.txt
+damuta/damuta.egg-info/top_level.txt
