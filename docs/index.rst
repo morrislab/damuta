@@ -19,12 +19,12 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Get started   
 
    installation
-   notebooks/quickstart
-   tutorials
+   examples/quickstart
+   examples/index
 
 
 Indices and tables

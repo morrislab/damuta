@@ -35,15 +35,16 @@ extensions = [
     "sphinx_rtd_theme",
     "nbsphinx",
     'sphinx_gallery.load_style',
+    "nbsphinx_link",
 ]
 
 
 nbsphinx_thumbnails = {
-    'notebooks/quickstart': 'thumbnails/quickstart.png',
-    'notebooks/config': 'thumbnails/config.png',
-    'notebooks/data': 'thumbnails/data.png',
-    'notebooks/models': 'thumbnails/models.png',
-    'notebooks/wandb': 'thumbnails/wandb.png',
+    'examples/quickstart': '_static/quickstart.png',
+    'examples/config': '_static/config.png',
+    'examples/data': '_static/data.png',
+    'examples/models': '_static/models.png',
+    'examples/wandb': '_static/wandb.png',
 }
 
 
@@ -67,4 +68,4 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['_static', 'thumbnails']
