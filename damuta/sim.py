@@ -28,7 +28,7 @@ def sim_parametric(J,K,S,N,alpha_bias,psi_bias,gamma_bias,beta_bias,seed=None):
     rng=np.random.default_rng(seed)
     
     # Hyper-parameter for priors
-    alpha = np.ones(C) * alpha_bias
+    alpha = np.ones(32) * alpha_bias
     psi = np.ones(J) * psi_bias
     gamma = np.ones(K) * gamma_bias
     beta = np.ones((K,4)) * beta_bias
@@ -40,7 +40,7 @@ def sim_parametric(J,K,S,N,alpha_bias,psi_bias,gamma_bias,beta_bias,seed=None):
     theta = rng.dirichlet(alpha=psi, size=S) 
     A = rng.dirichlet(alpha=gamma, size=(S,J)) 
 
-    eta = np.vstack(list(map(rng.dirichlet, beta))).reshape(P,K,M)
+    eta = np.vstack(list(map(rng.dirichlet, beta))).reshape(2,K,3)
     
     W=np.dot(theta, phi).reshape(S,2,16)
     Q=np.einsum('sj,sjk,pkm->spm', theta, A, eta)

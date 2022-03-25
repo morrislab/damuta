@@ -26,6 +26,14 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
    examples/quickstart
    examples/index
 
+.. toctree::
+   :maxdepth: 3
+   :caption: API
+   :hidden:
+
+   bases
+   models
+
 
 Indices and tables
 ==================

@@ -9,6 +9,7 @@ models = {'tandem_lda': tandem_lda,
          }
 
 
+
 def infer(train, model_args, pymc3_args, cbs=None):
     
     margs = model_args.copy()

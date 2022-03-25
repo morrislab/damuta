@@ -12,7 +12,7 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('..'))
 
 
 # -- Project information -----------------------------------------------------
@@ -32,12 +32,15 @@ release = '0.0.1'
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
+    'sphinx.ext.autosummary',
+    "sphinx.ext.napoleon", 
     "sphinx_rtd_theme",
     "nbsphinx",
     'sphinx_gallery.load_style',
     "nbsphinx_link",
 ]
 
+autodoc_default_options = {"autosummary": True}
 
 nbsphinx_thumbnails = {
     'examples/quickstart': '_static/quickstart.png',
@@ -54,7 +57,7 @@ nbsphinx_thumbnails = {
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build']
 
 
 # -- Options for HTML output -------------------------------------------------
