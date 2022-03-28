@@ -31,7 +31,7 @@ class DataSet:
     >>> counts = pd.read_csv('tests/test_data/pcawg_counts.csv', index_col = 0, header = 0)
     >>> annotation = pd.read_csv('tests/test_data/pcawg_cancer_types.csv', index_col = 0, header = 0)
     >>> pcawg = DataSet(counts, annotation)
-    >>> pcawg.S
+    >>> pcawg.nsamples
     2778
     """
 
@@ -68,8 +68,9 @@ class DataSet:
         See class:`HierarchicalTendemLda` for mor info. 
         """
         if self.annotation is None:
-            raise ValueError('self.annotation must be first provided.')
-        self.tissue_types = pd.Categorical(self.annotation['type_col'])
+            raise ValueError('Dataset annotation must be provided.')
+        assert type_col in self.annotation.columns, f"{type_col} not found in annotation columns. Check spelling?"
+        self.tissue_types = pd.Categorical(self.annotation[type_col])
         self.type_codes = self.tissue_types.codes
 
     
@@ -173,23 +174,41 @@ class Damuta(ABC):
         self.approx = None
         self.run_id = None
         
-        
         # hidden attributes
         self._opt = _opt_methods[self.opt_method]
         self._trace = None
         self._hat = None
         self._rng = np.random.default_rng(self.seed)
+        
+        # set seed
+        np.random.seed(self.seed)
+        pm.set_tt_rng(self.seed)
 
     ################################################################################
     # Model building and fitting
     ################################################################################
 
     @abstractmethod
-    def build_model(self, *args, **kwargs):
+    def _build_model(self, *args, **kwargs):
+        """Build the pymc3 model 
+        """
+        pass
+    
+    @abstractmethod
+    def _init_kmeans(self):
         """Defined by subclass
         """
         pass
     
+    @abstractmethod
+    def _initialize_signatures(self, init_strategy):
+        """Method to initialize signatures for fitting 
+        """
+        # check that init_strategy is valid
+        strats = ['kmeans', 'uniform']
+        assert init_strategy in strats, f'strategy should be one of {strats}'
+
+
     def fit(self, n_iter, callbacks=None, **pymc3_kwargs):
         """Fit model to the dataset specified by self.dataset
         
@@ -207,7 +226,10 @@ class Damuta(ABC):
         self : :class:`Lda`
         """
         
-        self.build_model(**self.model_kwargs)
+        #TODO: allow different initialization methods
+        
+        self._initialize_signatures()
+        self._build_model(**self.model_kwargs)
         
         with self.model:
             self._trace = self.opt.fit(n=n_iter, random_seed = self.seed, **pymc3_kwargs)
@@ -229,7 +251,10 @@ class Damuta(ABC):
     #    pass
 
     
-    # metrics
+    ################################################################################
+    # Metrics
+    ################################################################################
+
     @abstractmethod
     def BOR(self, *args, **kwargs):
         """Defined by subclass
