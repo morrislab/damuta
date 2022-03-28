@@ -1,3 +1,4 @@
+from subprocess import call
 import numpy as np
 import pandas as pd
 import pymc3 as pm
@@ -8,7 +9,7 @@ from .utils import *
 
 __all__ = ['Damuta', 'DataSet', 'SignatureSet']
 
-_opt_methods = {"ADVI": pm.ADVI, "FullRankAdvi": pm.FullRankADVI}
+_opt_methods = {"ADVI": pm.ADVI, "FullRankADVI": pm.FullRankADVI}
 
 @dataclass
 class DataSet:
@@ -160,6 +161,7 @@ class Damuta(ABC):
     """
 
     def __init__(self, dataset: DataSet, opt_method: str, seed=9595):
+        
         if not isinstance(dataset, DataSet):
             raise TypeError('Learner instance must be initialized with a DataSet object')
 
@@ -209,30 +211,27 @@ class Damuta(ABC):
         assert init_strategy in strats, f'strategy should be one of {strats}'
 
 
-    def fit(self, n_iter, callbacks=None, **pymc3_kwargs):
+    def fit(self, n_iter, init_strategy = "kmeans", **pymc3_kwargs):
         """Fit model to the dataset specified by self.dataset
         
         Parameters 
         ----------
         n_iter: int
             Number of iterations 
-        callbacks: list
-            List of callbacks to pass to pymc3.fit() while fitting
         **pymc3_kwargs:
-            More parameters to pass to pymc3.fit()
+            More parameters to pass to pymc3.fit() (ex. callbacks)
             
         Returns
         -------
         self : :class:`Lda`
         """
         
-        #TODO: allow different initialization methods
-        
-        self._initialize_signatures()
+        self._initialize_signatures(init_strategy)
         self._build_model(**self.model_kwargs)
         
         with self.model:
-            self._trace = self.opt.fit(n=n_iter, random_seed = self.seed, **pymc3_kwargs)
+            self._trace = self._opt(random_seed = self.seed)
+            self._trace.fit(n=n_iter, **pymc3_kwargs)
         
         self.approx = self._trace.approx
         
@@ -271,13 +270,13 @@ class Damuta(ABC):
         return alp_B(self.dataset.counts.to_numpy(), B)
 
     
-    def LAP(self, n_samples = 20, *args, **kwargs):
+    def LAP(self, n_samples = 20):
         """Log average data likelihood
         """
         if self.approx is None:
             warnings.warn("self.trace is None... Fit the model first!", ValueError)
         
-        B = self.trace.approx.sample(n_samples).B.mean(0)
+        B = self.approx.sample(n_samples).B.mean(0)
         return alp_B(self.dataset.counts.to_numpy(), B)
     
     def reconstruction_err(self, *args, **kwargs):
