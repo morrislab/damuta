@@ -1,4 +1,4 @@
-from damuta.models import Lda, TandemLda, HierarchicalTendemLda
+from damuta.models import Lda, TandemLda, HierarchicalTandemLda
 
 def test_DataSet_init(pcawg):
     assert pcawg.nsamples == 2778
@@ -23,7 +23,7 @@ def test_TandemLda(pcawg):
     
 def test_HierarchicalTandemLda(pcawg):
     
-    model = HierarchicalTendemLda(dataset=pcawg, n_damage_sigs=10, 
+    model = HierarchicalTandemLda(dataset=pcawg, n_damage_sigs=10, 
                                   n_misrepair_sigs=5, type_col='tissue_type')
     assert model.dataset.counts.shape == pcawg.counts.shape
     model.fit(15)

@@ -2,15 +2,14 @@ import numpy as np
 import pymc3 as pm
 import pandas as pd
 import pickle
-import wandb
-import yaml
+#import wandb
+#import yaml
 import warnings
 from sklearn.cluster import k_means
 from scipy.special import softmax, logsumexp, loggamma
 from sklearn.metrics.pairwise import cosine_similarity
 from .constants import * 
-import pkg_resources
-
+#import pkg_resources
 
 # constants
 #C=32
