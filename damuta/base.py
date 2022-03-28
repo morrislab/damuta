@@ -139,6 +139,7 @@ class Damuta(ABC):
     
     The Damuta class acts as a central interface for several types of latent models. Each subclass defines at least `build_model`, 
     `fit`, `predict_activities`, `model_to_gv` and metrics such as `LAP`, `ALP`, and `BOR` in addition to subclass-specific methods.
+    
     Parameters
     ----------
     dataset : DataSet
@@ -147,6 +148,7 @@ class Damuta(ABC):
         one of "ADVI" for mean field inference, or "FullRankADVI" for full rank inference.
     seed : int
         Random seed
+    
     Attributes
     ----------
     model: pymc3.model.Model object
