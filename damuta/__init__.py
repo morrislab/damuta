@@ -9,7 +9,7 @@ For guides and examples, see https://docs.wandb.com/guides.
 For scripts and interactive notebooks, see https://github.com/wandb/examples.
 For reference documentation, see https://docs.wandb.com/ref/python.
 """
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 __all__ = [
     "__version__",
