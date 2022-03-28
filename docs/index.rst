@@ -18,6 +18,10 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
    This project is under active development.
 
 
+.. automodule:: damuta
+   :show-inheritance:
+
+
 .. toctree::
    :maxdepth: 1
    :caption: Get started   
@@ -28,11 +32,11 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
 
 .. toctree::
    :maxdepth: 3
-   :caption: API
+   :caption: Modules
    :hidden:
+   :glob:
 
-   bases
-   models
+   damuta*
 
 
 Indices and tables

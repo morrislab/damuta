@@ -28,12 +28,15 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
 
 .. toctree::
    :maxdepth: 3
-   :caption: API
+   :caption: Modules
    :hidden:
+   :glob:
 
-   bases
-   models
+   damuta*
 
+
+.. automodule:: damuta
+   :show-inheritance:
 
 Indices and tables
 ==================

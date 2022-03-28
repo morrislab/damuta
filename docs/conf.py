@@ -17,12 +17,12 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'damuta'
+project = 'Damuta'
 copyright = '2022, Cait Harrigan'
 author = 'Cait Harrigan'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = "0.0.2"
 
 
 # -- General configuration ---------------------------------------------------
@@ -41,6 +41,8 @@ extensions = [
 ]
 
 autodoc_default_options = {"autosummary": True}
+autodoc_default_flags = ['members']
+add_module_names = False
 
 nbsphinx_thumbnails = {
     'examples/quickstart': '_static/quickstart.png',
@@ -52,12 +54,12 @@ nbsphinx_thumbnails = {
 
 
 # Add any paths that contain templates here, relative to this directory.
-#templates_path = ['_templates']
+templates_path = ['_templates']
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', '_templates', 'damuta.rst']
 
 
 # -- Options for HTML output -------------------------------------------------
