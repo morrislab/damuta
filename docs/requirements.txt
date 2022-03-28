@@ -6,6 +6,5 @@ nbsphinx_link
 numpy
 pandas
 pymc3
-warnings
 sklearn
 scipy
