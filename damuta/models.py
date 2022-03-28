@@ -2,7 +2,6 @@ from mimetypes import init
 import pymc3 as pm
 import numpy as np
 from .utils import dirichlet, get_phi, get_eta
-from .initialization import init_sigs
 from .base import Damuta, DataSet
 #from sklearn.decomposition import NMF
 from theano.tensor import batched_dot
@@ -12,7 +11,7 @@ from sklearn.cluster import k_means
 # see https://lucianopaz.github.io/2019/08/19/pymc3-shape-handling/
 
 
-__all__ = ['Lda', 'TandemLda', 'HierarchicalTendemLda']
+__all__ = ['Lda', 'TandemLda', 'HierarchicalTandemLda']
 
 class Lda(Damuta):
     """Bayesian inference of mutational signautres and their activities.
@@ -50,7 +49,7 @@ class Lda(Damuta):
                  alpha_bias=0.1, psi_bias=0.01,
                  opt_method="ADVI", seed=2021):
         
-        super(Damuta, self).__init__(dataset=dataset, opt_method=opt_method, seed=seed)
+        super().__init__(dataset=dataset, opt_method=opt_method, seed=seed)
         
         self.n_sigs = n_sigs
         self.model_kwargs = {"I": n_sigs, "alpha_bias": alpha_bias, "psi_bias": psi_bias}
@@ -62,7 +61,7 @@ class Lda(Damuta):
         
         # get proportions for signature initialization
         data = data/data.sum(1)[:,None]
-        return k_means(data, self.n_sigs, init='k-means++', random_state=np.random.RandomState(self.rng.bit_generator))[0]
+        return k_means(data, self.n_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0]
     
     
     def _initialize_signatures(self, init_strategy):
@@ -149,13 +148,13 @@ class TandemLda(Damuta):
                  alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1, gamma_bias=0.01, 
                  opt_method="ADVI", seed=2021):
         
-        super(Damuta, self).__init__(dataset=dataset, opt_method=opt_method, seed=seed)
-        
+        super().__init__(dataset=dataset, opt_method=opt_method, seed=seed)
+         
         self.n_damage_sigs = n_damage_sigs
         self.n_misrepair_sigs = n_misrepair_sigs
         self.model_kwargs = {"J": n_damage_sigs, "K": n_misrepair_sigs, 
                              "alpha_bias": alpha_bias, "psi_bias": psi_bias,
-                             "beta_bias": beta_bias, "gama_bias": gamma_bias}
+                             "beta_bias": beta_bias, "gamma_bias": gamma_bias}
     
     
     def _init_kmeans(self):
@@ -165,10 +164,10 @@ class TandemLda(Damuta):
         # get proportions for signature initialization
         data = data/data.sum(1)[:,None]
         
-        #return kmeans_alr(get_phi(data), J, rng), kmeans_alr(get_eta(data).reshape(-1,P*M), K, rng).reshape(-1,P,M) 
-        return k_means(get_phi(data), self.n_damage_sigs, init='k-means++',random_state=np.random.RandomState(self.rng.bit_generator))[0], \
-               k_means(get_eta(data).reshape(-1,6), self.n_misrepair_sigs, init='k-means++', random_state=np.random.RandomState(self.rng.bit_generator))[0].reshape(-1,2,3)
-    
+        phi = k_means(get_phi(data), self.n_damage_sigs, init='k-means++',random_state=np.random.RandomState(self._rng.bit_generator))[0]
+        eta = k_means(get_eta(data).reshape(-1,6), self.n_misrepair_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0].reshape(-1,2,3)
+      
+        return phi, eta[:,0,:], eta[:,1,:]
     
     
     def _initialize_signatures(self, init_strategy):
@@ -227,7 +226,7 @@ class TandemLda(Damuta):
         with pm.Model() as self.model:
             
             data = pm.Data("data", train)
-            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 3), testval = phi_init)
+            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 32), testval = phi_init)
             theta = dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
             A = dirichlet("A", a = np.ones(K) * gamma_bias, shape = (S, J, K))
             # 4 is constant for ACGT
@@ -247,7 +246,7 @@ class TandemLda(Damuta):
         pass
 
 
-class HierarchicalTendemLda(Damuta):
+class HierarchicalTandemLda(Damuta):
     """Bayesian inference of mutational signautres and their activities.
     
     Fit COSMIC-style mutational signatures with a Hirearchical Tandem LDA model, where damage signatures
@@ -294,7 +293,7 @@ class HierarchicalTendemLda(Damuta):
                  type_col: str, alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1,  
                  opt_method="ADVI", seed=2021):
         
-        super(Damuta, self).__init__(dataset=dataset, opt_method=opt_method, seed=seed)
+        super().__init__(dataset=dataset, opt_method=opt_method, seed=seed)
         
         self.dataset.annotate_tissue_types(type_col)
         
@@ -311,10 +310,12 @@ class HierarchicalTendemLda(Damuta):
         # get proportions for signature initialization
         data = data/data.sum(1)[:,None]
         
-        #return kmeans_alr(get_phi(data), J, rng), kmeans_alr(get_eta(data).reshape(-1,P*M), K, rng).reshape(-1,P,M) 
-        return k_means(get_phi(data), self.n_damage_sigs, init='k-means++',random_state=np.random.RandomState(self.rng.bit_generator))[0], \
-               k_means(get_eta(data).reshape(-1,6), self.n_misrepair_sigs, init='k-means++', random_state=np.random.RandomState(self.rng.bit_generator))[0].reshape(-1,2,3)
+        phi = k_means(get_phi(data), self.n_damage_sigs, init='k-means++',random_state=np.random.RandomState(self._rng.bit_generator))[0]
+        eta = k_means(get_eta(data).reshape(-1,6), self.n_misrepair_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0].reshape(-1,2,3)
       
+        return phi, eta[:,0,:], eta[:,1,:]
+    
+    
     def _initialize_signatures(self, init_strategy):
         super()._initialize_signatures(init_strategy)
         
@@ -372,7 +373,7 @@ class HierarchicalTendemLda(Damuta):
         with pm.Model() as self.model:
             
             data = pm.Data("data", train)
-            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 3), testval = phi_init)
+            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 32), testval = phi_init)
             theta = dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
             
             a_t = pm.Gamma('a_t',1,1,shape = (max(type_codes + 1),K))
