@@ -3,3 +3,6 @@ ipykernel
 nbsphinx
 sphinx_gallery
 nbsphinx_link
+numpy
+pandas
+pymc3
