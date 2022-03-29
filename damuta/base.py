@@ -156,12 +156,10 @@ class Damuta(ABC):
     model_kwargs: dict
         dict of parameters passed to build the model (ex. hyperprior values)
     fit_kwargs: dict
-        dict of parameters passed to fit the model (ex. pymc3.fit() kwargs)
+        dict of parameters passed to fit the model (ex. pymc3.fit() kwargs). Instantiated when self.fit() is called.
     approx: pymc3.variational.approximations object
         pymc3 approximation object. Created via self.fit()
-    run_id: str
-        Unique label used to identify run. Used when saving checkpoint files, drawn from wandb run if wandb is enabled.
-    """
+     """
 
     def __init__(self, dataset: DataSet, opt_method: str, seed=9595):
         
@@ -178,7 +176,6 @@ class Damuta(ABC):
         self.model_kwargs = None
         self.fit_kwargs = None
         self.approx = None
-        self.run_id = None
         
         # hidden attributes
         self._opt = _opt_methods[self.opt_method]
