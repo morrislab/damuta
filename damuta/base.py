@@ -126,9 +126,9 @@ class SignatureSet:
         
         """
         
-        seps = {'Signature separation': cosine_similarity(self.signatures)[np.triu_indices(self.nsigs, k=1)],
-                'Damage signature separation': cosine_similarity(self.damage_signatures)[np.triu_indices(self.nsigs, k=1)],
-                'Misrepair signature separation': cosine_similarity(self.misrepair_signatures)[np.triu_indices(self.nsigs, k=1)]
+        seps = {'Signature separation': cosine_similarity(self.signatures)[np.triu_indices(self.n_sigs, k=1)],
+                'Damage signature separation': cosine_similarity(self.damage_signatures)[np.triu_indices(self.n_sigs, k=1)],
+                'Misrepair signature separation': cosine_similarity(self.misrepair_signatures)[np.triu_indices(self.n_sigs, k=1)]
                }
         
         return pd.DataFrame.from_dict(seps).describe()
@@ -154,7 +154,9 @@ class Damuta(ABC):
     model: pymc3.model.Model object
         pymc3 model instance
     model_kwargs: dict
-        dict of parameters to pass when constructing model (ex. hyperprior values)
+        dict of parameters passed to build the model (ex. hyperprior values)
+    fit_kwargs: dict
+        dict of parameters passed to fit the model (ex. pymc3.fit() kwargs)
     approx: pymc3.variational.approximations object
         pymc3 approximation object. Created via self.fit()
     run_id: str
@@ -174,6 +176,7 @@ class Damuta(ABC):
         self.seed = seed
         self.model = None
         self.model_kwargs = None
+        self.fit_kwargs = None
         self.approx = None
         self.run_id = None
         
