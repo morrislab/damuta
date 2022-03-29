@@ -173,8 +173,7 @@ class Damuta(ABC):
         self.opt_method = opt_method
         self.seed = seed
         self.model = None
-        self.init_kwargs = None
-        self.fit_kwargs = None
+        self.model_kwargs = None
         self.approx = None
         self.run_id = None
         
@@ -212,7 +211,7 @@ class Damuta(ABC):
         strats = ['kmeans', 'uniform']
         assert init_strategy in strats, f'strategy should be one of {strats}'
 
-    def fit(self, n=1000, init_strategy = "kmeans", **pymc3_kwargs):
+    def fit(self, n, init_strategy = "kmeans", **pymc3_kwargs):
         """Fit model to the dataset specified by self.dataset
         
         Parameters 
@@ -231,17 +230,11 @@ class Damuta(ABC):
         self.fit_kwargs = {k: pymc3_kwargs['k'] for k in pymc3_kwargs.keys()}
         self.fit_kwargs["n"] = n
         self.fit_kwargs["init_strategy"] =  init_strategy                          
-
-        # Initialize the model
+        
+        
         self._initialize_signatures(init_strategy)
+        self._build_model(**self.model_kwargs)
         
-        # Construct model_kwargs
-        model_kwargs = self.init_kwargs.copy()
-        model_kwargs.pop("opt_method")
-        model_kwargs.pop("seed")
-        self._build_model(**model_kwargs)
-        
-        # Perform inference
         with self.model:
             self._trace = self._opt(random_seed = self.seed)
             self._trace.fit(n=n, **pymc3_kwargs)
@@ -262,23 +255,6 @@ class Damuta(ABC):
     #    """
     #    pass
 
-    @property
-    def fit_kwargs(self) -> dict:
-        """ Dictionary containing all arguments passed to self.fit()
-        
-        self.fit() must first be called. 
-        """
-        assert self.fit_kwargs is not None, "Call self.fit() first!"
-        return self.fit_kwargs
-    
-    @property
-    def init_kwargs(self) -> dict:
-        """ Dictionary containing all arguments passed to self.init()
-        
-        self.init() must first be called. 
-        """
-        assert self.init_kwargs is not None, "Call self.init() first!"
-        return self.init_kwargs
     
     ################################################################################
     # Metrics

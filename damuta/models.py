@@ -52,10 +52,8 @@ class Lda(Damuta):
         super().__init__(dataset=dataset, opt_method=opt_method, seed=seed)
         
         self.n_sigs = n_sigs
-        self.init_kwargs = {"n_sigs": n_sigs, 
-                            "alpha_bias": alpha_bias, "psi_bias": psi_bias,
-                            "opt_method": opt_method, "seed": seed}
-            
+        self.model_kwargs = {"n_sigs": n_sigs, "alpha_bias": alpha_bias, "psi_bias": psi_bias}
+        
     
     def _init_kmeans(self):
         
@@ -155,10 +153,9 @@ class TandemLda(Damuta):
          
         self.n_damage_sigs = n_damage_sigs
         self.n_misrepair_sigs = n_misrepair_sigs
-        self.init_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
+        self.model_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
                              "alpha_bias": alpha_bias, "psi_bias": psi_bias,
-                             "beta_bias": beta_bias, "gamma_bias": gamma_bias,
-                             "opt_method": opt_method, "seed": seed}
+                             "beta_bias": beta_bias, "gamma_bias": gamma_bias}
     
     
     def _init_kmeans(self):
@@ -305,9 +302,9 @@ class HierarchicalTandemLda(Damuta):
         
         self.n_damage_sigs = n_damage_sigs
         self.n_misrepair_sigs = n_misrepair_sigs
-        self.init_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
+        self.model_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
                              "alpha_bias": alpha_bias, "psi_bias": psi_bias,
-                             "beta_bias": beta_bias, "opt_method": opt_method, "seed": seed}
+                             "beta_bias": beta_bias}
     
     def _init_kmeans(self):
         
