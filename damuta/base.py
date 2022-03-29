@@ -227,7 +227,7 @@ class Damuta(ABC):
         """
         
         # Store fit_kwargs
-        self.fit_kwargs = {k: pymc3_kwargs['k'] for k in pymc3_kwargs.keys()}
+        self.fit_kwargs = {k: pymc3_kwargs[k] for k in pymc3_kwargs.keys()}
         self.fit_kwargs["n"] = n
         self.fit_kwargs["init_strategy"] =  init_strategy                          
         
