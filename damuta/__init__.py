@@ -14,8 +14,10 @@ __all__ = [
     "SignatureSet",
     "models",
     "plotting",
+    "callbacks"
 ]
 
 from damuta.base import DataSet, SignatureSet
 from damuta import models as models
 from damuta import plotting as plotting
+from damuta import callbacks as callbacks

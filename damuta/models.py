@@ -56,7 +56,7 @@ class Lda(Damuta):
         
     
     def _init_kmeans(self):
-        
+        # TODO: debug
         data=self.dataset.counts.to_numpy()
         
         # get proportions for signature initialization

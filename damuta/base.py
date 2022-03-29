@@ -216,7 +216,7 @@ class Damuta(ABC):
         
         Parameters 
         ----------
-        n_iter: int
+        n: int
             Number of iterations 
         **pymc3_kwargs:
             More parameters to pass to pymc3.fit() (ex. callbacks)
