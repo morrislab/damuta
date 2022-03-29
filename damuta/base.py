@@ -52,7 +52,7 @@ class DataSet:
             assert self.annotation.index.isin(self.counts.index).all() and self.counts.index.isin(self.annotation.index).all(), "Counts and annotation indices must match"
 
     @property
-    def nsamples(self) -> int:
+    def n_samples(self) -> int:
         """Number of samples in dataset"""
         return self.counts.shape[0]
     
@@ -95,7 +95,7 @@ class SignatureSet:
         assert np.allclose(self.signatures.sum(1),1), "All signature definitions must sum to 1"
         
     @property
-    def nsigs(self) -> int:
+    def n_sigs(self) -> int:
         """Number of signatures in dataset"""
         return self.signatures.shape[0]
     
@@ -173,7 +173,8 @@ class Damuta(ABC):
         self.opt_method = opt_method
         self.seed = seed
         self.model = None
-        self.model_kwargs = None
+        self.init_kwargs = None
+        self.fit_kwargs = None
         self.approx = None
         self.run_id = None
         
@@ -211,8 +212,7 @@ class Damuta(ABC):
         strats = ['kmeans', 'uniform']
         assert init_strategy in strats, f'strategy should be one of {strats}'
 
-
-    def fit(self, n_iter, init_strategy = "kmeans", **pymc3_kwargs):
+    def fit(self, n=1000, init_strategy = "kmeans", **pymc3_kwargs):
         """Fit model to the dataset specified by self.dataset
         
         Parameters 
@@ -227,12 +227,24 @@ class Damuta(ABC):
         self: :class:`Lda`
         """
         
+        # Store fit_kwargs
+        self.fit_kwargs = {k: pymc3_kwargs['k'] for k in pymc3_kwargs.keys()}
+        self.fit_kwargs["n"] = n
+        self.fit_kwargs["init_strategy"] =  init_strategy                          
+
+        # Initialize the model
         self._initialize_signatures(init_strategy)
-        self._build_model(**self.model_kwargs)
         
+        # Construct model_kwargs
+        model_kwargs = self.init_kwargs.copy()
+        model_kwargs.pop("opt_method")
+        model_kwargs.pop("seed")
+        self._build_model(**model_kwargs)
+        
+        # Perform inference
         with self.model:
             self._trace = self._opt(random_seed = self.seed)
-            self._trace.fit(n=n_iter, **pymc3_kwargs)
+            self._trace.fit(n=n, **pymc3_kwargs)
         
         self.approx = self._trace.approx
         
@@ -250,6 +262,23 @@ class Damuta(ABC):
     #    """
     #    pass
 
+    @property
+    def fit_kwargs(self) -> dict:
+        """ Dictionary containing all arguments passed to self.fit()
+        
+        self.fit() must first be called. 
+        """
+        assert self.fit_kwargs is not None, "Call self.fit() first!"
+        return self.fit_kwargs
+    
+    @property
+    def init_kwargs(self) -> dict:
+        """ Dictionary containing all arguments passed to self.init()
+        
+        self.init() must first be called. 
+        """
+        assert self.init_kwargs is not None, "Call self.init() first!"
+        return self.init_kwargs
     
     ################################################################################
     # Metrics

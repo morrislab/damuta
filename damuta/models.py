@@ -52,8 +52,10 @@ class Lda(Damuta):
         super().__init__(dataset=dataset, opt_method=opt_method, seed=seed)
         
         self.n_sigs = n_sigs
-        self.model_kwargs = {"I": n_sigs, "alpha_bias": alpha_bias, "psi_bias": psi_bias}
-    
+        self.init_kwargs = {"n_sigs": n_sigs, 
+                            "alpha_bias": alpha_bias, "psi_bias": psi_bias,
+                            "opt_method": opt_method, "seed": seed}
+            
     
     def _init_kmeans(self):
         
@@ -74,12 +76,12 @@ class Lda(Damuta):
             self.model_kwargs['tau_init'] = None   
     
     
-    def _build_model(self, I, alpha_bias, psi_bias, tau_init):
+    def _build_model(self, n_sigs, alpha_bias, psi_bias, tau_init):
         """Compile a pymc3 model
         
         Parameters 
         ----------
-        I: int
+        n_sigs: int
             Number of signautres to fit
         alpha_bias: float, or numpy array of shape (96,)
             Dirichlet concentration parameter on (0,inf). Determines prior probability of mutation types appearing in inferred signatures
@@ -91,6 +93,7 @@ class Lda(Damuta):
         data=self.dataset.counts.to_numpy()
         S = data.shape[0]
         N = data.sum(1).reshape(S,1)
+        I = n_sigs
         
         with pm.Model() as self.model:
             
@@ -152,9 +155,10 @@ class TandemLda(Damuta):
          
         self.n_damage_sigs = n_damage_sigs
         self.n_misrepair_sigs = n_misrepair_sigs
-        self.model_kwargs = {"J": n_damage_sigs, "K": n_misrepair_sigs, 
+        self.init_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
                              "alpha_bias": alpha_bias, "psi_bias": psi_bias,
-                             "beta_bias": beta_bias, "gamma_bias": gamma_bias}
+                             "beta_bias": beta_bias, "gamma_bias": gamma_bias,
+                             "opt_method": opt_method, "seed": seed}
     
     
     def _init_kmeans(self):
@@ -192,15 +196,15 @@ class TandemLda(Damuta):
         if self.model_kwargs["etaT_init"] is not None:
             assert np.allclose(self.model_kwargs["etaT_init"].sum(1), 1)       
     
-    def _build_model(self, J, K, alpha_bias, psi_bias, beta_bias, gamma_bias,  
+    def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, gamma_bias,  
                      phi_init=None, etaC_init = None, etaT_init = None):
         """Compile a pymc3 model
         
         Parameters 
         ----------
-        J: int
+        n_damage_sigs: int
             Number of damage signautres to fit
-        K: int
+        n_misrepair_sigs: int
             Number of misrepair signautres to fit
         alpha_bias: float, or numpy array of shape (32,)
             Dirichlet concentration parameter on (0,inf). Determines prior probability of trinucleotide context types appearing in inferred damage signatures
@@ -222,6 +226,8 @@ class TandemLda(Damuta):
         
         S = train.shape[0]
         N = train.sum(1).reshape(S,1)
+        J = n_damage_sigs
+        K = n_misrepair_sigs
         
         with pm.Model() as self.model:
             
@@ -299,9 +305,9 @@ class HierarchicalTandemLda(Damuta):
         
         self.n_damage_sigs = n_damage_sigs
         self.n_misrepair_sigs = n_misrepair_sigs
-        self.model_kwargs = {"J": n_damage_sigs, "K": n_misrepair_sigs, 
+        self.init_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
                              "alpha_bias": alpha_bias, "psi_bias": psi_bias,
-                             "beta_bias": beta_bias}
+                             "beta_bias": beta_bias, "opt_method": opt_method, "seed": seed}
     
     def _init_kmeans(self):
         
@@ -338,15 +344,15 @@ class HierarchicalTandemLda(Damuta):
         if self.model_kwargs["etaT_init"] is not None:
             assert np.allclose(self.model_kwargs["etaT_init"].sum(1), 1)       
     
-    def _build_model(self, J, K, alpha_bias, psi_bias, beta_bias, 
+    def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, 
                      phi_init=None, etaC_init=None, etaT_init=None):
         """Compile a pymc3 model
         
         Parameters 
         ----------
-        J: int
+        n_damage_sigs: int
             Number of damage signautres to fit
-        K: int
+        n_misrepair_sigs: int
             Number of misrepair signautres to fit
         alpha_bias: float, or numpy array of shape (32,)
             Dirichlet concentration parameter on (0,inf). Determines prior probability of trinucleotide context types appearing in inferred damage signatures
@@ -369,6 +375,8 @@ class HierarchicalTandemLda(Damuta):
         
         S = train.shape[0]
         N = train.sum(1).reshape(S,1)
+        J = n_damage_sigs
+        K = n_misrepair_sigs
         
         with pm.Model() as self.model:
             
