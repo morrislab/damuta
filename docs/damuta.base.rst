@@ -1,5 +1,5 @@
-damuta.base module
-==================
+damuta.base
+-----------
 
 .. automodule:: damuta.base
    :members:

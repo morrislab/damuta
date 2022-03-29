@@ -1,7 +1,7 @@
-damuta.constants
+damuta.callbacks
 ----------------
 
-.. automodule:: damuta.constants
+.. automodule:: damuta.callbacks
    :members:
    :undoc-members:
    :show-inheritance:

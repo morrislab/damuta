@@ -1,5 +1,5 @@
-damuta package
-==============
+damuta
+------
 
 .. automodule:: damuta
    :members:
@@ -13,6 +13,7 @@ Submodules
    :maxdepth: 4
 
    damuta.base
+   damuta.callbacks
    damuta.constants
    damuta.models
    damuta.plotting
