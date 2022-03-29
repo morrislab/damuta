@@ -47,15 +47,18 @@ class Lda(Damuta):
     
     def __init__(self, dataset: DataSet, n_sigs: int,
                  alpha_bias=0.1, psi_bias=0.01,
-                 opt_method="ADVI", seed=2021):
+                 opt_method="ADVI", init_strategy="kmeans", seed=2021):
         
-        super().__init__(dataset=dataset, opt_method=opt_method, seed=seed)
+        super().__init__(dataset=dataset, opt_method=opt_method, 
+                         init_strategy=init_strategy, seed=seed)
         
         self.n_sigs = n_sigs
-        self.model_kwargs = {"n_sigs": n_sigs, "alpha_bias": alpha_bias, "psi_bias": psi_bias}
+        self._model_kwargs = {"n_sigs": n_sigs, "alpha_bias": alpha_bias, "psi_bias": psi_bias}
         
     
     def _init_kmeans(self):
+        """Initialize signatures via kmeans 
+        """
         # TODO: debug
         data=self.dataset.counts.to_numpy()
         
@@ -64,14 +67,15 @@ class Lda(Damuta):
         return k_means(data, self.n_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0]
     
     
-    def _initialize_signatures(self, init_strategy):
-        super()._initialize_signatures(init_strategy)
+    def _initialize_signatures(self):
+        """Method to initialize signatures for inference.
+        """
         
-        if init_strategy == "kmeans":
-            self.model_kwargs['tau_init'] = self._init_kmeans()
+        if self.init_strategy == "kmeans":
+            self._model_kwargs['tau_init'] = self._init_kmeans()
         
-        if init_strategy == "uniform":
-            self.model_kwargs['tau_init'] = None   
+        if self.init_strategy == "uniform":
+            self._model_kwargs['tau_init'] = None   
     
     
     def _build_model(self, n_sigs, alpha_bias, psi_bias, tau_init):
@@ -147,18 +151,20 @@ class TandemLda(Damuta):
     
     def __init__(self, dataset: DataSet, n_damage_sigs: int, n_misrepair_sigs: int,
                  alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1, gamma_bias=0.01, 
-                 opt_method="ADVI", seed=2021):
+                 opt_method="ADVI", init_strategy="kmeans", seed=2021):
         
-        super().__init__(dataset=dataset, opt_method=opt_method, seed=seed)
+        super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, seed=seed)
          
         self.n_damage_sigs = n_damage_sigs
         self.n_misrepair_sigs = n_misrepair_sigs
-        self.model_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
+        self._model_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
                              "alpha_bias": alpha_bias, "psi_bias": psi_bias,
                              "beta_bias": beta_bias, "gamma_bias": gamma_bias}
     
     
     def _init_kmeans(self):
+        """Initialize signatures via kmeans 
+        """
         
         data=self.dataset.counts.to_numpy()
         
@@ -171,27 +177,28 @@ class TandemLda(Damuta):
         return phi, eta[:,0,:], eta[:,1,:]
     
     
-    def _initialize_signatures(self, init_strategy):
-        super()._initialize_signatures(init_strategy)
+    def _initialize_signatures(self):
+        """Method to initialize signatures for inference.
+        """
         
-        if init_strategy == "kmeans":
-            self.model_kwargs['phi_init'], \
-                self.model_kwargs['etaC_init'], \
-                    self.model_kwargs['etaT_init'] = self._init_kmeans()
+        if self.init_strategy == "kmeans":
+            self._model_kwargs['phi_init'], \
+                self._model_kwargs['etaC_init'], \
+                    self._model_kwargs['etaT_init'] = self._init_kmeans()
         
-        if init_strategy == "uniform":
-            self.model_kwargs['phi_init'] = None
-            self.model_kwargs['etaC_init'] = None 
-            self.model_kwargs['etaT_init'] = None  
+        if self.init_strategy == "uniform":
+            self._model_kwargs['phi_init'] = None
+            self._model_kwargs['etaC_init'] = None 
+            self._model_kwargs['etaT_init'] = None  
         
         # check that sigs are valid
-        if self.model_kwargs["phi_init"] is not None:
-            assert np.allclose(self.model_kwargs["phi_init"].sum(1), 1) 
+        if self._model_kwargs["phi_init"] is not None:
+            assert np.allclose(self._model_kwargs["phi_init"].sum(1), 1) 
         # eta should be kxpxm
-        if self.model_kwargs["etaC_init"] is not None:
-            assert np.allclose(self.model_kwargs["etaC_init"].sum(1), 1) 
-        if self.model_kwargs["etaT_init"] is not None:
-            assert np.allclose(self.model_kwargs["etaT_init"].sum(1), 1)       
+        if self._model_kwargs["etaC_init"] is not None:
+            assert np.allclose(self._model_kwargs["etaC_init"].sum(1), 1) 
+        if self._model_kwargs["etaT_init"] is not None:
+            assert np.allclose(self._model_kwargs["etaT_init"].sum(1), 1)       
     
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, gamma_bias,  
                      phi_init=None, etaC_init = None, etaT_init = None):
@@ -294,19 +301,21 @@ class HierarchicalTandemLda(Damuta):
     
     def __init__(self, dataset: DataSet, n_damage_sigs: int, n_misrepair_sigs: int,
                  type_col: str, alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1,  
-                 opt_method="ADVI", seed=2021):
+                 opt_method="ADVI", init_strategy="kmeans", seed=2021):
         
-        super().__init__(dataset=dataset, opt_method=opt_method, seed=seed)
+        super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, seed=seed)
         
         self.dataset.annotate_tissue_types(type_col)
         
         self.n_damage_sigs = n_damage_sigs
         self.n_misrepair_sigs = n_misrepair_sigs
-        self.model_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
+        self._model_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
                              "alpha_bias": alpha_bias, "psi_bias": psi_bias,
                              "beta_bias": beta_bias}
     
     def _init_kmeans(self):
+        """Initialize signatures via kmeans 
+        """
         
         data=self.dataset.counts.to_numpy()
         
@@ -319,27 +328,28 @@ class HierarchicalTandemLda(Damuta):
         return phi, eta[:,0,:], eta[:,1,:]
     
     
-    def _initialize_signatures(self, init_strategy):
-        super()._initialize_signatures(init_strategy)
+    def _initialize_signatures(self):
+        """Method to initialize signatures for inference.
+        """
         
-        if init_strategy == "kmeans":
-            self.model_kwargs['phi_init'], \
-                self.model_kwargs['etaC_init'], \
-                    self.model_kwargs['etaT_init'] = self._init_kmeans()
+        if self.init_strategy == "kmeans":
+            self._model_kwargs['phi_init'], \
+                self._model_kwargs['etaC_init'], \
+                    self._model_kwargs['etaT_init'] = self._init_kmeans()
         
-        if init_strategy == "uniform":
-            self.model_kwargs['phi_init'] = None
-            self.model_kwargs['etaC_init'] = None 
-            self.model_kwargs['etaT_init'] = None  
+        if self.init_strategy == "uniform":
+            self._model_kwargs['phi_init'] = None
+            self._model_kwargs['etaC_init'] = None 
+            self._model_kwargs['etaT_init'] = None  
         
         # check that sigs are valid
-        if self.model_kwargs["phi_init"] is not None:
-            assert np.allclose(self.model_kwargs["phi_init"].sum(1), 1) 
+        if self._model_kwargs["phi_init"] is not None:
+            assert np.allclose(self._model_kwargs["phi_init"].sum(1), 1) 
         # eta should be kxpxm
-        if self.model_kwargs["etaC_init"] is not None:
-            assert np.allclose(self.model_kwargs["etaC_init"].sum(1), 1) 
-        if self.model_kwargs["etaT_init"] is not None:
-            assert np.allclose(self.model_kwargs["etaT_init"].sum(1), 1)       
+        if self._model_kwargs["etaC_init"] is not None:
+            assert np.allclose(self._model_kwargs["etaC_init"].sum(1), 1) 
+        if self._model_kwargs["etaT_init"] is not None:
+            assert np.allclose(self._model_kwargs["etaT_init"].sum(1), 1)       
     
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, 
                      phi_init=None, etaC_init=None, etaT_init=None):

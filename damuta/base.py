@@ -9,6 +9,7 @@ from .utils import *
 __all__ = ['Damuta', 'DataSet', 'SignatureSet']
 
 _opt_methods = {"ADVI": pm.ADVI, "FullRankADVI": pm.FullRankADVI}
+_init_strats = ['kmeans', 'uniform']
 
 @dataclass
 class DataSet:
@@ -153,31 +154,28 @@ class Damuta(ABC):
     ----------
     model: pymc3.model.Model object
         pymc3 model instance
-    model_kwargs: dict
-        dict of parameters passed to build the model (ex. hyperprior values)
-    fit_kwargs: dict
-        dict of parameters passed to fit the model (ex. pymc3.fit() kwargs). Instantiated when self.fit() is called.
     approx: pymc3.variational.approximations object
         pymc3 approximation object. Created via self.fit()
      """
 
-    def __init__(self, dataset: DataSet, opt_method: str, seed=9595):
+    def __init__(self, dataset: DataSet, opt_method: str, init_strategy: str, seed: int):
         
         if not isinstance(dataset, DataSet):
             raise TypeError('Learner instance must be initialized with a DataSet object')
 
         if not opt_method in _opt_methods.keys():
             raise TypeError(f'Optimization method should be one of {list(_opt_methods.keys())}')
+        assert init_strategy in _init_strats, f'self.init_strategy should be one of {_init_strats}'
         
         self.dataset = dataset
         self.opt_method = opt_method
+        self.init_strategy = init_strategy
         self.seed = seed
         self.model = None
-        self.model_kwargs = None
-        self.fit_kwargs = None
         self.approx = None
         
         # hidden attributes
+        self._model_kwargs = None
         self._opt = _opt_methods[self.opt_method]
         self._trace = None
         self._hat = None
@@ -204,14 +202,12 @@ class Damuta(ABC):
         pass
     
     @abstractmethod
-    def _initialize_signatures(self, init_strategy):
-        """Method to initialize signatures for fitting 
+    def _initialize_signatures(self):
+        """Method to initialize signatures for fitting. Defined by subclass.
         """
-        # check that init_strategy is valid
-        strats = ['kmeans', 'uniform']
-        assert init_strategy in strats, f'strategy should be one of {strats}'
+        
 
-    def fit(self, n, init_strategy = "kmeans", **pymc3_kwargs):
+    def fit(self, n, **pymc3_kwargs):
         """Fit model to the dataset specified by self.dataset
         
         Parameters 
@@ -226,13 +222,7 @@ class Damuta(ABC):
         self: :class:`Lda`
         """
         
-        # Store fit_kwargs
-        self.fit_kwargs = {k: pymc3_kwargs[k] for k in pymc3_kwargs.keys()}
-        self.fit_kwargs["n"] = n
-        self.fit_kwargs["init_strategy"] =  init_strategy                          
-        
-        
-        self._initialize_signatures(init_strategy)
+        self._initialize_signatures()
         self._build_model(**self.model_kwargs)
         
         with self.model:
