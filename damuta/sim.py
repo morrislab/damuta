@@ -22,9 +22,10 @@ def sim_from_sigs(tau, tau_hyperprior, S, N, I=None, seed=None):
 
     return data, {'tau':tau, 'tau_activities': tau_activities}
 
-def sim_parametric(J,K,S,N,alpha_bias,psi_bias,gamma_bias,beta_bias,seed=None):
+def sim_parametric(n_damage_sigs,n_misrepair_sigs,S,N,alpha_bias=0.01,psi_bias=0.01,gamma_bias=0.01,beta_bias=0.01,seed=1333):
     # simulate from generated phi and eta
-    
+    J=n_damage_sigs
+    K=n_misrepair_sigs
     rng=np.random.default_rng(seed)
     
     # Hyper-parameter for priors
@@ -47,7 +48,7 @@ def sim_parametric(J,K,S,N,alpha_bias,psi_bias,gamma_bias,beta_bias,seed=None):
     B=np.einsum('spc,spm->spmc', W, Q).reshape(S, -1)
     
     data = np.vstack(list(map(rng.multinomial, [N]*S, B, [1]*S)))
-    data = pd.DataFrame(data, columns = mut96, index = [f'simsample_{n}' for n in range(S)])
+    data = pd.DataFrame(data, columns = mut96, index = [f'simulated_sample_{n}' for n in range(S)])
     
     return data, {'phi': phi, 'theta': theta, 'A': A, 'eta': eta, 'B': B,
                   'alpha': alpha, 'psi': psi, 'gamma': gamma, 'beta': beta}

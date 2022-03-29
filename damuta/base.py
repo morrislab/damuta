@@ -65,7 +65,7 @@ class DataSet:
         """Set a specified column of annotation as the sample tissue type
         
         Tissue type information is used by hirearchical models to create tissue-type prior.
-        See class:`HierarchicalTendemLda` for mor info. 
+        See class:`HierarchicalTendemLda` for more details. 
         """
         if self.annotation is None:
             raise ValueError('Dataset annotation must be provided.')
@@ -224,7 +224,7 @@ class Damuta(ABC):
             
         Returns
         -------
-        self : :class:`Lda`
+        self: :class:`Lda`
         """
         
         self._initialize_signatures(init_strategy)

@@ -9,7 +9,7 @@ from sklearn.cluster import k_means
 from scipy.special import softmax, logsumexp, loggamma
 from sklearn.metrics.pairwise import cosine_similarity
 from .constants import * 
-#import pkg_resources
+import pkg_resources
 
 # constants
 #C=32
@@ -291,7 +291,6 @@ def profile_sigs(sigs, refsigs, thresh = 0.9, refidx = None):
                               })
     df.index = [f'sig_{i}' for i in range(0,sigs.shape[0])]
     return df
-
 
 def load_cosmic_V3():
     """Return a dataframe of COSMIC V3 signature definitions
