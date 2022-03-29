@@ -1,5 +1,5 @@
-damuta
-------
+damuta package
+==============
 
 .. automodule:: damuta
    :members:

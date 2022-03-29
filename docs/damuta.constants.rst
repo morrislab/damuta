@@ -1,5 +1,5 @@
-damuta.constants
-----------------
+damuta.constants module
+=======================
 
 .. automodule:: damuta.constants
    :members:

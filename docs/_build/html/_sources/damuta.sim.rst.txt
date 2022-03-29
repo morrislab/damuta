@@ -1,5 +1,5 @@
-damuta.sim
-----------
+damuta.sim module
+=================
 
 .. automodule:: damuta.sim
    :members:

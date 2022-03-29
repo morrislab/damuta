@@ -1,6 +1,15 @@
 {
  "cells": [
   {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from damuta import DataSet, SignatureSet\n"
+   ]
+  },
+  {
    "cell_type": "markdown",
    "metadata": {},
    "source": [
@@ -12,20 +21,29 @@
     "\n",
     "Only works for classic 96-dimensional mutational signatures \n",
     "\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from damuta.models import Lda, TandemLda, HierarchicalTandemLda\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
     "## Tandem LDA\n",
     "\n",
     "Two layers of LDA\n",
     "Infers activities for damage and repair signatures\n",
     "\n",
-    "Can be initialised with classic 96-dimensional mutational signatures \n",
-    "\n",
-    "## Damuta \n",
-    "\n",
-    "The full damuta model is similar to the Tandem LDA model, with an added hirearchical proir to incorporate tissue-specific information. \n",
-    "\n",
-    "Infers activities for damage and repair signatures\n",
-    "\n",
-    "Can be initialised with classic 96-dimensional mutational signatures "
+    "Can be initialised with classic 96-dimensional mutational signatures \n"
    ]
   },
   {
@@ -34,6 +52,20 @@
    "metadata": {},
    "outputs": [],
    "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "\n",
+    "## Hierarchical Tandem LDA\n",
+    "\n",
+    "The full Hierarchical Tandem LDA model is similar to the Tandem LDA model, with an added hirearchical proir to incorporate tissue-specific information. \n",
+    "\n",
+    "Infers activities for damage and repair signatures\n",
+    "\n",
+    "Can be initialised with classic 96-dimensional mutational signatures "
+   ]
   }
  ],
  "metadata": {
