@@ -2,7 +2,7 @@ from mimetypes import init
 import pymc3 as pm
 import numpy as np
 from .utils import dirichlet, get_phi, get_eta
-from .base import Damuta, DataSet
+from .base import Model, DataSet
 #from sklearn.decomposition import NMF
 from theano.tensor import batched_dot
 from sklearn.cluster import k_means
@@ -13,7 +13,7 @@ from sklearn.cluster import k_means
 
 __all__ = ['Lda', 'TandemLda', 'HierarchicalTandemLda']
 
-class Lda(Damuta):
+class Lda(Model):
     """Bayesian inference of mutational signautres and their activities.
     
     Fit COSMIC-style mutational signatures with a Latent Dirichlet Allocation model. 
@@ -47,7 +47,7 @@ class Lda(Damuta):
     
     def __init__(self, dataset: DataSet, n_sigs: int,
                  alpha_bias=0.1, psi_bias=0.01,
-                 opt_method="ADVI", init_strategy="kmeans", seed=2021):
+                 opt_method="ADVI", init_strategy="uniform", seed=2021):
         
         super().__init__(dataset=dataset, opt_method=opt_method, 
                          init_strategy=init_strategy, seed=seed)
@@ -78,7 +78,7 @@ class Lda(Damuta):
             self._model_kwargs['tau_init'] = None   
     
     
-    def _build_model(self, n_sigs, alpha_bias, psi_bias, tau_init):
+    def _build_model(self, n_sigs, alpha_bias, psi_bias, tau_init=None):
         """Compile a pymc3 model
         
         Parameters 
@@ -110,7 +110,7 @@ class Lda(Damuta):
         """Baysean Occam's Rasor"""
         pass
     
-class TandemLda(Damuta):
+class TandemLda(Model):
     """Bayesian inference of mutational signautres and their activities.
     
     Fit COSMIC-style mutational signatures with a Tandem LDA model, where damage signatures
@@ -256,7 +256,7 @@ class TandemLda(Damuta):
         pass
 
 
-class HierarchicalTandemLda(Damuta):
+class HierarchicalTandemLda(Model):
     """Bayesian inference of mutational signautres and their activities.
     
     Fit COSMIC-style mutational signatures with a Hirearchical Tandem LDA model, where damage signatures

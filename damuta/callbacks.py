@@ -8,6 +8,7 @@ __all__ = ["Callback", "LogELBO", "LogWandB"]
 class Callback:
     # Copyright 2020 The PyMC Developers
     # https://github.com/pymc-devs/pymc/blob/e987950b359edfe4a49c92ee67c57983fe0fc5d9/pymc/variational/callbacks.py
+    
     def __call__(self, approx, loss, i):
         raise NotImplementedError
 

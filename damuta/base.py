@@ -134,7 +134,7 @@ class SignatureSet:
         
         return pd.DataFrame.from_dict(seps).describe()
     
-class Damuta(ABC):
+class Model(ABC):
     """
     Bayesian inference of mutational signautres and their activities.
     
@@ -203,8 +203,9 @@ class Damuta(ABC):
     
     @abstractmethod
     def _initialize_signatures(self):
-        """Method to initialize signatures for fitting. Defined by subclass.
+        """Defined by subclass.
         """
+        pass
         
 
     def fit(self, n, **pymc3_kwargs):
@@ -223,7 +224,7 @@ class Damuta(ABC):
         """
         
         self._initialize_signatures()
-        self._build_model(**self.model_kwargs)
+        self._build_model(**self._model_kwargs)
         
         with self.model:
             self._trace = self._opt(random_seed = self.seed)

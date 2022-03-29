@@ -1,4 +1,4 @@
-"""Damuta provides several latent variable models for mutational signature analysis
+"""Damuta provides several latent variable models for proailistic mutational signature analysis
 
 The most commonly used functions/objects are:
   - damuta.DataSet - base classes for datasets 
