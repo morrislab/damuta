@@ -1,0 +1,51 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.11.2
+    framework: sklearn
+    is_jupyter_run: true
+    is_kaggle_kernel: false
+    python_version: 3.8.12
+    t:
+      1:
+      - 5
+      4: 3.8.12
+      5: 0.11.2
+      8:
+      - 1
+      - 5
+alpha_bias:
+  desc: null
+  value: 0.1
+beta_bias:
+  desc: null
+  value: 0.1
+gamma_bias:
+  desc: null
+  value: 0.01
+init_strategy:
+  desc: null
+  value: kmeans
+n:
+  desc: null
+  value: 100
+n_damage_sigs:
+  desc: null
+  value: 8
+n_misrepair_sigs:
+  desc: null
+  value: 5
+n_sigs:
+  desc: null
+  value: 20
+opt_method:
+  desc: null
+  value: ADVI
+psi_bias:
+  desc: null
+  value: 0.01
+seed:
+  desc: null
+  value: 2021

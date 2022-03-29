@@ -1,0 +1,26 @@
+{
+    "os": "Linux-3.10.0-957.12.2.el7.x86_64-x86_64-with-glibc2.17",
+    "python": "3.8.12",
+    "heartbeatAt": "2022-03-29T04:09:49.974037",
+    "startedAt": "2022-03-29T04:09:48.964119",
+    "docker": null,
+    "gpu": "Quadro RTX 6000",
+    "gpu_count": 1,
+    "cpu_count": 80,
+    "cuda": "10.0.130",
+    "args": [
+        "-f",
+        "/lila/home/harrigan/.local/share/jupyter/runtime/kernel-025a39b2-9ed2-4faa-8ade-0f0d11057a06.json"
+    ],
+    "state": "running",
+    "program": "docs/examples/wandb-jvsc-42e8c406-89c2-4baa-84ea-f7f484320c5f.ipynb",
+    "root": "/lila/home/harrigan/damuta",
+    "git": {
+        "remote": "https://github.com/morrislab/damuta",
+        "commit": "dd2e24a404acccdba6b8676af0d0814b2c0a8843"
+    },
+    "email": "cait.harrigan@mail.utoronto.ca",
+    "host": "glass",
+    "username": "harrigan",
+    "executable": "/home/harrigan/miniconda3/envs/pymc3/bin/python"
+}
