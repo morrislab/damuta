@@ -268,7 +268,7 @@ class Model(ABC):
 
     
     def LAP(self, n_samples = 20):
-        """Log average data likelihood
+        """Log average data likelihood (bayesian version of reconstruction error)
         """
         if self.approx is None:
             warnings.warn("self.trace is None... Fit the model first!", ValueError)

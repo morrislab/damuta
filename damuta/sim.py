@@ -22,7 +22,7 @@ def sim_from_sigs(tau, tau_hyperprior, S, N, I=None, seed=None):
 
     return data, {'tau':tau, 'tau_activities': tau_activities}
 
-def sim_parametric(n_damage_sigs,n_misrepair_sigs,S,N,alpha_bias=0.01,psi_bias=0.01,gamma_bias=0.01,beta_bias=0.01,seed=1333):
+def sim_parametric(n_damage_sigs,n_misrepair_sigs,S,N,alpha_bias=0.9,psi_bias=0.1,gamma_bias=0.1,beta_bias=0.9,seed=1333):
     # simulate from generated phi and eta
     J=n_damage_sigs
     K=n_misrepair_sigs
