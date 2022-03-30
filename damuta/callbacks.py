@@ -36,40 +36,6 @@ class LogELBO(Callback):
         wandb.log({"ELBO": loss[i-1]})
 
 
-class Checkpoint(Callback):
-    """Save a pickled checkpoint to a file.
-     
-    Parameters
-    ----------
-    every: int
-        Frequency at which wandb.log() is called
-    file_name: str
-        Path to save checkpoint to
-    """
-
-    def __init__(self, file_path, every=100):
-        self.every = every
-
-    def __call__(self, approx, loss, i):
-        if i % self.every or i < self.every:
-            return
-        
-        wandb.log({"ELBO": loss[i-1]})
-
-
-class Foo(Callback):
-    def __init__(self, model, every=100):
-        self.every = every
-        self.model = model
-
-    def __call__(self, approx, loss, i):
-        if i % self.every or i < self.every:
-            return
-        
-        print(len(self.model._trace.hist))
-
-
-
 
 #def cbs(*args):
 #    # return a list of callbacks, with extra parameters as desired
