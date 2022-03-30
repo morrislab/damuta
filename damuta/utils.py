@@ -9,7 +9,7 @@ from sklearn.cluster import k_means
 from scipy.special import softmax, logsumexp, loggamma
 from sklearn.metrics.pairwise import cosine_similarity
 from .constants import * 
-#import pkg_resources
+import pkg_resources
 
 # constants
 #C=32
@@ -292,7 +292,6 @@ def profile_sigs(sigs, refsigs, thresh = 0.9, refidx = None):
     df.index = [f'sig_{i}' for i in range(0,sigs.shape[0])]
     return df
 
-
 def load_cosmic_V3():
     """Return a dataframe of COSMIC V3 signature definitions
 
@@ -319,51 +318,3 @@ def load_default_config():
     f = pkg_resources.resource_filename(__name__, 'config/default.yaml')
     return load_config(f)
 
-
-#############
-# callbacks
-#############
-
-def cbs(*args):
-    # return a list of callbacks, with extra parameters as desired
-    
-    def wandb_calls(*args):
-        approx, losses, i = args
-        wandb.log({'ELBO': losses[-1]})
-        
-    
-    return [wandb_calls]
-
-def log_elbo(*args):
-    approx, losses, i = args
-    wandb.log({'ELBO': losses[-1]})
-        
-def log_loss(trn, val, call_every = 1000):
-    def cb(*args):
-        approx, losses, i = args
-        if i % call_every != 0:
-            return None
-        
-        B = approx.sample(100).B.mean(0)
-    
-        wandb.log({'trn_alp': alp_B(trn.to_numpy(), B),
-                   'val_alp': alp_B(val.to_numpy(), B)
-                  })
-    return cb
-        
-def log_data_summary(trn, val, tst1, tst2):
-    summary_table = wandb.Table(columns=['dataset', 'n samples', 'mean nmut', 'median nmut', 'min nmut', 'max nmut'],
-                                data = [['train', trn.shape[0], trn.sum(1).mean(), np.median(trn.sum(1)), trn.sum(1).min(), trn.sum(1).max()],
-                                        ['val', val.shape[0], val.sum(1).mean(), np.median(val.sum(1)), val.sum(1).min(), val.sum(1).max()],
-                                        ['test1', tst1.shape[0], tst1.sum(1).mean(), np.median(tst1.sum(1)), tst1.sum(1).min(), tst1.sum(1).max()],
-                                        ['test2', tst2.shape[0], tst2.sum(1).mean(), np.median(tst2.sum(1)), tst2.sum(1).min(), tst2.sum(1).max()] 
-                                       ])
-    wandb.log({'dataset summary': summary_table})
-
-
-def ckpt(fp, model, trace, dataset_args, model_args, pymc3_args):
-    def cb(*args):
-        save_checkpoint(fp, model, trace, dataset_args, model_args, pymc3_args)
-    return cb
-    
-    

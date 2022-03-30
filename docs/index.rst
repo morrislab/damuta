@@ -17,10 +17,8 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
 
    This project is under active development.
 
-
 .. automodule:: damuta
    :show-inheritance:
-
 
 .. toctree::
    :maxdepth: 1
@@ -30,6 +28,8 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
    examples/quickstart
    examples/index
 
+All example notebooks can be downloaded from [github](https://github.com/morrislab/damuta/tree/pkg/docs/examples)
+
 .. toctree::
    :maxdepth: 3
    :caption: Modules
@@ -37,7 +37,6 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
    :glob:
 
    damuta*
-
 
 Indices and tables
 ==================

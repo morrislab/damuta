@@ -1,14 +1,12 @@
 Installation
 ======================
-foo 
 
+You can install the development version of Damuta from [github](https://github.com/morrislab/damuta/tree/pkg).
 
 PIP
 ~~~~~~~~~~
 
-bar
+`pip install -i https://test.pypi.org/simple/ damuta`
 
-Conda
-~~~~~~~~
+See [pipy](https://test.pypi.org/project/damuta/)
 
-baz

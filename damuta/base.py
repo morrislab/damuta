@@ -9,6 +9,7 @@ from .utils import *
 __all__ = ['Damuta', 'DataSet', 'SignatureSet']
 
 _opt_methods = {"ADVI": pm.ADVI, "FullRankADVI": pm.FullRankADVI}
+_init_strats = ['kmeans', 'uniform']
 
 @dataclass
 class DataSet:
@@ -52,7 +53,7 @@ class DataSet:
             assert self.annotation.index.isin(self.counts.index).all() and self.counts.index.isin(self.annotation.index).all(), "Counts and annotation indices must match"
 
     @property
-    def nsamples(self) -> int:
+    def n_samples(self) -> int:
         """Number of samples in dataset"""
         return self.counts.shape[0]
     
@@ -65,7 +66,7 @@ class DataSet:
         """Set a specified column of annotation as the sample tissue type
         
         Tissue type information is used by hirearchical models to create tissue-type prior.
-        See class:`HierarchicalTendemLda` for mor info. 
+        See class:`HierarchicalTendemLda` for more details. 
         """
         if self.annotation is None:
             raise ValueError('Dataset annotation must be provided.')
@@ -95,7 +96,7 @@ class SignatureSet:
         assert np.allclose(self.signatures.sum(1),1), "All signature definitions must sum to 1"
         
     @property
-    def nsigs(self) -> int:
+    def n_sigs(self) -> int:
         """Number of signatures in dataset"""
         return self.signatures.shape[0]
     
@@ -126,14 +127,14 @@ class SignatureSet:
         
         """
         
-        seps = {'Signature separation': cosine_similarity(self.signatures)[np.triu_indices(self.nsigs, k=1)],
-                'Damage signature separation': cosine_similarity(self.damage_signatures)[np.triu_indices(self.nsigs, k=1)],
-                'Misrepair signature separation': cosine_similarity(self.misrepair_signatures)[np.triu_indices(self.nsigs, k=1)]
+        seps = {'Signature separation': cosine_similarity(self.signatures)[np.triu_indices(self.n_sigs, k=1)],
+                'Damage signature separation': cosine_similarity(self.damage_signatures)[np.triu_indices(self.n_sigs, k=1)],
+                'Misrepair signature separation': cosine_similarity(self.misrepair_signatures)[np.triu_indices(self.n_sigs, k=1)]
                }
         
         return pd.DataFrame.from_dict(seps).describe()
     
-class Damuta(ABC):
+class Model(ABC):
     """
     Bayesian inference of mutational signautres and their activities.
     
@@ -153,31 +154,28 @@ class Damuta(ABC):
     ----------
     model: pymc3.model.Model object
         pymc3 model instance
-    model_kwargs: dict
-        dict of parameters to pass when constructing model (ex. hyperprior values)
     approx: pymc3.variational.approximations object
         pymc3 approximation object. Created via self.fit()
-    run_id: str
-        Unique label used to identify run. Used when saving checkpoint files, drawn from wandb run if wandb is enabled.
-    """
+     """
 
-    def __init__(self, dataset: DataSet, opt_method: str, seed=9595):
+    def __init__(self, dataset: DataSet, opt_method: str, init_strategy: str, seed: int):
         
         if not isinstance(dataset, DataSet):
             raise TypeError('Learner instance must be initialized with a DataSet object')
 
         if not opt_method in _opt_methods.keys():
             raise TypeError(f'Optimization method should be one of {list(_opt_methods.keys())}')
+        assert init_strategy in _init_strats, f'self.init_strategy should be one of {_init_strats}'
         
         self.dataset = dataset
         self.opt_method = opt_method
+        self.init_strategy = init_strategy
         self.seed = seed
         self.model = None
-        self.model_kwargs = None
         self.approx = None
-        self.run_id = None
         
         # hidden attributes
+        self._model_kwargs = None
         self._opt = _opt_methods[self.opt_method]
         self._trace = None
         self._hat = None
@@ -204,35 +202,33 @@ class Damuta(ABC):
         pass
     
     @abstractmethod
-    def _initialize_signatures(self, init_strategy):
-        """Method to initialize signatures for fitting 
+    def _initialize_signatures(self):
+        """Defined by subclass.
         """
-        # check that init_strategy is valid
-        strats = ['kmeans', 'uniform']
-        assert init_strategy in strats, f'strategy should be one of {strats}'
+        pass
+        
 
-
-    def fit(self, n_iter, init_strategy = "kmeans", **pymc3_kwargs):
+    def fit(self, n, **pymc3_kwargs):
         """Fit model to the dataset specified by self.dataset
         
         Parameters 
         ----------
-        n_iter: int
+        n: int
             Number of iterations 
         **pymc3_kwargs:
             More parameters to pass to pymc3.fit() (ex. callbacks)
             
         Returns
         -------
-        self : :class:`Lda`
+        self: :class:`Lda`
         """
         
-        self._initialize_signatures(init_strategy)
-        self._build_model(**self.model_kwargs)
+        self._initialize_signatures()
+        self._build_model(**self._model_kwargs)
         
         with self.model:
             self._trace = self._opt(random_seed = self.seed)
-            self._trace.fit(n=n_iter, **pymc3_kwargs)
+            self._trace.fit(n=n, **pymc3_kwargs)
         
         self.approx = self._trace.approx
         
