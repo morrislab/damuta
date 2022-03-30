@@ -1,6 +1,9 @@
+from asyncio.windows_events import NULL
 from mimetypes import init
 import pymc3 as pm
 import numpy as np
+import random
+from scipy.special import logsumexp
 from .utils import dirichlet, get_phi, get_eta
 from .base import Model, DataSet
 #from sklearn.decomposition import NMF
@@ -107,8 +110,92 @@ class Lda(Model):
             pm.Multinomial('corpus', n = N, p = B, observed=data)
             
     def BOR(self):
-        """Baysean Occam's Rasor"""
-        pass
+        """Baysean Occam's Rasor
+        
+        Parameters:
+        ----------
+
+        self: Fitted model
+
+        """
+        
+        # check that model has been fit
+        if self.approx is None:
+            return None
+        
+        else :
+            data = self.dataset.counts.to_numpy()
+            M = 100
+            S = data.shape[0]
+            N = data.sum(1).reshape(S, 1)
+
+            type_codes = self.model_kwargs["type_codes"]
+            # initialize bor
+            bor = 0
+
+            for i in range(0,M):
+                random.seed(i)
+                hat = self.approx.sample(1)
+    
+                # get advi parameters
+                bij = self.approx.bij
+                means_dict = bij.rmap(self.approx.mean.eval())
+                stds_dict = bij.rmap(self.approx.std.eval())  
+
+                # distributions of transformed variables
+                phi_norm = pm.Normal.dist(means_dict['gamma_phi_log__'], stds_dict['gamma_phi_log__'])
+                etaC_norm = pm.Normal.dist(means_dict['gamma_etaC_log__'], stds_dict['gamma_etaC_log__'])
+                etaT_norm = pm.Normal.dist(means_dict['gamma_etaT_log__'], stds_dict['gamma_etaT_log__'])
+                b_t_norm = pm.Normal.dist(means_dict['b_t_log__'], stds_dict['b_t_log__'])
+                a_t_norm = pm.Normal.dist(means_dict['a_t_log__'], stds_dict['a_t_log__'])
+                theta_norm = pm.Normal.dist(means_dict['gamma_theta_log__'], stds_dict['gamma_theta_log__'])
+                gamma_norm = pm.Normal.dist(means_dict['gamma_log__'], stds_dict['gamma_log__'])
+                A_norm = pm.Normal.dist(means_dict['gamma_A_log__'], stds_dict['gamma_A_log__'])
+
+                gamma_gamma = pm.Gamma.dist(alpha=np.squeeze(hat.a_t)[type_codes], beta=np.squeeze(hat.b_t)[type_codes])
+                phi_dir = pm.Dirichlet.dist(a = np.ones(32)*self.model_kwargs['alpha_bias'])
+                theta_dir = pm.Dirichlet.dist(a = np.ones(self.model_kwargs['J'])*self.model_kwargs['psi_bias'])
+                eta_C_dir = pm.Dirichlet.dist(a = np.ones(3)*self.model_kwargs['beta_bias'])
+                eta_T_dir = pm.Dirichlet.dist(a = np.ones(3)*self.model_kwargs['beta_bias'])
+                A_dir  = pm.Dirichlet.dist(a = hat.gamma)
+                Y_mult = pm.Multinomial.dist(n=N, p=hat.B)
+                a_t_gamma = pm.Gamma.dist(alpha=self.model_kwargs['alpha_bias'], beta=self.model_kwargs['beta_bias'], shape=hat.a_t.shape)
+                b_t_gamma = pm.Gamma.dist(alpha=self.model_kwargs['alpha_bias'], beta=self.model_kwargs['beta_bias'], shape=hat.b_t.shape)
+
+                # logp(y|w)
+                gamma_gamma_logp = gamma_gamma.logp(np.squeeze(hat.gamma)).eval().sum()
+                Y_mult_logp = Y_mult.logp(data).eval().sum()
+
+                logp_y_w = gamma_gamma_logp + Y_mult_logp
+
+                # logp(y)
+                phi_dir_logp = phi_dir.logp(hat.phi).eval().sum()
+                theta_dir_logp = theta_dir.logp(hat.theta).eval().sum()
+                eta_C_dir_logp = eta_C_dir.logp(hat.etaC).eval().sum()
+                eta_T_dir_logp = eta_T_dir.logp(hat.etaT).eval().sum()
+                a_t_gamma_logp = a_t_gamma.logp(hat.a_t).eval().sum()
+                b_t_gamma_logp = b_t_gamma.logp(hat.b_t).eval().sum()
+
+                logp_y = phi_dir_logp + theta_dir_logp + eta_C_dir_logp + eta_T_dir_logp + a_t_gamma_logp + b_t_gamma_logp
+
+                # logq(w|y)
+                phi_norm_logp = phi_norm.logp(hat.gamma_phi_log__).eval().sum()
+                etaC_norm_logp = etaC_norm.logp(hat.gamma_etaC_log__).eval().sum()
+                etaT_norm_logp = etaT_norm.logp(hat.gamma_etaC_log__).eval().sum()
+                a_t_norm_logp = a_t_norm.logp(hat.a_t_log__).eval().sum()
+                b_t_norm_logp = b_t_norm.logp(hat.b_t_log__).eval().sum()
+                theta_norm_logp = theta_norm.logp(hat.gamma_theta_log__).eval().sum()
+                gamma_norm_logp = gamma_norm.logp(hat.gamma_log__).eval().sum()
+                A_norm_logp = A_norm.logp(hat.gamma_A_log__).eval().sum()
+
+                logq_w_y = phi_norm_logp + etaC_norm_logp + etaT_norm_logp + a_t_norm_logp + b_t_norm_logp + theta_norm_logp + gamma_norm_logp + A_norm_logp
+
+                # logsumexp
+                bor += logsumexp(np.array([logp_y_w, logp_y, logq_w_y]))
+
+                # take mean of bor over M samples
+                bor_mean = bor / M
+                return bor_mean
     
 class TandemLda(Model):
     """Bayesian inference of mutational signautres and their activities.
@@ -253,7 +340,83 @@ class TandemLda(Model):
             
     def BOR(self):
         """Baysean Occam's Rasor"""
-        pass
+        # check that model has been fit
+        if self.approx is None:
+            return None
+        
+        else :
+            data = self.dataset.counts.to_numpy()
+            M = 100
+            S = data.shape[0]
+            N = data.sum(1).reshape(S, 1)
+
+            type_codes = self.model_kwargs["type_codes"]
+            # initialize bor
+            bor = 0
+
+            for i in range(0,M):
+                random.seed(i)
+                hat = self.approx.sample(1)
+    
+                # get advi parameters
+                bij = self.approx.bij
+                means_dict = bij.rmap(self.approx.mean.eval())
+                stds_dict = bij.rmap(self.approx.std.eval())  
+
+                # distributions of transformed variables
+                phi_norm = pm.Normal.dist(means_dict['gamma_phi_log__'], stds_dict['gamma_phi_log__'])
+                etaC_norm = pm.Normal.dist(means_dict['gamma_etaC_log__'], stds_dict['gamma_etaC_log__'])
+                etaT_norm = pm.Normal.dist(means_dict['gamma_etaT_log__'], stds_dict['gamma_etaT_log__'])
+                b_t_norm = pm.Normal.dist(means_dict['b_t_log__'], stds_dict['b_t_log__'])
+                a_t_norm = pm.Normal.dist(means_dict['a_t_log__'], stds_dict['a_t_log__'])
+                theta_norm = pm.Normal.dist(means_dict['gamma_theta_log__'], stds_dict['gamma_theta_log__'])
+                gamma_norm = pm.Normal.dist(means_dict['gamma_log__'], stds_dict['gamma_log__'])
+                A_norm = pm.Normal.dist(means_dict['gamma_A_log__'], stds_dict['gamma_A_log__'])
+
+                gamma_gamma = pm.Gamma.dist(alpha=np.squeeze(hat.a_t)[type_codes], beta=np.squeeze(hat.b_t)[type_codes])
+                phi_dir = pm.Dirichlet.dist(a = np.ones(32)*self.model_kwargs['alpha_bias'])
+                theta_dir = pm.Dirichlet.dist(a = np.ones(self.model_kwargs['J'])*self.model_kwargs['psi_bias'])
+                eta_C_dir = pm.Dirichlet.dist(a = np.ones(3)*self.model_kwargs['beta_bias'])
+                eta_T_dir = pm.Dirichlet.dist(a = np.ones(3)*self.model_kwargs['beta_bias'])
+                A_dir  = pm.Dirichlet.dist(a = hat.gamma)
+                Y_mult = pm.Multinomial.dist(n=N, p=hat.B)
+                a_t_gamma = pm.Gamma.dist(alpha=self.model_kwargs['alpha_bias'], beta=self.model_kwargs['beta_bias'], shape=hat.a_t.shape)
+                b_t_gamma = pm.Gamma.dist(alpha=self.model_kwargs['alpha_bias'], beta=self.model_kwargs['beta_bias'], shape=hat.b_t.shape)
+
+                # logp(y|w)
+                gamma_gamma_logp = gamma_gamma.logp(np.squeeze(hat.gamma)).eval().sum()
+                Y_mult_logp = Y_mult.logp(data).eval().sum()
+
+                logp_y_w = gamma_gamma_logp + Y_mult_logp
+
+                # logp(y)
+                phi_dir_logp = phi_dir.logp(hat.phi).eval().sum()
+                theta_dir_logp = theta_dir.logp(hat.theta).eval().sum()
+                eta_C_dir_logp = eta_C_dir.logp(hat.etaC).eval().sum()
+                eta_T_dir_logp = eta_T_dir.logp(hat.etaT).eval().sum()
+                a_t_gamma_logp = a_t_gamma.logp(hat.a_t).eval().sum()
+                b_t_gamma_logp = b_t_gamma.logp(hat.b_t).eval().sum()
+
+                logp_y = phi_dir_logp + theta_dir_logp + eta_C_dir_logp + eta_T_dir_logp + a_t_gamma_logp + b_t_gamma_logp
+
+                # logq(w|y)
+                phi_norm_logp = phi_norm.logp(hat.gamma_phi_log__).eval().sum()
+                etaC_norm_logp = etaC_norm.logp(hat.gamma_etaC_log__).eval().sum()
+                etaT_norm_logp = etaT_norm.logp(hat.gamma_etaC_log__).eval().sum()
+                a_t_norm_logp = a_t_norm.logp(hat.a_t_log__).eval().sum()
+                b_t_norm_logp = b_t_norm.logp(hat.b_t_log__).eval().sum()
+                theta_norm_logp = theta_norm.logp(hat.gamma_theta_log__).eval().sum()
+                gamma_norm_logp = gamma_norm.logp(hat.gamma_log__).eval().sum()
+                A_norm_logp = A_norm.logp(hat.gamma_A_log__).eval().sum()
+
+                logq_w_y = phi_norm_logp + etaC_norm_logp + etaT_norm_logp + a_t_norm_logp + b_t_norm_logp + theta_norm_logp + gamma_norm_logp + A_norm_logp
+
+                # logsumexp
+                bor += logsumexp(np.array([logp_y_w, logp_y, logq_w_y]))
+
+                # take mean of bor over M samples
+                bor_mean = bor / M
+                return bor_mean
 
 
 class HierarchicalTandemLda(Model):
@@ -410,7 +573,83 @@ class HierarchicalTandemLda(Model):
             
     def BOR(self):
         """Baysean Occam's Rasor"""
-        pass
+        # check that model has been fit
+        if self.approx is None:
+            return None
+        
+        else :
+            data = self.dataset.counts.to_numpy()
+            M = 100
+            S = data.shape[0]
+            N = data.sum(1).reshape(S, 1)
+
+            type_codes = self.model_kwargs["type_codes"]
+            # initialize bor
+            bor = 0
+
+            for i in range(0,M):
+                random.seed(i)
+                hat = self.approx.sample(1)
+    
+                # get advi parameters
+                bij = self.approx.bij
+                means_dict = bij.rmap(self.approx.mean.eval())
+                stds_dict = bij.rmap(self.approx.std.eval())  
+
+                # distributions of transformed variables
+                phi_norm = pm.Normal.dist(means_dict['gamma_phi_log__'], stds_dict['gamma_phi_log__'])
+                etaC_norm = pm.Normal.dist(means_dict['gamma_etaC_log__'], stds_dict['gamma_etaC_log__'])
+                etaT_norm = pm.Normal.dist(means_dict['gamma_etaT_log__'], stds_dict['gamma_etaT_log__'])
+                b_t_norm = pm.Normal.dist(means_dict['b_t_log__'], stds_dict['b_t_log__'])
+                a_t_norm = pm.Normal.dist(means_dict['a_t_log__'], stds_dict['a_t_log__'])
+                theta_norm = pm.Normal.dist(means_dict['gamma_theta_log__'], stds_dict['gamma_theta_log__'])
+                gamma_norm = pm.Normal.dist(means_dict['gamma_log__'], stds_dict['gamma_log__'])
+                A_norm = pm.Normal.dist(means_dict['gamma_A_log__'], stds_dict['gamma_A_log__'])
+
+                gamma_gamma = pm.Gamma.dist(alpha=np.squeeze(hat.a_t)[type_codes], beta=np.squeeze(hat.b_t)[type_codes])
+                phi_dir = pm.Dirichlet.dist(a = np.ones(32)*self.model_kwargs['alpha_bias'])
+                theta_dir = pm.Dirichlet.dist(a = np.ones(self.model_kwargs['J'])*self.model_kwargs['psi_bias'])
+                eta_C_dir = pm.Dirichlet.dist(a = np.ones(3)*self.model_kwargs['beta_bias'])
+                eta_T_dir = pm.Dirichlet.dist(a = np.ones(3)*self.model_kwargs['beta_bias'])
+                A_dir  = pm.Dirichlet.dist(a = hat.gamma)
+                Y_mult = pm.Multinomial.dist(n=N, p=hat.B)
+                a_t_gamma = pm.Gamma.dist(alpha=self.model_kwargs['alpha_bias'], beta=self.model_kwargs['beta_bias'], shape=hat.a_t.shape)
+                b_t_gamma = pm.Gamma.dist(alpha=self.model_kwargs['alpha_bias'], beta=self.model_kwargs['beta_bias'], shape=hat.b_t.shape)
+
+                # logp(y|w)
+                gamma_gamma_logp = gamma_gamma.logp(np.squeeze(hat.gamma)).eval().sum()
+                Y_mult_logp = Y_mult.logp(data).eval().sum()
+
+                logp_y_w = gamma_gamma_logp + Y_mult_logp
+
+                # logp(y)
+                phi_dir_logp = phi_dir.logp(hat.phi).eval().sum()
+                theta_dir_logp = theta_dir.logp(hat.theta).eval().sum()
+                eta_C_dir_logp = eta_C_dir.logp(hat.etaC).eval().sum()
+                eta_T_dir_logp = eta_T_dir.logp(hat.etaT).eval().sum()
+                a_t_gamma_logp = a_t_gamma.logp(hat.a_t).eval().sum()
+                b_t_gamma_logp = b_t_gamma.logp(hat.b_t).eval().sum()
+
+                logp_y = phi_dir_logp + theta_dir_logp + eta_C_dir_logp + eta_T_dir_logp + a_t_gamma_logp + b_t_gamma_logp
+
+                # logq(w|y)
+                phi_norm_logp = phi_norm.logp(hat.gamma_phi_log__).eval().sum()
+                etaC_norm_logp = etaC_norm.logp(hat.gamma_etaC_log__).eval().sum()
+                etaT_norm_logp = etaT_norm.logp(hat.gamma_etaC_log__).eval().sum()
+                a_t_norm_logp = a_t_norm.logp(hat.a_t_log__).eval().sum()
+                b_t_norm_logp = b_t_norm.logp(hat.b_t_log__).eval().sum()
+                theta_norm_logp = theta_norm.logp(hat.gamma_theta_log__).eval().sum()
+                gamma_norm_logp = gamma_norm.logp(hat.gamma_log__).eval().sum()
+                A_norm_logp = A_norm.logp(hat.gamma_A_log__).eval().sum()
+
+                logq_w_y = phi_norm_logp + etaC_norm_logp + etaT_norm_logp + a_t_norm_logp + b_t_norm_logp + theta_norm_logp + gamma_norm_logp + A_norm_logp
+
+                # logsumexp
+                bor += logsumexp(np.array([logp_y_w, logp_y, logq_w_y]))
+
+                # take mean of bor over M samples
+                bor_mean = bor / M
+                return bor_mean
     
 
 def vanilla_nmf(train, I):
