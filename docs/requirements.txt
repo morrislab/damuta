@@ -1,0 +1,10 @@
+sphinx>=1.4
+ipykernel
+nbsphinx
+sphinx_gallery
+nbsphinx_link
+numpy
+pandas
+pymc3
+sklearn
+scipy

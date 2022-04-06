@@ -1,0 +1,589 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Experiment tracking with [WandB](https://wandb.ai/)\n",
+    "\n",
+    "[Weights and Biases](https://wandb.ai/) is an experment tracking tool that is great for its lightweight logging utilities. \n",
+    "\n",
+    "## Setup WandB\n",
+    "After initializing a run, we can track all the Damuta model specs to the wandb run config. Specs you may want to track are: datasets (as [artifacts](https://docs.wandb.ai/guides/artifacts)), model parameters (as a [config](https://docs.wandb.ai/guides/track/config)) or metrics and plots (as [logged data](https://docs.wandb.ai/guides/track/log))\n",
+    "\n",
+    "**Warning**: Private data may not be appropriate to upload to WandB. See [storage FAQ](https://docs.wandb.ai/guides/artifacts/artifacts-faqs#where-are-artifact-files-stored) to ensure that WandB policies are compliant with your data-handling requirements.\n",
+    "\n",
+    "The wandb dashboard associated with this notebook is available [here](https://wandb.ai/harrig12/damuta-docs_examples)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import wandb\n",
+    "import pandas as pd\n",
+    "import damuta as da"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[34m\u001b[1mwandb\u001b[0m: Currently logged in as: \u001b[33mharrig12\u001b[0m (use `wandb login --relogin` to force relogin)\n",
+      "\u001b[34m\u001b[1mwandb\u001b[0m: wandb version 0.12.11 is available!  To upgrade, please run:\n",
+      "\u001b[34m\u001b[1mwandb\u001b[0m:  $ pip install wandb --upgrade\n"
+     ]
+    },
+    {
+     "data": {
+      "text/html": [
+       "\n",
+       "                Tracking run with wandb version 0.11.2<br/>\n",
+       "                Syncing run <strong style=\"color:#cdcd00\">fanciful-gorge-25</strong> to <a href=\"https://wandb.ai\" target=\"_blank\">Weights & Biases</a> <a href=\"https://docs.wandb.com/integrations/jupyter.html\" target=\"_blank\">(Documentation)</a>.<br/>\n",
+       "                Project page: <a href=\"https://wandb.ai/harrig12/damuta-docs_examples\" target=\"_blank\">https://wandb.ai/harrig12/damuta-docs_examples</a><br/>\n",
+       "                Run page: <a href=\"https://wandb.ai/harrig12/damuta-docs_examples/runs/281tmodh\" target=\"_blank\">https://wandb.ai/harrig12/damuta-docs_examples/runs/281tmodh</a><br/>\n",
+       "                Run data is saved locally in <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_135008-281tmodh</code><br/><br/>\n",
+       "            "
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "# Initialize wandb run\n",
+    "run = wandb.init()\n",
+    "\n",
+    "# Read in example pcawg data\n",
+    "counts = pd.read_csv('example_data/pcawg_counts.csv', index_col=0)\n",
+    "annotation = pd.read_csv('example_data/pcawg_cancer_types.csv', index_col=0)\n",
+    "\n",
+    "# Log data as an artifact\n",
+    "artifact = wandb.Artifact('pcawg', type='dataset')\n",
+    "artifact.add(wandb.Table(data=counts), 'counts')\n",
+    "artifact.add(wandb.Table(data=annotation), 'annotation')\n",
+    "wandb.log_artifact(artifact)\n",
+    "\n",
+    "# Create input DataSet\n",
+    "pcawg = da.DataSet(counts,annotation)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "\n",
+       "    <div>\n",
+       "        <style>\n",
+       "            /* Turns off some styling */\n",
+       "            progress {\n",
+       "                /* gets rid of default border in Firefox and Opera. */\n",
+       "                border: none;\n",
+       "                /* Needs to be in here for Safari polyfill so background images work as expected. */\n",
+       "                background-size: auto;\n",
+       "            }\n",
+       "            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {\n",
+       "                background: #F44336;\n",
+       "            }\n",
+       "        </style>\n",
+       "      <progress value='1000' class='' max='1000' style='width:300px; height:20px; vertical-align: middle;'></progress>\n",
+       "      100.00% [1000/1000 09:55<00:00 Average Loss = 4.9125e+07]\n",
+       "    </div>\n",
+       "    "
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Finished [100%]: Average Loss = 4.9086e+07\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "<damuta.models.Lda at 0x7f0b0c29f550>"
+      ]
+     },
+     "execution_count": 3,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Instantiate the model\n",
+    "model = da.models.Lda(pcawg, n_sigs = 20)\n",
+    "\n",
+    "# Log model parameters, and fitting parameters to wandb\n",
+    "run.config.update({\"n_sigs\": model.n_sigs, \"init_strategy\": model.init_strategy,\n",
+    "                   \"opt_method\": model.opt_method, \"seed\": model.seed,\n",
+    "                   })\n",
+    "\n",
+    "# Fit the model\n",
+    "model.fit(n=1000)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "If necessary, The wandb config can also be updated after `model.fit()` has been called. \n",
+    "\n",
+    "Now that we have fit the model, we can plot the ELBO, and log the final value with wandb."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[<matplotlib.lines.Line2D at 0x7f0a9c26bca0>]"
+      ]
+     },
+     "execution_count": 4,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "iVBORw0KGgoAAAANSUhEUgAAAXQAAAEDCAYAAAAlRP8qAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjQuMiwgaHR0cHM6Ly9tYXRwbG90bGliLm9yZy8rg+JYAAAACXBIWXMAAAsTAAALEwEAmpwYAABJ/klEQVR4nO2daWAUVdaG316yJwQSSMISgYRFBAVkV0AIBpQAxohLHHFkYMZRRGcAHTdGUWAQcZlxRHHUEVAzKPAhCm4QQtgXWcIiyhZZEyCBhOzp7vp+dKq6qrrW7up0ujnPH7urbt261Zj3njr33HNMDMMwIAiCIAIes78HQBAEQRgDCTpBEESQQIJOEAQRJJCgEwRBBAkk6ARBEEECCTpBEESQYPXnzZ977jnk5eUhPj4e33zzjWLbuXPnYseOHQCAmpoalJSUYPfu3Y0xTIIgiIDA5M849F27diEyMhJ/+9vfVAWdz9KlS3H48GH84x//8OHoCIIgAgu/ulz69euH2NhYwbFTp05h0qRJyMrKwoMPPojjx4+7XbdmzRqMGTOmsYZJEAQREPjV5SLFzJkzMWvWLHTo0AH79+/HrFmzsGTJEu782bNncebMGQwcONCPoyQIgmh6NClBr6ysxN69e/HUU09xx+rq6gRt1qxZg1GjRsFisTT28AiCIJo0TUrQGYZBs2bN8NVXX8m2Wbt2Lf7+97834qgIgiACgyYVthgdHY127drh22+/BeAU+CNHjnDnT5w4gfLycvTu3dtfQyQIgmiy+DXKZdq0adi5cycuX76M+Ph4TJ06FQMHDsTLL7+MixcvwmazYfTo0XjiiScAAO+88w5qa2sxY8YMfw2ZIAiiyeJXQScIgiCMo0m5XAiCIAjP8dui6IABA9C2bVt/3Z4gCCIgOXv2LLdrXozfBL1t27ZYuXKlv25PEAQRkGRlZcmeI5cLQRBEkECCThAEESSQoBMEQQQJJOgEQRBBAgk6QRBEkECCThAEESSQoBMEQQQJQSvo9XYHvth1Gg4HZTYgCOLaIGgFfeGG43hmRQG+LjgnOH66tApFZTV+GhVBEITvaFL50I2ksKQSAFBncwiOD5m/wXl+Xkajj4kgCMKXBK2FfrXGBgCICQ/x80gIgiAah6AV9IraegBAqNXk55EQBEE0DkEr6Kyrpd5Oi6IEQVwbaPKhp6WlISoqCmazGRaLRTJL4o4dOzB37lzYbDa0aNECn376qeGD1YPV7Jyr6u0OlZYu/rhkN1pEhmD++J6+GhZBEITP0LwounjxYsTFxUmeKy8vx6xZs/Dhhx+iTZs2KCkpMWyAnmIxO10tNh0W+o+HiwGABJ0giIDEEJfL119/jfT0dLRp0wYAEB8fb0S3XmG1OAW9ToeFThAEEchoFvRJkyYhKysLy5YtcztXWFiI8vJyTJgwAVlZWVi1apWRY/QI1kJnXS4Xr9b6czgEQRA+R5PLJScnB4mJiSgpKcHEiRORkpKCfv36ceftdjsOHTqETz75BDU1NXjggQfQs2dPdOzY0WcDV8PKc7lsPXYJD364A4sm9PHbeAiCIHyNJgs9MTERgNOVkp6ejoKCAsH5pKQkDBkyBJGRkYiLi0Pfvn1x5MgR40erA76FXnC2DADw02+X/TkkgiAIn6Iq6FVVVaioqOA+b9myBZ07dxa0GTFiBHbv3g2bzYbq6moUFBQgNTXVNyMGsOXYJWw4ckGxjdXCRrkwYCPRGYZCGAmCCF5UXS4lJSWYMmUKAKdrZcyYMRg6dChycnIAANnZ2UhNTcWQIUMwbtw4mM1mjB8/Hl26dPHZoH/3obPitdL2fSvPQo8IsQAAKE8XQRDBjKqgJycnY/Xq1W7Hs7OzBd8nT56MyZMnGzcyDzhafBUJzcIRGxHCWeU2uwOmUKegG2Wg19Tb8edPf8Lzo7uhS2KM4NyJixVo0zwC4Q2TCEEQRGMRVDtF09/Kx51v5wMAWO2uszMwmUwNx1yKfr6s2uP77D11BXm/XMSLqw4KjlfX2ZH2xkb85X/7PO6bIAjCU4JG0Ctrncm4zjWkxmWtcQYMGrwvKC53pc0d9I9cbD56SbHPxVsL8e2B827H2YlBnCWGjXnfcly5X4IgCF8Q8ILOMAxeXn0I208Id6c6GhSdYVzCu/ZAkaDNwXNlin2/tPoQHvtsj8RNnf8xmyjxF0EQTYeAz4d+urQan2wtxCdbCwXHWeeKw+FyuYjx1KfOXiar57T4ShCEHwh4C10ONkTRwcgLL+Oh8rITgbhf9jvpOUEQ/iDgBJ1fPu5o8VV5sW5QVQdjrIV+urQKBWevAABMbl50tl+SdIIgGp+AE/Q9p1y7PUc2RLRIwWrqJ1sLcVjFV66HIfM3YP53vwBwt9BJxwmC8CcBJ+hmnogyDJD2Rp5kOwdPXXN2ntZ9H7sHu5DIMicIwp8EnKCL3SdyFYm0SKuSAIuLS0shjnJxhUoSBEE0PgEn6FpDBbVYy0pNam121evdXC4a+iUIgvAVASfoFo0j1iKqq/adxVf7zkqeq9VgoYunFnYS8TR6hiAIwhsCTtDlIlbEODQo+vGLlXhKZpt+bb0GQRe7XDSNjCAIwjcEnKBrdrno6PNIUTn6zl4nOGZzaPGhC7+zk0i9ncHr3x9BRUM6AoIgiMYg4ATdotlC197nR5tO4lKFsESdFgvfzenScIndweDdDcfx9o+/Ck7X1Nuxlxd2SRAEYSQBJ+hiq1gOPSGEFolObRpmBLlFUbk+nl95AHcv3IpzVzzP9EgQBCFHwAm6Vh+6t31qiUN3XxQVfg+xCFvsP3MFAFBVR64YgiCMJ+AEXauFrs1l4kQqckaToMv40Fmsoo5dOWAoSyNBEMYTcIIu5R4Rc/Fqra5YcKmFVm0WunKUS4horKzgU9pdgiB8QcClz9Vi3U74aAeaR4Zo7tNTQf/uUBEuV9ahRVQoAHe/PWuhf7n7NNo2j+AWaknOCYLwBZoEPS0tDVFRUTCbzbBYLFi5cqVku4KCAtx///146623cMcddxg6UBYtLpcTlyrRO7m55j6lrH6tuVzeWvcrSirrsKbgPMJDhC88bL9PLy8AACTHRQBwuWp+KbqK9vGRVH+UIAhD0GyhL168GHFxcbLn7XY7FixYgMGDBxsyMDm0uCvqbA5crdG+8Cg1Sdh51natzY4wq7To2hwM1hQ4y9TViDYjiRdF2dB2hgFKK+sw6u183N27Ld66v5fmsRIEQchhmA996dKlGDVqFOLj443qUhItPnQAOHy+XHOfai6Xd3OPyV6rFB5pNQt/3rMN4Yp2huFqoO48WQoAeHvdrzhSpH3MBEEQYjQL+qRJk5CVlYVly5a5nSsuLsa6devwwAMPGDo4KXyxnmhWcbmU19hgdzC4WlPv1q66Tj6Jl9hCZ2EYhrung2FQa7Pj7XVHkfnuFr1DF/T502+llMKXIK5hNLlccnJykJiYiJKSEkycOBEpKSno168fd37OnDmYMWMGLBbf+4J9ESEi6XIR+dBf++4IPsg/4dZu1b5zsv2KwxZdfbsWRh0Mw0XkiF02eli55yymf7kf/8rujXE923jcD0EQgYsmQU9MTAQAxMfHIz09HQUFBQJBP3jwIKZNmwYAuHz5MjZu3Air1Yrbb7/d8AFrdbnowS6ho2JB//5Qke5+rTJjdTAM17+D0RczL0dhSSUA4OTFSq/7IggiMFEV9KqqKjgcDkRHR6OqqgpbtmzB448/LmiTm5vLfX722WcxbNgwn4g5oH1jkR7+u+Wk27GffhPmXElsFo7fSqp09SsXYskXdIbxrDqSGPbNxU4uF4K4ZlEV9JKSEkyZMgWAM5JlzJgxGDp0KHJycgAA2dnZvh2hCF/sspTKfb6I517ZebIU7eMjdfcrZ3k7HK48LwzDQENiR1XYNxeHAZMDQRCBiaqgJycnY/Xq1W7H5YR83rx53o9KgcbYZdnh2TWC74fPl+uKmmGRW6AUulwYgfCfL6tG69gI7nu93QGLySS5cMuHPW2E+4YgiMAk8Lb+eyHof74t1cCRqCOnrXaG4fKtOxihm6RKFDXT+YVv8fhne1TvxQo+uVwI4tol4ATdGwNdLozQV8h5P/huFudnnqDXuodBfneoCBW1Nhw8WyZ7L3aiIz0niGuXgMvlouZ6UEK80cfXyNUWdTCuikgMIxT+SpnUuj1e+h4A8OvsOxFqdX8OblGUfOgEcc0ScBa6Ny4XaxOx0O0OoQ+d7ybhb1SSWuCssUlvZOJcLiToBHHNEngWuheaLBcX7ivkFkXPXq5GswhnNkgGQuHmW+j1EuEvNfV2HD5XDgfD4JbUltxxdq6inaIEce0ScILuTdii3M5NAIgOsxpe1FlOW6d/uZ/7LI5y4fvQ6yTCKWvqHHjgg+0AgMJ5GdxxWhQlCCLgXC7eGNlKi6JRYcanLXBu61cWWJudEbhJ+C4VKUGvrpdxuTRMdJ9uP+XJUAmCCAICTtC92fqvdG1UmPEvK+IFTylsDkbQppaXz6VOIicBP0HYsl2nsP/0FQDCZ+vw7BrJRGKNwYZfLmDkWxtRL5VPgSAInxJwgi4u+6aHEIUol2gfCPor3xzG2cvVqu34LpdaFQt9/PvbuM9/W3EAdzVkaBTPVaWVdXqHawjPrTiAX4srcPFqrV/uTxDXMgEn6N7Ub1OKcokK9UzQs3q3VTyfe6RYtQ++y4WfhkBK0OVoCnVKfy2+yr0ZNIHhEMQ1R8AJOl8oUltF6brWFy4XNRdQGK+8nJzI8f3iAkHX4bZQE3Sb3YEuL36LL3ad1tynXka+lY9KhfzwBEH4loATdD7vP9SH+/zGvT25mp1yhChGuXi2KKompGG8TUByLp/nVx7gPheV1aDDs2swd+3PkhZ6ZKj7ODs8uwYllUIXh9g1tXLPWdTZHHh1zWHu2P92nsK7G46hrMo//naCIIwl4ARdzjWSdXNb9OsgX/MUaPxFUfE95e5/pOgq93n1fmfBjA/yT6De7nLFtG0egcmDO8om3zp5STkP+jMrnIWq+Zc/u/IAXv/+FwyZnytzled4s9YhhtEQLUQQRAAKusVswugbkwAAkTwRNplMkNlpz6EUtii1nd4I+C4UvRub+JEiYSFmWC1m2VS7dTbhwx+7eFWynZQwlusoqO0PPtp8Eh2fW0tvEgShQsAJOgC8Pr4nPps8AG2bC10saqljlXK5GGlR8hEIus7UA3wfeqjFDLNJ/hltIqX/wye7uc/7GkIbAfk5r7ymHj8eFi7gXrhag7HvbMb5MvVIHV+yrMHvX1Re49dxEERTJyAFPSrMils7tVRvKEJJULUaz4NS4gXfpVzoL429gftcy1vwtOhMDlbPmwxaRIbCYjbJC7rd/ThrjfOLT8vNeU9/uR9/XLIbhTzXzRe7TuPA2TJ8uv031bH60iVioTw1BKGJgBR0OdT+3JUsdK1ZHJ8f3U3yeH+e/75zQgz3+XyZslU5c8wNsudsPAH749COMJlMshuVpCJiXlh1EA9/vFNwrLrejm8PnHdr+9NvVwA4LXUW1oevZSIS67mDYXCpohb/3XLSayEmQScIbQSXoIv+3ne+MAL9O7qEVmlRVKszRC6opZYnqPzbfLTZVa9U7BYBlKNr+PnPO7WKUXyLkNqZ+fmOU8j/9SKahQsXfB+TKJhxqcIZJcO6iCprbdx4tfj+xW8ODJwLu7O+PoxvCs6pXq+EhfLUEIQmNIV2pKWlISoqCmazGRaLBStXrhScX716Nf7zn/8AAKKiovDyyy/j+uuvN360Enz0+76cGHVs6YxLf/v+XggPMSMhJhzL/jQQHZ9bC8AlTKmtonD8ojAqRGvSL3GYIms12nlirSdne3RYCPc5zGoW+NwX5h13tQu3KoZISrlcWJpFhLgtfMq5SOpsDpRV16PnrB+4Y1rSLYh7czgYhDfE4J+4qByBowbleicIbWiO1Vu8eDHi4qTDAtu1a4dPP/0UsbGx2LhxI2bOnIkvv/zSsEEqMaJbIvd5alon9O8YJ/Cv84W6a1IMbmjdDK/c1R0PfLBd4NLQurNR7H1gRYYvqHJd9WgTi5OXKnH2imuRMZpnPYsFnU9UmEVRWJU2IUlZ2EquG3aCZNEi6G4WOuP6HbzdNcqOn+qlEoQyhrhcbr75ZsTGxgIAevXqhaKiIiO61Y3VYlZcLA0PsWDtU0PQt0McZz0CQP+OcYLCEkqIrWR2UuCHPcpZ+2azCX8eJqxrys8hw99VKibMalEURpuCoEtZ9nLiWGdzuFn7Wlwu4u7sBsaOs288Sm8hBEHoEPRJkyYhKysLy5YtU2y3fPlyDB061OuB+Rp2x+X3fxmKLx4dhBKNyazkXC6/H9SBOyYnvFK6yBf08BDlfw4ll0u9kthJXCYn6LU2h1uKXk8EffiCPPwr9xgA4O11RxUnHDkqam2oqbdzVarIQicIZTS5XHJycpCYmIiSkhJMnDgRKSkp6Nevn1u77du3Y/ny5fj8888NH6jRRIVZgau1nPiWNLgZUlpFIb1bIhbln5C8TqxtrKBHhlrQvU0zHDpXLutyEQuyxWwSbOUPs0pb6CkNawN6F0XFY+Qjv0HJgUpRoQ+xy+VSRS22HLuEu3q5EpOpiW29nYHM48nS46XvkdIqittvQD50glBGk4WemOj0U8fHxyM9PR0FBQVubY4cOYIXX3wRCxcuRIsWLYwdpQ9ghZTNP/7YsFREh1mxasqtSGgWLnudnMvFYjZxwifrcjEJjWUTIHD9hMnsVv1x2m2S9+aj5EPn51hnUXK5uAu6GUeKyvHqN4dRXWfH5MW78dT/9nGToFJ/UuenfL5Hc5KwExcraVGUIDSiKuhVVVWoqKjgPm/ZsgWdO3cWtDl37hymTp2K+fPno2PHjr4ZqRcs/kN//G7AdYJjbO4WtobnkM6tcHDWKDQLD1F0MfBF9e37e3HRLVaLiRNyOd0VC73NwSCCZ6FLJd4CXBaysstFQdAlCkvLC7odVaL1BKvFhHsWbsVHm08i451NONewqMsXWDWp5Yccrik4z+WW0QLFoROENlRdLiUlJZgyZQoAwG63Y8yYMRg6dChycnIAANnZ2Xj33Xdx5coVzJo1CwAkQxv9yW1dWuG2Lq0Exx65pQN2nizl3Bl8WF92Zq826JQQjQU//MqdY6NcosOsyOzdFiv2nAHgtGLZeUBuMVBqngjnWeXhCoui4uv7d4jDzsJS7rtS7nQpIVyyTXr3Z63N4WbtW0wm1DT0f+JiJRJiwtyuY1Rc5HYNC5rlNfX489Kf8No9NyE5LpI7zlno5EMnCEVUBT05ORmrV692O56dnc19njNnDubMmWPsyHzM6BtbC4os8xnRLRFPjajB5CEdcbq0WijorBXe8J21dK1mE7d4J2csS1nY/MLVchY6dz1P0cNEC6hy4Y6AtPX8+ve/CL6HWsyosztQU+9wmwCsFplMN7yDai4Xmwbr+vuDRdh6vARvrfsVb97XizvO/kS+iHI5duEqmkWEICFG3s1GEIFCUO0UNYqW0WH4a3oXxISHCOLO+3eMc4lyw39sdpcP3awSjWE2mxRDDyNULHS+y0a8gKpY3UiDDrLPWWOzuwm6RTRuvjg7HAzKquoFxa2lWLTxOKZ9sU+xTVxUKADgsijiiHW5iHfani6t4mqqSrF4ayHeWX9U8Z63v5mPwfM2KLYhiEDBN0nAgwi+Vf3Fo4NwQZTxL6VVFHacLEWLyFBO9GQFXWWHTYSKhc6/WhziqGSha4Edck29u6DPWfOzICySrVfKMMB7G4+7WftSfNiQAmHB+J6CflgRB4CY8BBB/yxsLhlxaOaQ+U4hlnvTemn1IQDA1BGdJc+z6KkMRRBNGbLQVRBLsHhh86Wx3bF0Un90TYrhLEk574NaOLeaD53vmxdb6EoLhlrit9kJQcrlIpdgzMEwbil31ajnWdmvf39EcK6wxJki4LIo7zm7SK208EsQBAm6KmIB50ITG76Hh1gwpLNzwVUtvE7NQlcqkQcIt+vrKcihxwKtrrNhr4Ibg4/dwciGWsrB94OfuexKgXD8YgWeWe6MfBFvbGILk+gpmi2Hw8EY0g9BNEVI0FUQa7CSJJtVco6o5TRRqqgk7ldF+wUo7iIVsWrfOXy9X1t2RIbRX+mJL+gVvHj330pcCbxqRGGT7D2kwi/18syKAnR58Vuv+yGIpggJugpiq5pbE5VQZ1fYonxfSpWR9FjoFrXZoRFwWuj6tn/yRbmClwGystZ13N1Cd/4uNRIbpPSy/KczXvdBEE0VEnQV9JQBVXe5CL/f17ed4LuqoPP61ZOi11fM/OqgW/ikGnyrnL8jtarO9Vkc4shOXkZY6CxUdJoIRkjQVRBb1Eo6wN8A8/SorvhkYj+380xDDGF2/2TM50V8aEHgcmkCFvqmo5cQpsf3A6GgnyurwU+/OTdH8S10MQ4uAsdzC33nyVJBWmAHo23naVlVPd5e96tgMiWIpgoJugpi3WRTBkxN6+TWltU2hmEwZXgnDOuaIDivthjH3usPt0qnTxC4XJqAhQ7o96FXiPLE3PPeNpRU1OJKdb3MFa6JzBsL/b5F25Dxr03cd7uD0RQ189Lqg3h73VFs+OWCx/cmiMaC4tBVEAt6qNUsG/f8/OhuqK53YKgozQDLyr1n0aeDfOIy9m0gxGLC8j8Pwvj3twnO8y10rRWWfI1eQb8qqpwEAH1mr9N0rVSSMTl2nix1O1ZcLkwmpmX3KpvXhkImiUCALHQV1EIN+bSPj8KSP/RHZKj0PBlqMSsuirK3YgD05RWdZuH7fZuIga7r9wGcG5e0wH9WdiKrkXnDefWbwzhzuUpw7L5FrslQyl1iczCacrQ3kXmTIDRBgq6CXsFSQi0enL2T3IIde/kTwzs1GZeL3p9Hq5XN/61YQa9qcNecKqnCf3j56j/afBJ/+d8+2b7qJZK/O10u2v3itIZKBAIk6Cp4q+dZvdsiu38yACBJIc86/16seLx5X098OmkAd54VNn7emMYkpZV7Zsotxy7p6uOL3dryoG87XsJ9Zn+PYxedaZwf/ngH5qz9WdBeaTesdIEPRpAb5odDReg7e52bn559o5Lqfeaqgxj9z00SZ6QpKqtBh2fX4IdD/inRSAQ/5ENXwVvdfPP+XgCAu3q1Rfv4SGw4chGA0OIb27MN1h0udhOPrJuFYY2s5W42KSf58hXNI0Lcjv1aXKGrj92/XdbU7pH/7uI+s3p8qtTpVimX8MPvOXVFti8pS9zpcnEdn73mZ1yqqEVRWQ3ax7smLqXfeel29xTE3x44j3nfHcH6abcJMmkCwMGzZQCAZbtOY2T3JMk+SypqER/tnp6YILRAFroKSj5vPQxMiUfr2AhJgXgnuzd+fvUONwtdDCtsZpN/olz85eY521BQg2Gck5q8S0r6uJSv/P2NxwULna6MjtJ9aHW5/G1FAX4rqVKM2pHratvxEvSZvY4seMJjSNBV8IeGMTJ/8myBB7OEy+UfWTdiSOeWPh1XYwr6gI6uReH8Xy9yn5UCU1gXiljwpSz0jzafFIg3+2jiBVQtb0JdX/wWY9/ZLBhfhcRbhBoFZ64A0P4WQxBiSNBVMNpXPbiTU3Tv65fsdo4NRZSzBjs2VFfqEB/llsslu/91WMrzt/sCtZ2sRtI6Vnq9QYuvnBVqNnGYXPw/36LnytzJ9C83yQLOTJUHGtwp7KRSXiNvoctB666Et5Cgq2C0rzo5LhKF8zJw83Xu8ehqt7q3TzuseGwQRt+YhF7Jvi/EvWdmOvc51GpGl8QYn98TcIZ3yu0KVRJ0VsjtIkGXK77x+493cp/l0jbodbmx66xS8fbi/5fE7iP2Y9OIXyICERJ0FRpzA4/Lhy6XrdGEPu3jYDKZ0L9jHPbyBNcn4+F9/svtndG2eYTuPjonROPePu3UG/KIDLO4JehiUfJls4ucrG88rCG/vFyo5IWrro1GVosxhahZS79cwYcOOBc/Oz63VnJhlRSd8BRNgp6WloaxY8firrvuQlZWltt5hmEwe/ZspKenY+zYsTh06JDhA/UXjRlNwsWha2zfglftxxfw3U1Wswm/v6WD7j5aN49Akoz7RI7IEHlBV7bQncItttC1pAywyFjoLFoXRVlfvNKeA4ZhuFzw/OyPSm4dgtCCZgt98eLF+Oqrr7By5Uq3c/n5+SgsLMQPP/yAV199FS+//LKRY/QrjRnvreZD9wY2HYFcWgLpAbk+WsxmWMwmzo+vlfxfL+r+DSPDrLI7SpUMaDkfupakXmz2yulf7Een59e6Tuj852fvrfXfUKqdFjfPbyWVKOElGyMIwKA49PXr1yMzMxMmkwm9evVCeXk5Lly4gISEBPWLmziNGeXi2vqvXdE3Pj1MUrBCLWbOSgwPMSOiIc2t1rSx88ffJHg7YcvAeRLpoveayFALl0NFzN9XHZQVaNbl4rLQnS4XLYm19jbEsZ+4VCl5XsuvdvZKNXdvtbJ/UnMce8me3y6jrKoesZHucf8st72eh8hQCw6/coeGkRHXCpot9EmTJiErKwvLli1zO1dcXIykJNdGiaSkJBQX66s12VQxKg5d0708sNDbx0eha5L7YmWrGNfmlBCz/qWSkTckCixr1oLVm7Y3PMQsK+hy5esiQy2olhH0lXvPyrpjWOvY5UN39v9RQ4FqT9DztLfOy3VbmBX0pbGznYWleOSTnart5CY94tpFk4Wek5ODxMRElJSUYOLEiUhJSUG/fq5c31JWX1PJBugt/vChG5F6mz/uEJ0ZEZ3XC6cyTy30yFCrrMsl7foEfHvQfRNNZKhVUPBCK9V1duw8WYrEZs7JTG+9UyX0FsRgGOBKVR2iw6xuO0a1cOhsue5rCELT/2mJiYkAgPj4eKSnp6OgoEBwPikpCUVFrj/MoqKioHC3AI0s6AbeS7ygyRIrsX1f+nphH6yQW1Xqnkohp2dyk4OSy0WJuWt/xn2LtmH/GWdMeKjO8nhSsIbJU//bh6f+t1fzdbU2O3q98iNeXHXQ7ZyWqSFI7CGikVEV9KqqKlRUVHCft2zZgs6dOwvapKWlYdWqVWAYBvv27UNMTEzQCLo/kmAZscWEr5X8DUGjb2zNfX7klg7494O9Za436fKhyy22OhhG9jdUEvRalWIgUhw65xTy4rIaAMZa6ADw1T5txbMBYOZXzkivVfvOcsek3Hf89RJhemRSdEI/qi6XkpISTJkyBQBgt9sxZswYDB06FDk5OQCA7Oxs3Hbbbdi4cSPS09MRERGBuXPn+nbUjUhj/lmZDYxy4QtCCM+q5mvos3dej/AQC5743N3yFAvK4Ia0AlYZEY4Q1RaNCbfiao0NDCMv3HL+eLl88mqwrirXYrDnFjrDMG5uJwD4ePNJDOncEp0SonWNSYy45w/yj2PBD79y35tIdmQiwFD9y0lOTsbq1avdjmdnZ3OfTSYTXnrpJWNH1kRo1LDFhv+qRUgo8eZ9PTHti/2Cmei1e27Cx1ucC4P8rpUsWJPI5ZIQ44wll/s9xCIcZrXgKmxwMIysoMuts0SGeibEbB4WNtol1ItUBXYHg72nL2P1fqFV/so3hxERYsHBWaM09aPme2cYZ1m+N3/8VXBc7/93DMPgdGk1rouP1HUdEVzQTlEV2L+r6DDfZxo2Yu5oHevczcm3fgekxEu+7rOCOvpG91Sucil6WR96Z5GFKraGh3dtcMEoWOhyVmiUh781G2Hy1jqnOIaFeP6/t83B4F5RCUCW6nq75klXywL3kNdy3UIx9f6/8OVPZzD09Q145evDKFPZpUoELyToKphMJrxyV3d89cStjXZPo10ugNBX+9b9PZF1c1vu+0tju0tcL+1u+v2gDgCAtG7CNZK2zV27Qd+4tyeeaCii7WAYWdeKnBUa4aGrRJxYyxsfupoPX6ugS4Uvii+9XOUuwGadPhc2jv7jLSd1Ld5K4XAweO27IzjXkLaYCBxI0DXw8KAOSG2lzWfqDZ0SnPHkN7f3PvGWkoV3d+92ePO+XoptzSbpqkgjuyehcF4G4kVpBx69LZX73Lp5OLcQ62DkxUkuPF5v4WkWsXvDU9cNADzyX+U4cD2T7vdsfnMdGu2Nq48tBOIph86V472845ia493EQDQ+JOhNiD7tW2DTM8PxgERqXa2wlrjYP620QUpKPEwm5UlBLGghFjP6N+QwN8HEuWYYyFvocj50Pb5v/lwhtoY9tfQBl8Urx+Hz2uPEH136k3Oy4Q1PTa/9uSjKvunUayiiTTQtSNCbGMlxkYZsytIjCNKCblIcx92927r50fmwu1MdHvjQQ6zaBz81rTOW/Wkgdy8+3kS5qJG1cKuu9ttOlEgel7P0vfp/wKBcQBRoE3iQoAcZ7MahFB0uIk+swYRm4fhx2m2y57kNSAouF7m3Bn7c/H1922HkDYl4aOB1km0ZAM0jpbNORnjhcjGaB/+zQ6fLRfj9fFk1+s1Zh+MX3Wu4nrlchdJKV6Iuo3O72R3yZf+IpgUJepDRvU0s/vtIP7wyzn2hUw69C3BysL0wYHg+dHmXi1wSMr6gR4Za8cHDfTGgY7zsfeV2r4YbsFPUUBjXf9QWVcVvTWsKzuPi1Vp8uv03tzJ5g1/bgO8P+SZ3UmWtDanPr8W/c4/5pH/CWEjQg5Dh1yfosk5Z8fDW0yO1szQm3Cq79V8u9zjfh85ahkryJ7vZqQlZ6IB4V6hyW/bfxOFgcKpEuMipJcLmwJky9J29DqWVdfoHyoMtdv2/Xae96odoHEjQgxQ94szqoZww6oYBrBYzZo3rjhWP3cKJ083XNRc0s0kUbwaEFjer+bKv/Awjm/zKm0VRX+DgrTFqSa/78upDSHl+LYa+vgG/FF0FAFy8WovTl5XDCRmGwXsbj+FSRS22Hr/k1ZibuqulstaGylrlRG6HzpU1+ecwChL0IMWTtL+e5Drnhy+K7/n7WzogpVU0L+JFiFxBZv44WOFT+nuUm4jYjUXNwq24vVuifAeNBBvbvv14CT7bcQqA/JuH2WTCJ1sLue9sKOI3BecxfEGe4n0YyNdI1QtX51T0E1fV2TD/uyOaqkH5ku4vfY/uL30ve379z8XI+NdmQWWoYIYEPUjRo82sgN7R3X3HqBpbn0vDkVeViyzI5aiREptOCdGw8gLUOQtdRvoYyE9ErIUeGWptEhbalM/3AHDmmlETGPEj6RVm9jfxJo0EnzOXq/E1Lw3Ce3nHsTDvOD7bfsqQ/n0Fu4jMvuEEOyToQYqejSlhVgu2PzcC88f31H2fMKvFLTxQLCGsuPBF6ZfZd0iK1HdPDRFa6BpKuskV8GDzy1gtJvRKbi7fgR+Rm2jCRAu6cm8zcrhqpHo2Lin4kxD7tuFJrPqVqjraheojSNCDFL0LnEmx4R7v0BTfU6w9nRt2wEaHWfHHIR1xXVwkwqwWSUG3WswCF4qay4VhAItMlAvr6rGaTXh8eCesmzZUz+M0CnIWdHNR+TktdVFZGF6oqDgiRo16uwMHzpYJ+uI+S91LV+9Obp2Xi1vm5XpwpX4as+JYU8D3GacIv8BuTMm4qbVKSyPvKX08KTYc/53YD10SY9C2eQSeH90NgLt1t3dmOgChC8XuRZQLO2FYLc4yeGxqhaaEnN6Kk8HJLfx1//t3ksdZC92mU9DHv78N+09f4b7L5Wtnf/GNv1xE18QYDL9ee/2DykYsnaenPm8wQBZ6ELNnZjrevr8XAKBH22YAgNbNIxSveX709ehjQC4ZMcO7JqBtw73ZyaZCJFItGhZY+VEuWjwNUoI+a1x3bsIwLHrHB8hZ0OKjcnVUpcSRAcNZ6HpdInwxB0QWusRQt50owcRPdsn298Wu08g94v/6wtdKvRCy0IOYOF4EyuPDOmFY1wT0aBureM2fhqbiT0NTFduoodUqqqyVFim+ANs5H7p8n1KLor+/pQOq6+xo1yICM8fcoGk8/kDONy52R+kRZmdREefnGpmJwNWWwcWKWiTEhGPT0YuCc/vPlOFihWsHqicLrM+scJarLJyXoftaI2gCa+GNClno1whms0lVzOVIaRmlqR3rr9T6RyS20Fn4C7oOFZfLsK6tZPOeRIRasPlvabi1U0u3c+uny6ct8IS7e7dVbySBXPSKWDzrdZbkY10ufN+7eAv/8YsV6PjcWvSfsx7bT5RgwkfuGSbnrv2Z+8xeOv+7I1iUf0LXePxNsBStV4MEnVBkw4xhWOWjXPBXa6QFnf/Hx+lPw3+zbm6LY3Pu5M737RDn0b2NTofsaXUkOZeLm6DLbMKSg/Wds66a8pp6pD6/ViDER4tdeWEOnCmDFPzhsWNamHdc11iaAk0hbLUx0Px/od1uR2ZmJh599FG3c1evXsWf//xnjBs3DhkZGVixYoWhgyT8R8eWUWgWHqLeELwoF419/2FwB8nj/D8+Nqc568axmEyyO0P9iafVkeTWLLccE2ZnrNPpcmFdNKzL5eJVp+tkGW8LP98lJ7d4yv+3uDYkMbDR/H/hkiVLkJoq7Vv97LPPkJqaitWrV2Pp0qV47bXXUFfnXQ4JInDRag09PqyTpG+Vf/XMsTc09On87us3ZzbSRi8lHuZM0RtfrpW6BhfNJ1sLUVNv5/5NXKGlDP653lXH1CYzYfDfFBiGUd1mbwRVdcbfQ8rlUlNvx/my4IqH1yToRUVFyMvLw/jx4yXPm0wmVFZWOv/BKysRGxsLq5XWWwltRImSaLEbhfq0b8G9HbCy4uu44hZRoXgnu7fkuX/JHAc8zx2uN05cK/yomEsVta4JseHY8YuVgrcAOQudn3+GYYB+c9YZPVQBK346gxv+/j2OXfD9zs4nPt+DQf/IDSp3jCZBnzt3Lp5++mmYZXbk/e53v8Px48cxZMgQjBs3Di+88IJsW4IQs/lvadj8t+Hc9+viI/FqZg+899DN3DGxhT5leCoW3Kt/Z6sWerZrLnl8XM82std4Wu7OVxZ6tWgjkp2z0J0/oNjnb3OoW+gOhkGVTAw5wzAY+dZGfLXvrMdjBoD1DSGOvxS55333BKVfd8MvzqiexoyL9zWqqrthwwbExcWhR48esm02b96Mbt26YdOmTVi1ahVeeeUVVFQY8w9CBA6sWOiVqBZRoWjXIlJwbMLA9kiIcRWedpXWc35/etT1GN+nHXd+4q0duM/ieqdysOGRQ7u0Ehz3xK3j6ZuDLyx0hmFQwxOpsup61Nuc9zl2oQI/Hi52E3C5zJcOjT50u4PBr8UVeOp/+3SPd/Y3h/GnJbt1XXPuSjV2F5bqvhefZuFOL0JZtXuR7kBFVdD37NmD3NxcpKWlYdq0adi+fTtmzJghaLNy5UqMHDkSJpMJ7du3R7t27XDiRGCFNRHe07yhWlKYDxYth3Z2iu79/aQrFz0xvBP3eRPP2hezaEIfrHhsEABgyaT+GHNTa4SI4tiVEmF9OmmA5HFPk2CVy0T6eAMDocsl41+b8eKqA9z3Py7Z7faMci4XfjulucebeenDzSfxw2F9m4+GL8jD+Pe3eX5TuKp7XakKnvU+1b+86dOnIz8/H7m5uXjzzTcxcOBALFiwQNCmdevW2LbN+eNeunQJJ0+eRLt27aS6I4KYVzN74MWMbhiUKl9dyFOS4yJROC9DNskWf3MRm5RLilHdk9CnvTPU8ZbUlvj3gze7tVFygwzu3BKtYsLcjjsYYdSIt/xugPTExcKKkRzinaX7RWGJYgH/aPNJyX4EP4XC72JUVket1CrE5TMMw0X1sEi9PzVr+A3Lqq4hC12OnJwc5OTkAAAef/xx7N27F2PHjsUjjzyCGTNmIC7Os/hgInCJjQjB5CEpftnE4U0ZPTbVAOuTT2kZhRaR8oIppV0Mw2Dz34bjwMsjBcc9TaOgVpwjRCYhGQCcL6tBRY0NLaPdJx6WsypFMliEPnRt7YzgUkWtx5bz3tNX0G/OOnyhUmWJXUdQmhwCDV2hKAMGDMCAAc5XzuzsbO54YmIiPv74Y2NHRhA6kKtbqoVXM3ugdWwEMns5Fz1NJhP2/n0k3l73K95ed1TiCnfxcjCM5JuBVn++GLXyeWrFSIrKa5DaKgqXKmolz0/W6LPmi7hSSgdvC2mIeWn1IbzyzWEcnzta97WlFc6JYPlPZ7ikYadKq/DiqgOYNa4H99ux/8s09tuFL6FQFCIo8KTaEktCTDheHtdd84Ylqb9/OT27Li5S+oQKSm4jQDiBDensntoAAKI1bggD3NP1sggsdAVDli/oRom7uJ+l2wpRcOaK6nVSQv3twSJ8uv2U5PU+ihz1CyToRFCgp6CHt0j9/fPFI6YheuKNe3tiWFf3tLKfTOyneo9mEcqCzrqYosOsXEZNMZEG1FTlR+EcPl8u266O57Zgd6OqlafTG+Ez86tDGPfvLbLnK2ptuH7mt1j38wUA2vO3k4VOEE0Mbyx0Ofh/5/9+sDfvuLTLhYVdsGwWEYLBnVviqym34ticOzm/uJbqSWqLnlzZwB5JiJfxlau5bbSgVXP5fmh2p+cL/3dQpW/3zo9d8Dzc+Zeiq6ipdyBn5ynZ/qX+7R5d+pOgvJ4UZVX1qA6AeHUSdCIo8HXK8zE3uTYV8SWhextnnnm+O4IVY3ZMPZObw2oxcxWhtBiEWgVdKde7MYKuTdH5vvqQBtfVzpOuOPEOz65x2/35xo+/4sLVGte9GmLZpdCym1P8RqDmGuPvHZias1ex756v/IBRb+erjsHfkKATQYEvImvkJIR1FYy5qTUmDe7oPMZTDzZdgXhIepKXqSVEY4VcKbpHLVJGC1oF/e6FW7nPrPiKh7bz5GXB9/fyjmP6F/u571IJyL49cB6AtspLdaJoFYZh3BZy5dw8WgyCU6VV6o38DAk6QeiElYTZmT0Q1VAqjq8TrHUtrgPK+vm1iKS48DYL665h+1Ky0PWkI5BbyLxUoT90cMfJUry74ZjbuoZUfD9/l6ZUEY/HPtsDwF2spRCHH0o9kuAYb3i+cNn5AxJ0gvAQk8nEEy2ehd6woFku2lI+a1x3xEeFqrpTAGEZPj43NLh4WkQ6wyGVhEiPhW5k2OG3B4vw+ve/uL2hSLlNistdLhelnO9aKjaJBV0qzFIu9LIxF9V9CQk6QcghY0ln3OgsvB1mNXOv6nw9ZN0l4hwhY3u2wU8z0zkfsxi+AIfIJLd7aewNWP7nQeiU4CzQoWShy1n5UugtJq0FsRtMyt1RXO7yvStZ4Wr54I8WX3W7XirMkn+MPzqy0AniGkFcgm92Zg/sfvF2hIdYJN0oaQ2bWW5sF6v5Hh8+3Bd7/+7KxS5noYdZLejbIY6bSBR96Aa4XIxkYd5xLN5aKHteLsxx58lSVZdL+lv57j50iXZy7i6LyYTymnrM+HI/rta4JuJamx07TpRIXtMUoaTlBCED+6d/Vy9hvVCrxcxtqzdJWOi3dGqJg7NGITpM+59XZJhFYFHLWfEsJg0+dH+5XOS4cLUWL60+JHtevObAct+ibXj/oT6q/bNuGbPJ+e/BMIzbS5bcU5pMwIf5J7D8pzNIbhGJp27vDADo+uJ3qvdtSpCgE4QKSu5V1kIX+4f1iDngnrpAKVcL/74WkWsmzGrmfMlqk4Kv0RtTLk4oxqekUjqFAR+xn106bNF10KSwKLqrsJTbIBZIkMuFIGRgLfMxN7WWbcMKq7cWrth1wk9DsOP5ERL3df5XKYeNkvXOVon6fPIA2dQBjc20Zftkz2n5edlFVbat5KKojMtFvCh67/vbcMfbm9zaVegswXekqBwdnl2Dg2eli3AbDQk6QcjQKSEahfMykNIqWraNa1HUO0EXW4h8MU5sFi5uzlmXrK99QMc4wXGpPvkkN+SYad08Au1aRHg0ZqM5calS9pyWjUViC10ybFGwKOr6fcxmE/fjKSUhU1oDkGLtgSIAwI868717SuC9UxCEDNPTuzT65g8Ttyiq77rXx9+Eoxcq8OGmE3AwQIzIRaPVXcKK9meTB8DmYNDrlR/czknxwYS+2HbiEjqKFnybKlrmS3dBl07RUF1nx3eHzguOW0wueVe6l9JbjxQ1DW4kPRFH3kCCTgQNU0d0bvR7spt3mmuILedzb99kAMAH+c7KXtEN/tq37++FrkkxmsPo2FZWixlWi9DqVApFTIwN46o/1dmafnIq/rM8u6JAso1bXnOZjUWvrjmMz3ecEvzGWn/vMKsZ976/FdfFReGN+9Rr2rKCHhHSOM4QcrkQhBfc1C4Wr2b2wPzxN3nVD7uImtm7Lbq1bqbaXq5+K9/lorQZh18kWirGe8LA9qpjaEz2n77Cff6fTOGKWtGiqpyFXlTm3MzEX/fgry0rTW+hVgt2FV7Gij1ncKpE/m3w0LkyjPv3ZpRWOnfaGpFXRwsk6AThBSaTCRMGtkfzSO/Kz0Wp5D93u6+G40qCzt/0UycR/50U6+63Z/HHHpzVKtkQAXcLXWrnqdzitcVkck2GCj4XNsEaAAx9fYNsu7lrf0bBmTJsPe6MYW8slwsJOkE0AbwpoceHL9T1doZLHsby6l3d3d4ApEqwKbkgxvdph0eHpng5UuM5e0VYVo9N48tHTtBrbQ6Bu0oOvqArwfbFjiHMasH8746gw7NrdOeB14NmQbfb7cjMzMSjjz4qeX7Hjh246667kJGRgYceesiwARJEMPPN1MF47Z4bVdv9K7s3Pp88wO240gKeze7AzDE3CI5NGNQB3z41RHBMysWjFA5pNpnw3OhuKiNufDYdvST4XimRv1xO0Ct54YiKLhcNi9U//VaKzcecY2E3S1nNJizMO67av7doFvQlS5YgNTVV8lx5eTlmzZqF9957D2vWrME///lPwwZIEMFMj7ax3OKkEuN6tsEtnXjx4jJ6O2GQy/etJaEVAExL7+J2TMlC90cRcE+osznc0gHICbpUZSkp5H6XorIaPJmzFzX1dtzz3ja38/y7+rJCkiZBLyoqQl5eHsaPHy95/uuvv0Z6ejratHEWAYiPjzduhARxjZIQE4bs/sm6rnlmVFcsndQfANC3Q5yma6RCJJUEPZDyWIk3AtkZRjamnZ2n3sk9JtufnBjPXnMYq/efw/eHilSv82WaBU0rMXPnzsXTTz+NykrpwP/CwkLYbDZMmDABlZWVePjhh5GZmWnkOAnimmPnC7erthFvgjGZTBjSuRV+fuUOryIrlHz6RqSavS4uslH2DFTUCAVdLpRz9f5zuLGtejI1ucmAnQDlBJ9/2JclTFUt9A0bNiAuLg49evSQbWO323Ho0CEsWrQIH374IRYuXIiTJ08aOlCCIFywi25y4qBXzF/MEPrElX3ourr2K2K3k13BDXVAw/Z88XzAWtvs7yWX050/EfjS5aJqoe/Zswe5ubnIz89HbW0tKioqMGPGDCxYsIBrk5SUhBYtWiAyMhKRkZHo27cvjhw5go4dOyr0TBCEpxjtxhZHbyit/XnqQ3/j3p6Y/uV+9YYGIrbIFWpoaEIsxr+VVCLtjY1o1rAx7JuC81KXYen232T7MBJVC3369OnIz89Hbm4u3nzzTQwcOFAg5gAwYsQI7N69GzabDdXV1SgoKJBdQCUIoukhjt4QZ3Hk4+lkck+fdl73oRexv9ouVfVCB2ILfV/DhqfyBtdORU09pGDj0aX6MBKP49BzcnKQk5MDAEhNTcWQIUMwbtw43HvvvRg/fjy6dHFfOScIomkSJtqaHh/lvlHqr7cb9zftSz8yAC5fvdjl4m1lJrEPfR9vBysAVNbKpwCW68NIdG1PGzBgAAYMcMbCZmdnC85NnjwZkydPNm5kBEHIYrSBG2px+dyvi4vEsK6t3NoouWESYsLwf1Nuxa3zcg0emWewYxVb6N5u6hG7S5Zs+03w/Zfiqxr68GoIitBOUYIgBFkXR9/YWtJPzuWPkRAkq9mEts3V0/C+ds+N+PyPA1RdLnqqLfHpmhgDwLVIKbbIbQ6l5LjqGGFc+z0OnSCIpgXrUmjhZQ4ZlhvaNMN9fdtJnnt6VFfMGNlFMVzRqjHd7/39rsMtqeoFNZQiaZpHhmDPzHTJc+wQ2bBLdx86g7xfLmoaqxRHitQtcDWaxNZ/giCaDr+/pQPeuLcnHuinb+OREu3jpXOjTxneCU+kdVa0qvXmCVdjzt3y6RAsJhPiokLxw1+H4v6+wudn48HZ/9pEi6AXr6qXslOCTXfsDeU1+qoe6YEEnSACEIvZhHv6tDMsqZcW2FtJCbvWfOJaWPHYLcjs3Vb2PGvfdkmMQZSoMAhXa7Xhv9tPlArOr9p31rBxesrtb27E7sJS9YYeQIJOEIQmjHC5sCjJv9rkwI8SEXvEWzRE57RuLp3+l02W5W/2nLrsk36pYhFBEAJY3f5gQh9sO1Gi3LgBvS4XJS+y0i5Vt35EHaXfkIjMXm3QoWUUthzbqmtMjYmv1kXJQicIAgBwWxdnqOLt3RIBACO7J+Glsd2580o7RL11uTyZ1klzX0paaDYBWTe340oDXmuQoBMEAcCZyrdwXgb6tG8heV5pQ4xeC31gR2FG1tt46WvVBJ0fJSIeE+sWMnqRVgsto42JOPIGcrkQBKEJNgRQSiytFnkBXTqpP5JbRAqOvZrZA3V2B/5vr3ORUliwWXkcjMxnwOWbV0pd4Cv0JETzVeAiWegEQWjC3mANS4mlUs3MIZ1boUNLYUhkqNWMt+7vxX3n+83Fi69dEqOFHSqkojXKQo+TSH2ghlReeTnIh04QhF+x21lBFx6fNLgjXrvnJq/65md7FLtcJg+Wr1/qtu/TJN2HXjzJ+X7ionS9iMaEXC4EQWhCzkIX1y31hBCLvIUu1lZhOTfhOaMsdE8uD7WYUaex7J+vIAudIAhNiIs5GAnfXSH2x4sFnr8Q2ju5ueCcy4euPMYebZ2Fsa+Li5Qs/OyJhR4eosPl4iMvOgk6QQQ5rWOlN9nohVsUVVgA9RSBy0XGQmdFmi+F4/u0w1292nDf2ZcHq8qi6Pib2zX0xUjufPVEcCNDXQ6Pb6YO1n29EZCgE0SQ89UTtxrSD2eha/RHTE3rhJ9fuUNTW76FLk5nwFrLg1KcoY78hGQmk0lQC5QtzRdiVR5jWMMirsOhbzFTCX7su9QkKvUmYDTkQyeIICcmLMSQfmwKYYtShIdYNIfy8X3ochZ6eIgZc+++EUM6C7M18tPRsm3V0u+y4sowjODeLJ5EoYTx7ik56fEO+SrKhQSdIIIco1zeei303tc119y3FgsdAB4ccJ3btfyFUXY3q1rd05AGF4+D0Z+HRo4wq/wzAMYXJZGCXC4EEeR4ssAnhR5B3//SSE15z1kEi6JmaQtdjocGtuc+a41OYS10swkIkbjIEwNasDmqsYqmiiBBJ4ggx6hd8DYdgh4boc/NI9wpKmehS983OsyK0TcmNbSQH1tPXkQMa02bzSbDLHS+60fqN/J1HVVAh6Db7XZkZmbi0UcflW1TUFCAbt264bvvvjNkcARBeI9RFrpDFLa47E8D8U52b0P65iMer0sb1RVRKTrlhdHduM/sG4HFbDLMh853/UgJup2f9tdH6q5Z0JcsWYLU1FTZ83a7HQsWLMDgwf4J1yEIQhqj3v7FFvqAlHiM7dlG6RKPEIuhmj8cULbMXf24PrMibjGZZKNcWkSGyJblk4Iv0lIuF7sgqZjmbnWhSdCLioqQl5eH8ePHy7ZZunQpRo0ahfj4eNk2BEE0PloEUQusuA1M8e3fuNi4NUl8koMvlN8+NQSP3NKB+17P28XJThpOl4tUvwz2/n0kXrmrh6YxA0KXi1olKb8m55o7dy6efvppmGWC9YuLi7Fu3To88MADhg6OIAhjGNa1Fd5/qI9XfQxIiUfhvAwkx0WqN9bI0kn98cwdXQXHPJqAJC7p1roZXh7XnQtzrLW5BJ0VXKvZhBHXJ8p2qyeFgKh8Kf77SD/Z31xcvNooVAV9w4YNiIuLQ48e8jPVnDlzMGPGDFgs12ZSeYJo6nwysT/u6JHk72G4MaRzKzw+rJN6Qy9gF0DreYLOukTMJhOeGtEZ258bIbiGNbb1JPlyiPwow69PwLCurSTb+krQVePQ9+zZg9zcXOTn56O2thYVFRWYMWMGFixYwLU5ePAgpk2bBgC4fPkyNm7cCKvVittvv90ngyYI4trB24RbbFoBqcRZFrMJZrMJSTLpEbS+LcSEWSX94nIL0s0jjdnsJUZV0KdPn47p06cDAHbs2IGPP/5YIOYAkJuby31+9tlnMWzYMBJzgiB00TO5OfafvuJ2fFjXVph4awdNlryU3cvGnNfZHHg1swe+2X+OizhR83WLGX1jEtYeKHI7/sO0oXh59SH8UnxVcFxuPvg9z7dvJB7vFM3JyQEAZGdnGzYYgiCuXT6fPACXq+rcjlstZkFtUymUZHnCoA5Yte8cBqbEo03zCEwY2B4//VYKQLgAe11cJE6VVsn288vsO2A1m7H2wFq3c+FWCxbc2xP19n3I7N2WOy5noRuVP0aMLkEfMGAABgwYAEBeyOfNm+f9qAiCCEjWTRvqsVhFhVkRFWZ8NpI+7VugcF6G4BjrfeGHF3415Vb8XFSOB/+zQ9LSD7MqrxHGhIfg40f6CY419n5RyuVCEIRhdEqI8fcQNMEuSvJdLi2iQtE10djx8w30TgnReP+hmw3b6CUFCTpBEEGD1h2YrWKcKXj7tG/hVT8s/HzufPiLqtV1dp9PeCToBEEEPHpj1zslxOC7vwxBZ5HAehIDv376bZpcRZV1Nt1964UEnSCIa5Lrk5q5HWN96s15RTTUSG0VrandqBt8vw+ABJ0gCKKB2MgQvJrZA2nXJ6i2nXv3jYKEW2rMvlt7GgFPIUEnCKJJknFTa6wpON/o953Ay6+uxJ09ktAiSrsl76tQRT4k6ARBNEneffBmvPugtrb+KCfhpxoWilCBC4IggobGKCLBYlQWSyMhC50gCEKBFzO6CQpAsxhVCcpISNAJgiAUmDwkRfJ4U7TQyeVCEETAw2qrUgk6o2mKFjoJOkEQAY9fFkX9cldlSNAJgiA8oAl6XEjQCYIgPEFPkq1eyc19NxAetChKEETQ0Lhhi9ra7XrhdkT7IC2wFCToBEEEPP6IONFqobeKCfPxSFyQy4UgiIDnltR4AEAXg/OZK9EEXehkoRMEEfiM79MOw69PQMvoxrOGA3pR1G63IzMzE48++qjbudWrV2Ps2LEYO3YsHnjgARw5csTQQRIEQShhMpkaTczZotNNcWORZgt9yZIlSE1NRUVFhdu5du3a4dNPP0VsbCw2btyImTNn4ssvvzR0oARBEE2Br6cOxqajF/09DEk0WehFRUXIy8vD+PHjJc/ffPPNiI2NBQD06tULRUVFxo2QIAiiCdE1KUY2HYC/0SToc+fOxdNPPw2zWb358uXLMXToUK8HRhAEQehDVaE3bNiAuLg49OihXm1j+/btWL58OWbMmGHI4AiCIAjtqPrQ9+zZg9zcXOTn56O2thYVFRWYMWMGFixYIGh35MgRvPjii/jPf/6DFi2kK2kTBEEQvkNV0KdPn47p06cDAHbs2IGPP/7YTczPnTuHqVOnYv78+ejYsaNvRkoQBEEo4nEcek5ODgAgOzsb7777Lq5cuYJZs2YBACwWC1auXGnMCAmCIAhNmBimMbMfuMjKyiLRJwiC0ImSdtLWf4IgiCCBBJ0gCCJI8Fsul7NnzyIrK8tftycIgghIzp49K3vObz50giAIwljI5UIQBBEkkKATBEEECSToBEEQQQIJOkEQRJBAgk4QBBEkkKATBEEECQEn6Pn5+Rg1ahTS09PxwQcf+Hs4hnH+/HlMmDABd955JzIyMrB48WIAwJUrVzBx4kSMHDkSEydORFlZGXfNokWLkJ6ejlGjRmHTpk3+GrpXiEsbBvvzlpeX48knn8Qdd9yBO++8E3v37g36Z/7kk0+QkZGBMWPGYNq0aaitrQ26Z37uuecwaNAgjBkzhjvmyTMePHgQY8eORXp6OmbPng3dUeVMAGGz2ZgRI0Ywp06dYmpra5mxY8cyR48e9fewDKG4uJg5ePAgwzAMc/XqVWbkyJHM0aNHmddee41ZtGgRwzAMs2jRImb+/PkMwzDM0aNHmbFjxzK1tbXMqVOnmBEjRjA2m81v4/eUjz/+mJk2bRrzpz/9iWEYJuif95lnnmG++OILhmEYpra2likrKwvqZy4qKmKGDx/OVFdXMwzDME8++SSzYsWKoHvmnTt3MgcPHmQyMjK4Y5484z333MPs2bOHcTgczKRJk5i8vDxd4wgoC72goADt27dHcnIyQkNDkZGRgfXr1/t7WIaQkJCA7t27AwCio6ORkpKC4uJirF+/HpmZmQCAzMxMrFu3DgCwfv16ZGRkIDQ0FMnJyWjfvj0KCgr8NXyPkCptGMzPW1FRgV27dnHPGxoaimbNmgX1MwPOt7CamhrYbDbU1NQgISEh6J65X79+XBlOFr3PeOHCBVRUVKB3794wmUzIzMzUrW8BJejFxcVISkrivicmJqK4uNiPI/INZ86cwc8//4yePXuipKQECQkJAJyiX1paCiA4fgup0obB/LynT59GXFwcnnvuOWRmZuKFF15AVVVVUD9zYmIi/vCHP2D48OEYPHgwoqOjMXjw4KB+Zha9zyg+npSUpPvZA0rQGQl/kslk8sNIfEdlZSWefPJJPP/884iOjpZtF+i/hZ7ShkDgPy8A2Gw2HD58GNnZ2Vi1ahUiIiIU14GC4ZnLysqwfv16rF+/Hps2bUJ1dTW++uor2fbB8MxqyD2jEc8eUIKelJSEoqIi7ntxcTE3AwYD9fX1ePLJJzF27FiMHDkSABAfH48LFy4AAC5cuIC4uDgAgf9bsKUN09LSMG3aNGzfvh0zZswI2ucFnM+QlJSEnj17AgDuuOMOHD58OKifeevWrWjXrh3i4uIQEhKCkSNHYu/evUH9zCx6n1F8vKioSPezB5Sg33jjjSgsLMTp06dRV1eHNWvWIC0tzd/DMgSGYfDCCy8gJSUFEydO5I6npaVh1apVAIBVq1ZhxIgR3PE1a9agrq4Op0+fRmFhIW666SZ/DN0jpk+fjvz8fOTm5uLNN9/EwIEDsWDBgqB9XgBo1aoVkpKScOLECQDAtm3bkJqaGtTP3KZNG+zfvx/V1dVgGOaaeGYWvc+YkJCAqKgo7Nu3DwzDCK7RjFdLu34gLy+PGTlyJDNixAhm4cKF/h6OYezatYvp0qULM2bMGGbcuHHMuHHjmLy8PKa0tJR5+OGHmfT0dObhhx9mLl++zF2zcOFCZsSIEczIkSN1r4Y3JbZv385FuQT78x4+fJi5++67mTFjxjCPPfYYc+XKlaB/5n/+85/MqFGjmIyMDGbGjBlMbW1t0D3zX//6V+bWW29lbrjhBmbIkCHMF1984dEzFhQUMBkZGcyIESOYWbNmMQ6HQ9c4KH0uQRBEkBBQLheCIAhCHhJ0giCIIIEEnSAIIkggQScIgggSSNAJgiCCBBJ0giCIIIEEnSAIIkj4f3HFt1quHA5fAAAAAElFTkSuQmCC",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "plt.plot(model.approx.hist)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<br/>Waiting for W&B process to finish, PID 405371<br/>Program ended successfully."
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "0bfbfea5fbe74301a4908ed5f38e30dc",
+       "version_major": 2,
+       "version_minor": 0
+      },
+      "text/plain": [
+       "VBox(children=(Label(value=' 0.00MB of 0.00MB uploaded (0.00MB deduped)\\r'), FloatProgress(value=1.0, max=1.0)…"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "Find user logs for this run at: <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_135008-281tmodh/logs/debug.log</code>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "Find internal logs for this run at: <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_135008-281tmodh/logs/debug-internal.log</code>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "<h3>Run summary:</h3><br/><style>\n",
+       "    table.wandb td:nth-child(1) { padding: 0 10px; text-align: right }\n",
+       "    </style><table class=\"wandb\">\n",
+       "<tr><td>final ELBO value</td><td>43818341.95693</td></tr><tr><td>_runtime</td><td>657</td></tr><tr><td>_timestamp</td><td>1648576865</td></tr><tr><td>_step</td><td>0</td></tr></table>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "<h3>Run history:</h3><br/><style>\n",
+       "    table.wandb td:nth-child(1) { padding: 0 10px; text-align: right }\n",
+       "    </style><table class=\"wandb\">\n",
+       "<tr><td>final ELBO value</td><td>▁</td></tr><tr><td>_runtime</td><td>▁</td></tr><tr><td>_timestamp</td><td>▁</td></tr><tr><td>_step</td><td>▁</td></tr></table><br/>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)"
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "\n",
+       "                    <br/>Synced <strong style=\"color:#cdcd00\">fanciful-gorge-25</strong>: <a href=\"https://wandb.ai/harrig12/damuta-docs_examples/runs/281tmodh\" target=\"_blank\">https://wandb.ai/harrig12/damuta-docs_examples/runs/281tmodh</a><br/>\n",
+       "                "
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "wandb.log({\"final ELBO value\": model.approx.hist[-1]})\n",
+    "wandb.finish()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Callbacks \n",
+    "\n",
+    "We can also make use of callbacks to log this value over the course of the fitting procedure. This way, our ELBO plot will be automatically generated by wandb, and will live-update on the wandb dashboard as we fit the model. Let 's create a new run with a callback to demonstrate this. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\u001b[34m\u001b[1mwandb\u001b[0m: wandb version 0.12.11 is available!  To upgrade, please run:\n",
+      "\u001b[34m\u001b[1mwandb\u001b[0m:  $ pip install wandb --upgrade\n"
+     ]
+    },
+    {
+     "data": {
+      "text/html": [
+       "\n",
+       "                Tracking run with wandb version 0.11.2<br/>\n",
+       "                Syncing run <strong style=\"color:#cdcd00\">helpful-wildflower-28</strong> to <a href=\"https://wandb.ai\" target=\"_blank\">Weights & Biases</a> <a href=\"https://docs.wandb.com/integrations/jupyter.html\" target=\"_blank\">(Documentation)</a>.<br/>\n",
+       "                Project page: <a href=\"https://wandb.ai/harrig12/damuta-docs_examples\" target=\"_blank\">https://wandb.ai/harrig12/damuta-docs_examples</a><br/>\n",
+       "                Run page: <a href=\"https://wandb.ai/harrig12/damuta-docs_examples/runs/3ox666dh\" target=\"_blank\">https://wandb.ai/harrig12/damuta-docs_examples/runs/3ox666dh</a><br/>\n",
+       "                Run data is saved locally in <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_140208-3ox666dh</code><br/><br/>\n",
+       "            "
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "\n",
+       "    <div>\n",
+       "        <style>\n",
+       "            /* Turns off some styling */\n",
+       "            progress {\n",
+       "                /* gets rid of default border in Firefox and Opera. */\n",
+       "                border: none;\n",
+       "                /* Needs to be in here for Safari polyfill so background images work as expected. */\n",
+       "                background-size: auto;\n",
+       "            }\n",
+       "            .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {\n",
+       "                background: #F44336;\n",
+       "            }\n",
+       "        </style>\n",
+       "      <progress value='1000' class='' max='1000' style='width:300px; height:20px; vertical-align: middle;'></progress>\n",
+       "      100.00% [1000/1000 10:00<00:00 Average Loss = 4.9057e+07]\n",
+       "    </div>\n",
+       "    "
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Finished [100%]: Average Loss = 4.9012e+07\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "<damuta.models.Lda at 0x7f0a4c26b820>"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from damuta.callbacks import LogELBO\n",
+    "\n",
+    "# Initialize run\n",
+    "my_config={\"n_sigs\": 20,\n",
+    "           \"init_strategy\": \"uniform\",\n",
+    "           \"opt_method\": \"ADVI\", \n",
+    "           \"seed\": 360\n",
+    "          }\n",
+    "\n",
+    "run = wandb.init(config = my_config)\n",
+    "\n",
+    "# Log data\n",
+    "artifact = wandb.Artifact('pcawg', type='dataset')\n",
+    "artifact.add(wandb.Table(data=counts), 'counts')\n",
+    "artifact.add(wandb.Table(data=annotation), 'annotation')\n",
+    "wandb.log_artifact(artifact)\n",
+    "\n",
+    "# Build and fit the model\n",
+    "model = da.models.Lda(dataset = da.DataSet(counts, annotation), **my_config)\n",
+    "model.fit(n=1000, callbacks = [LogELBO(every=1)])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "<br/>Waiting for W&B process to finish, PID 410928<br/>Program ended successfully."
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "0003baaf0c98441aabb6f3bc5a3190ec",
+       "version_major": 2,
+       "version_minor": 0
+      },
+      "text/plain": [
+       "VBox(children=(Label(value=' 1.10MB of 1.10MB uploaded (0.00MB deduped)\\r'), FloatProgress(value=1.0, max=1.0)…"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "Find user logs for this run at: <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_140208-3ox666dh/logs/debug.log</code>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "Find internal logs for this run at: <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_140208-3ox666dh/logs/debug-internal.log</code>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "<h3>Run summary:</h3><br/><style>\n",
+       "    table.wandb td:nth-child(1) { padding: 0 10px; text-align: right }\n",
+       "    </style><table class=\"wandb\">\n",
+       "<tr><td>ELBO</td><td>43278176.76101</td></tr><tr><td>_runtime</td><td>608</td></tr><tr><td>_timestamp</td><td>1648577536</td></tr><tr><td>_step</td><td>999</td></tr></table>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "<h3>Run history:</h3><br/><style>\n",
+       "    table.wandb td:nth-child(1) { padding: 0 10px; text-align: right }\n",
+       "    </style><table class=\"wandb\">\n",
+       "<tr><td>ELBO</td><td>███▇▇█▆▆▆▇▆▆▆▆▅▅▄▅▅▄▄▅▃▅▄▄▄▄▂▄▃▂▃▃▂▁▂▁▂▂</td></tr><tr><td>_runtime</td><td>▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███</td></tr><tr><td>_timestamp</td><td>▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███</td></tr><tr><td>_step</td><td>▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███</td></tr></table><br/>"
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)"
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    },
+    {
+     "data": {
+      "text/html": [
+       "\n",
+       "                    <br/>Synced <strong style=\"color:#cdcd00\">helpful-wildflower-28</strong>: <a href=\"https://wandb.ai/harrig12/damuta-docs_examples/runs/3ox666dh\" target=\"_blank\">https://wandb.ai/harrig12/damuta-docs_examples/runs/3ox666dh</a><br/>\n",
+       "                "
+      ],
+      "text/plain": [
+       "<IPython.core.display.HTML object>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "wandb.finish()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Callbacks can be implemented by extending the `Callback` class. At minimum, they need a `__call__` method with signature `(self, approx, loss, i)`. See [pymc3 docs](https://docs.pymc.io/en/v3/pymc-examples/examples/pymc3_howto/sampling_callback.html) for moer details.\n",
+    "\n",
+    "Here's the definition of `LogELBO`, the callback we just used:\n",
+    "\n",
+    "```\n",
+    "class LogELBO(Callback):\n",
+    "    \"\"\"Log ELBO using `wandb.log()`. `wandb.init()` must be run first.\n",
+    "     \n",
+    "    Parameters\n",
+    "    ----------\n",
+    "    every: int\n",
+    "        Frequency at which wandb.log() is called\n",
+    "        \n",
+    "    Examples\n",
+    "    --------\n",
+    "    >>> with model:\n",
+    "    ...     approx = pm.fit(n=1000, callbacks=[LogELBO(every=50)])\n",
+    "    \"\"\"\n",
+    "\n",
+    "    def __init__(self, every=100):\n",
+    "        self.every = every\n",
+    "\n",
+    "    def __call__(self, approx, loss, i):\n",
+    "        if i % self.every or i < self.every:\n",
+    "            return\n",
+    "        \n",
+    "        wandb.log({\"ELBO\": loss[i-1]})\n",
+    "```"
+   ]
+  }
+ ],
+ "metadata": {
+  "interpreter": {
+   "hash": "3a88c93fbd9f21cf52f2ce017270ae455ec526c7285c6905783c3226425ccbca"
+  },
+  "kernelspec": {
+   "display_name": "Python 3.8.12 ('pymc3')",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.12"
+  },
+  "orig_nbformat": 4
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

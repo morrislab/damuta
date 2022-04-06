@@ -1,21 +1,19 @@
 import pytest 
-import pymc3 as pm
+import pathlib as pl
 import pandas as pd
-import numpy as np
-from damuta import load_sigs
+from damuta.base import DataSet, SignatureSet
 
 @pytest.fixture(scope="session")
-def c():
-    c = pd.read_csv('data/mutation_types_raw_counts.csv', index_col=0, header=0)
-    return c
+def test_data():
+    return pl.Path(__file__).resolve().parent / 'test_data'
 
 @pytest.fixture(scope="session")
-def a():
-    a =  pd.read_csv('data/pcawg_cancer_types.csv', index_col=0, header=0)
-    return a
+def pcawg(test_data):
+    counts = pd.read_csv(test_data / 'pcawg_counts.csv',  index_col=0)
+    annotation = pd.read_csv(test_data / 'pcawg_cancer_types.csv', index_col=0)
+    return DataSet(counts, annotation)
 
 @pytest.fixture(scope="session")
-def sig_defs():
-    sig_defs = load_sigs('data/COSMIC_v3.2_SBS_GRCh37.txt')
-    return sig_defs
-
+def cosmic(test_data):
+    sigs = pd.read_csv(test_data / 'COSMIC_v3.2_SBS_GRCh37.txt', sep='\t', index_col = 0).T
+    return SignatureSet(sigs)
