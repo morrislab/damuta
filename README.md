@@ -10,7 +10,6 @@
 # major dependencies 
 
 * pymc3
-* numpy
 * theano
 * wandb
 * plotly
