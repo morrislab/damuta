@@ -6,7 +6,7 @@ The most commonly used functions/objects are:
   - damuta.models - probabilstic models based on pymc3
   - damuta.plotting - plotting functions to visualize mutational signautres and their activities
 """
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 __all__ = [
     "__version__",
