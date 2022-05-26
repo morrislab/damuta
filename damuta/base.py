@@ -273,8 +273,8 @@ class Model(ABC):
         if self.approx is None:
             warnings.warn("self.trace is None... Fit the model first!", ValueError)
         
-        B = self.approx.sample(n_samples).B.mean(0)
-        return alp_B(self.dataset.counts.to_numpy(), B)
+        B = self.approx.sample(n_samples).B
+        return lap_B(self.dataset.counts.to_numpy(), B)
     
     def reconstruction_err(self, *args, **kwargs):
         """Defined by subclass
