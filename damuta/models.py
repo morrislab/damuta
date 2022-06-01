@@ -63,6 +63,9 @@ class Lda(Model):
         # TODO: debug
         data=self.dataset.counts.to_numpy()
         
+        # add pseudo count to 0 categories
+        data[data==0] = 1
+        
         # get proportions for signature initialization
         data = data/data.sum(1)[:,None]
         return k_means(data, self.n_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0]
@@ -250,8 +253,10 @@ class TandemLda(Model):
     def _init_kmeans(self):
         """Initialize signatures via kmeans 
         """
-        
         data=self.dataset.counts.to_numpy()
+        
+        # add pseudo count to 0 categories
+        data[data==0] = 1
         
         # get proportions for signature initialization
         data = data/data.sum(1)[:,None]
@@ -479,6 +484,9 @@ class HierarchicalTandemLda(Model):
         """
         
         data=self.dataset.counts.to_numpy()
+        
+        # add pseudo count to 0 categories
+        data[data==0] = 1
         
         # get proportions for signature initialization
         data = data/data.sum(1)[:,None]
