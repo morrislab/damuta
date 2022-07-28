@@ -10,6 +10,7 @@ from scipy.special import softmax, logsumexp, loggamma
 from sklearn.metrics.pairwise import cosine_similarity
 from .constants import * 
 import pkg_resources
+from scipy.stats import multinomial
 
 # constants
 #C=32
@@ -258,12 +259,12 @@ def kmeans_alr(data, nsig, rng=np.random.default_rng()):
     km = k_means(alr(data), nsig, random_state=np.random.RandomState(rng.bit_generator))
     return alr_inv(km[0])
 
-def alp_B(data, B):
-    return (data * np.log(B)).sum() / data.sum()
-
 def mult_ll(x, p):
     # x and p should both be same dimensions; Sx96
     return loggamma(x.sum(1) + 1) - loggamma(x+1).sum(1) + (x * np.log(p)).sum(1)
+
+def alp_B(data, B):
+    return mult_ll(data, B).sum()
 
 def lap_B(data, Bs):
     # Bs should be shape DxSx96 where D is the number of posterior samples
