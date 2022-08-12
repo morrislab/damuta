@@ -9,7 +9,7 @@ from .utils import *
 __all__ = ['Damuta', 'DataSet', 'SignatureSet']
 
 _opt_methods = {"ADVI": pm.ADVI, "FullRankADVI": pm.FullRankADVI}
-_init_strats = ['kmeans', 'uniform']
+_init_strats = ['uniform', 'kmeans', 'from_sigs']
 
 @dataclass
 class DataSet:
@@ -73,8 +73,7 @@ class DataSet:
         assert type_col in self.annotation.columns, f"{type_col} not found in annotation columns. Check spelling?"
         self.tissue_types = pd.Categorical(self.annotation[type_col])
         self.type_codes = self.tissue_types.codes
-
-    
+  
 @dataclass
 class SignatureSet:
     """Container for tabular data, allowing simple access to a set of mutational signature definitions. 
@@ -94,6 +93,30 @@ class SignatureSet:
         # check for shape, valid signautre definitions
         assert self.signatures.shape[1] == 96, f"Expected 96 mutation types, got {self.signatures.shape[1]}"
         assert np.allclose(self.signatures.sum(1),1), "All signature definitions must sum to 1"
+        assert self.signatures.columns.isin(mut96).all(), 'Check signature column names'
+        self.signatures = self.signatures[mut96]
+        _phi = get_phi(self.signatures.to_numpy())
+        self.damage_signatures = pd.DataFrame(_phi, index = self.signatures.index, columns=mut32)
+        _eta = get_eta(self.signatures.to_numpy())
+        self.misrepair_signatures = pd.DataFrame(_eta, index = self.signatures.index, columns=mut6)
+    
+    @classmethod
+    def from_damage_misrepair(cls, damage_signatures: pd.DataFrame, misrepair_signatures: pd.DataFrame):
+        assert damage_signatures.columns.isin(mut32).all(), 'Check damage_signatures column names'
+        assert misrepair_signatures.columns.isin(mut6).all(), 'Check misrepair_signatures column names'
+        phi = damage_signatures.copy()[mut32]
+        eta = misrepair_signatures.copy()[mut6]
+        cross_prod = get_tau(phi.to_numpy(), eta.to_numpy().reshape(-1,2,3))
+        c = cls(pd.DataFrame(cross_prod, columns = mut96,
+                             index = [d + '_' + m for d in phi.index for m in eta.index]))
+        c.damage_signatures = phi
+        c.misrepair_signatures = eta
+        return c
+    
+    @property
+    def index(self) -> int:
+        """Names of signatures in dataset"""
+        return self.signatures.index
         
     @property
     def n_sigs(self) -> int:
@@ -101,25 +124,23 @@ class SignatureSet:
         return self.signatures.shape[0]
     
     @property
-    def damage_signatures(self) -> pd.DataFrame:
-        """Damage signatures 
+    def n_damage_sigs(self) -> pd.DataFrame:
+        """Number of damage signatures in dataset
         
         Damage signatures represent the distribution of mutations over 32 trinucleotide contexts. 
         They are computed by marginalizing over substitution classes. 
         """
-        phi = get_phi(self.signatures.to_numpy())
-        return pd.DataFrame(phi, index = self.signatures.index, columns=mut32)
+        return self.damage_signatures.shape[0]
         
                 
     @property
-    def misrepair_signatures(self) -> pd.DataFrame:
-        """Misrepair signatures 
+    def n_misrepair_sigs(self) -> pd.DataFrame:
+        """Number of misrepair signatures in dataset
         
         Misrepair signatures represent the distribution of mutations over 6 substitution types. 
         They are computed by marginalizing over trinucleotide context classes. 
         """
-        eta = get_eta(self.signatures.to_numpy())
-        return pd.DataFrame(eta, index = self.signatures.index, columns=mut6)
+        return self.misrepair_signatures.shape[0]
     
     def summarize_separation(self) -> pd.DataFrame:
         """Summary statistics of pair-wise cosine distances for signautres, 
@@ -128,8 +149,8 @@ class SignatureSet:
         """
         
         seps = {'Signature separation': cosine_similarity(self.signatures)[np.triu_indices(self.n_sigs, k=1)],
-                'Damage signature separation': cosine_similarity(self.damage_signatures)[np.triu_indices(self.n_sigs, k=1)],
-                'Misrepair signature separation': cosine_similarity(self.misrepair_signatures)[np.triu_indices(self.n_sigs, k=1)]
+                'Damage signature separation': cosine_similarity(self.damage_signatures)[np.triu_indices(self.n_damage_sigs, k=1)],
+                'Misrepair signature separation': cosine_similarity(self.misrepair_signatures)[np.triu_indices(self.n_misrepair_sigs, k=1)]
                }
         
         return pd.DataFrame.from_dict(seps).describe()
@@ -147,6 +168,10 @@ class Model(ABC):
         Data for fitting.
     opt_method: str 
         one of "ADVI" for mean field inference, or "FullRankADVI" for full rank inference.
+    init_strategy: str
+        one of "uniform", "kmeans", "from_sigs"
+    init_signatures: SignatureSet
+        set of signatures to initialize from, required if init_strategy is set to "from_sigs"
     seed : int
         Random seed
     
@@ -158,7 +183,7 @@ class Model(ABC):
         pymc3 approximation object. Created via self.fit()
      """
 
-    def __init__(self, dataset: DataSet, opt_method: str, init_strategy: str, seed: int):
+    def __init__(self, dataset: DataSet, opt_method: str, init_strategy: str, init_signatures: SignatureSet, seed: int):
         
         if not isinstance(dataset, DataSet):
             raise TypeError('Learner instance must be initialized with a DataSet object')
@@ -167,9 +192,15 @@ class Model(ABC):
             raise TypeError(f'Optimization method should be one of {list(_opt_methods.keys())}')
         assert init_strategy in _init_strats, f'self.init_strategy should be one of {_init_strats}'
         
+        if init_strategy == 'from_sigs':
+            assert init_signatures is not None, 'init_strategy "from_sigs" requires a signature set to be passed.'
+        if init_signatures is not None and init_strategy != 'from_sigs': 
+            warnings.warn('signature_set provided, but init_strategy is not "from_sigs". signature_set will be ignored.')
+        
         self.dataset = dataset
         self.opt_method = opt_method
         self.init_strategy = init_strategy
+        self.init_signatures = init_signatures
         self.seed = seed
         self.model = None
         self.approx = None
@@ -196,17 +227,53 @@ class Model(ABC):
         pass
     
     @abstractmethod
-    def _init_kmeans(self):
-        """Defined by subclass
+    def _init_uniform(self):
+        """Initialize signatures uniformly 
+        Defined by subclass
         """
         pass
     
     @abstractmethod
-    def _initialize_signatures(self):
-        """Defined by subclass.
+    def _init_kmeans(self):
+        """Initialize signatures via kmeans on the data
+        Defined by subclass
         """
         pass
+    
+    @abstractmethod
+    def _init_from_sigs(self):
+        """Initialize signatures from a supplied SignatureSet
+        Defined by subclass
+        """
+        pass
+
+    def _validate_init_sigs(self):
+        """ Check that sigs used for initialization are valid
+        """
+        if "tau_init" in self._model_kwargs.keys():
+            assert (self._model_kwargs["tau_init"] is None) or np.allclose(self._model_kwargs["tau_init"].sum(1), 1)
+        if "phi_init" in self._model_kwargs.keys():
+            assert (self._model_kwargs["phi_init"] is None) or np.allclose(self._model_kwargs["phi_init"].sum(1), 1)
+        # eta should be kxpxm
+        if "etaC_init" in self._model_kwargs.keys():
+            assert (self._model_kwargs["etaC_init"] is None) or np.allclose(self._model_kwargs["etaC_init"].sum(1), 1)
+        if "etaT_init" in self._model_kwargs.keys():
+            assert (self._model_kwargs["etaT_init"] is None) or np.allclose(self._model_kwargs["etaT_init"].sum(1), 1)
+    
+    def _initialize_signatures(self):
+        """Initialize signatures using selected initialization strategy
+        """
+        if self.init_strategy == "uniform":
+            self._init_uniform()
+            
+        if self.init_strategy == "kmeans":
+            self._init_kmeans()
+            
+        if self.init_strategy == "from_sigs":
+            assert self.init_signatures is not None, "init_signatures required for init_strategy 'from_sigs'"
+            self._init_from_sigs()
         
+        self._validate_init_sigs()
 
     def fit(self, n, **pymc3_kwargs):
         """Fit model to the dataset specified by self.dataset
@@ -231,6 +298,7 @@ class Model(ABC):
             self._trace.fit(n=n, **pymc3_kwargs)
         
         self.approx = self._trace.approx
+        self._hat = self.approx.sample(10)
         
         return self
     
@@ -250,18 +318,11 @@ class Model(ABC):
     ################################################################################
     # Metrics
     ################################################################################
-
-    @abstractmethod
-    def BOR(self, *args, **kwargs):
-        """Defined by subclass
-        """
-        pass
     
     def ALP(self, n_samples = 20):
         """Average log probability per mutation 
         """
-        if self.approx is None:
-            warnings.warn("self.approx is None... Fit the model first!", ValueError)
+        if self.approx is None: warnings.warn("self.approx is None... Fit the model first!", ValueError)
         
         B = self.approx.sample(n_samples).B.mean(0)
         return alp_B(self.dataset.counts.to_numpy(), B)
@@ -270,8 +331,7 @@ class Model(ABC):
     def LAP(self, n_samples = 20):
         """Log average data likelihood (bayesian version of reconstruction error)
         """
-        if self.approx is None:
-            warnings.warn("self.trace is None... Fit the model first!", ValueError)
+        if self.approx is None: warnings.warn("self.trace is None... Fit the model first!", ValueError)
         
         B = self.approx.sample(n_samples).B
         return lap_B(self.dataset.counts.to_numpy(), B)
@@ -280,5 +340,17 @@ class Model(ABC):
         """Defined by subclass
         """
         pass
-    
 
+    ################################################################################
+    # Plotting
+    ################################################################################    
+    
+    def get_sig_set(self) -> SignatureSet:
+        ''' Construct a Signature Set with one sample from the model posterior.
+        '''
+        hat = self.approx.sample(1)
+        damage = pd.DataFrame(hat.phi[0], columns = mut32)
+        misrepair = pd.DataFrame(hat.eta[0].reshape(-1,6), columns=mut6)
+        damage.index = ['D'+str(n) for n in damage.index]
+        misrepair.index = ['M'+str(n) for n in misrepair.index]
+        return SignatureSet.from_damage_misrepair(damage, misrepair)

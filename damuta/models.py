@@ -49,39 +49,36 @@ class Lda(Model):
     
     def __init__(self, dataset: DataSet, n_sigs: int,
                  alpha_bias=0.1, psi_bias=0.01,
-                 opt_method="ADVI", init_strategy="uniform", seed=2021):
+                 opt_method="ADVI", init_strategy="uniform",
+                 init_signatures=None, seed=2021):
         
-        super().__init__(dataset=dataset, opt_method=opt_method, 
-                         init_strategy=init_strategy, seed=seed)
-        
+        super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
         self.n_sigs = n_sigs
         self._model_kwargs = {"n_sigs": n_sigs, "alpha_bias": alpha_bias, "psi_bias": psi_bias}
         
-    
-    def _init_kmeans(self):
-        """Initialize signatures via kmeans 
-        """
-        data=self.dataset.counts.to_numpy()
+    def _init_uniform(self):
+        self._model_kwargs['tau_init'] = None 
         
+    def _init_kmeans(self):
+        data=self.dataset.counts.to_numpy()
         # add pseudo count to 0 categories
         data[data==0] = 1
-        
         # get proportions for signature initialization
         data = data/data.sum(1)[:,None]
-        return k_means(data, self.n_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0]
+        self._model_kwargs['tau_init'] = k_means(data, self.n_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0]
     
-    
-    def _initialize_signatures(self):
-        """Method to initialize signatures for inference.
-        """
-        
-        if self.init_strategy == "kmeans":
-            self._model_kwargs['tau_init'] = self._init_kmeans()
-        
-        if self.init_strategy == "uniform":
-            self._model_kwargs['tau_init'] = None   
-    
-    
+    def _init_from_sigs(self):
+        sigs = self.init_signatures
+        if self.n_sigs != sigs.n_sigs:
+            warnings.warn(f'init_signatures signature dimension does not match n_sigs of {self.n_sigs}. Argument n_sigs will be ignored.')
+            self.n_sigs = sigs.n_sigs
+            self._model_kwargs['n_sigs'] = sigs.n_sigs
+        tau = sigs.signatures.to_numpy()
+        # add pseudo count to support and renormalize 
+        tau[np.isclose(tau, 0)] = tau[np.isclose(tau, 0)] + 1e-7
+        tau = tau/tau.sum(1)[:,None]
+        self._model_kwargs['tau_init'] = tau
+
     def _build_model(self, n_sigs, alpha_bias, psi_bias, tau_init=None):
         """Compile a pymc3 model
         
@@ -109,7 +106,6 @@ class Lda(Model):
             B = pm.Deterministic("B", pm.math.dot(theta, tau))
             # mutation counts
             pm.Multinomial('corpus', n = N, p = B, observed=data)
-            
     
 class TandemLda(Model):
     """Bayesian inference of mutational signautres and their activities.
@@ -152,56 +148,53 @@ class TandemLda(Model):
     
     def __init__(self, dataset: DataSet, n_damage_sigs: int, n_misrepair_sigs: int,
                  alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1, gamma_bias=0.01, 
-                 opt_method="ADVI", init_strategy="kmeans", seed=2021):
+                 opt_method="ADVI", init_strategy="kmeans", init_signatures=None, seed=2021):
         
-        super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, seed=seed)
-         
+        super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
         self.n_damage_sigs = n_damage_sigs
-        self.n_misrepair_sigs = n_misrepair_sigs
+        self.n_misrepair_sigs = n_misrepair_sigs 
         self._model_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
                              "alpha_bias": alpha_bias, "psi_bias": psi_bias,
                              "beta_bias": beta_bias, "gamma_bias": gamma_bias}
     
-    
-    def _init_kmeans(self):
-        """Initialize signatures via kmeans 
-        """
-        data=self.dataset.counts.to_numpy()
+    def _init_uniform(self):
+        self._model_kwargs['phi_init'] = None
+        self._model_kwargs['etaC_init'] = None 
+        self._model_kwargs['etaT_init'] = None 
         
+    def _init_kmeans(self):
+        data=self.dataset.counts.to_numpy()
         # add pseudo count to 0 categories
         data[data==0] = 1
-        
         # get proportions for signature initialization
         data = data/data.sum(1)[:,None]
-        
-        phi = k_means(get_phi(data), self.n_damage_sigs, init='k-means++',random_state=np.random.RandomState(self._rng.bit_generator))[0]
+        self._model_kwargs['phi_init'] = k_means(get_phi(data), self.n_damage_sigs, init='k-means++',random_state=np.random.RandomState(self._rng.bit_generator))[0]
         eta = k_means(get_eta(data).reshape(-1,6), self.n_misrepair_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0].reshape(-1,2,3)
-      
-        return phi, eta[:,0,:], eta[:,1,:]
+        self._model_kwargs['etaC_init'] = eta[:,0,:]
+        self._model_kwargs['etaT_init'] = eta[:,1,:]
     
-    
-    def _initialize_signatures(self):
-        """Method to initialize signatures for inference.
-        """
-        
-        if self.init_strategy == "kmeans":
-            self._model_kwargs['phi_init'], \
-                self._model_kwargs['etaC_init'], \
-                    self._model_kwargs['etaT_init'] = self._init_kmeans()
-        
-        if self.init_strategy == "uniform":
-            self._model_kwargs['phi_init'] = None
-            self._model_kwargs['etaC_init'] = None 
-            self._model_kwargs['etaT_init'] = None  
-        
-        # check that sigs are valid
-        if self._model_kwargs["phi_init"] is not None:
-            assert np.allclose(self._model_kwargs["phi_init"].sum(1), 1) 
-        # eta should be kxpxm
-        if self._model_kwargs["etaC_init"] is not None:
-            assert np.allclose(self._model_kwargs["etaC_init"].sum(1), 1) 
-        if self._model_kwargs["etaT_init"] is not None:
-            assert np.allclose(self._model_kwargs["etaT_init"].sum(1), 1)       
+    def _init_from_sigs(self):
+        sigs = self.init_signatures
+        if self.n_damage_sigs != sigs.n_damage_sigs:
+            warnings.warn(f'init_signatures damage dimension does not match n_damage_sigs of {self.n_damage_sigs}. Argument n_damage_sigs will be ignored.')
+            self.n_damage_sigs = sigs.n_damage_sigs
+            self._model_kwargs['n_damage_sigs'] = sigs.n_damage_sigs
+        if self.n_misrepair_sigs != sigs.n_misrepair_sigs:
+            warnings.warn(f'init_signatures misrepair dimension does not match n_misrepair_sigs of {self.n_misrepair_sigs}. Argument n_misrepair_sigs will be ignored.')
+            self.n_misrepair_sigs = sigs.n_misrepair_sigs
+            self._model_kwargs['n_misrepair_sigs'] = sigs.n_misrepair_sigs
+        phi = sigs.damage_signatures.to_numpy()
+        eta = sigs.misrepair_signatures.to_numpy().reshape(-1,2,3)
+        # add pseudo count to support and renormalize 
+        phi[np.isclose(phi, 0)] = phi[np.isclose(phi, 0)] + 1e-7
+        phi = phi/phi.sum(1)[:,None]
+        eta[np.isclose(eta, 0)] = eta[np.isclose(eta, 0)] + 1e-7
+        eta = eta/eta.sum(2)[:,:,None]
+
+        self._model_kwargs['phi_init'] = phi
+        self._model_kwargs['etaC_init'] = eta[:,0,:]
+        self._model_kwargs['etaT_init'] = eta[:,1,:]
+           
     
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, gamma_bias,  
                      phi_init=None, etaC_init = None, etaT_init = None):
@@ -253,9 +246,9 @@ class TandemLda(Model):
             
             # mutation counts
             pm.Multinomial('corpus', n = N, p = B, observed=data)
-            
- 
-class HierarchicalTandemLda(Model):
+
+    
+class HierarchicalTandemLda(TandemLda):
     """Bayesian inference of mutational signautres and their activities.
     
     Fit COSMIC-style mutational signatures with a Hirearchical Tandem LDA model, where damage signatures
@@ -300,59 +293,12 @@ class HierarchicalTandemLda(Model):
     
     def __init__(self, dataset: DataSet, n_damage_sigs: int, n_misrepair_sigs: int,
                  type_col: str, alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1,  
-                 opt_method="ADVI", init_strategy="kmeans", seed=2021):
+                 opt_method="ADVI", init_strategy="kmeans", init_signatures=None, seed=2021):
         
-        super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, seed=seed)
-        
-        self.dataset.annotate_tissue_types(type_col)
-        
-        self.n_damage_sigs = n_damage_sigs
-        self.n_misrepair_sigs = n_misrepair_sigs
-        self._model_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
-                             "alpha_bias": alpha_bias, "psi_bias": psi_bias,
-                             "beta_bias": beta_bias}
-    
-    def _init_kmeans(self):
-        """Initialize signatures via kmeans 
-        """
-        
-        data=self.dataset.counts.to_numpy()
-        
-        # add pseudo count to 0 categories
-        data[data==0] = 1
-        
-        # get proportions for signature initialization
-        data = data/data.sum(1)[:,None]
-        
-        phi = k_means(get_phi(data), self.n_damage_sigs, init='k-means++',random_state=np.random.RandomState(self._rng.bit_generator))[0]
-        eta = k_means(get_eta(data).reshape(-1,6), self.n_misrepair_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0].reshape(-1,2,3)
-      
-        return phi, eta[:,0,:], eta[:,1,:]
-    
-    
-    def _initialize_signatures(self):
-        """Method to initialize signatures for inference.
-        """
-        
-        if self.init_strategy == "kmeans":
-            self._model_kwargs['phi_init'], \
-                self._model_kwargs['etaC_init'], \
-                    self._model_kwargs['etaT_init'] = self._init_kmeans()
-        
-        if self.init_strategy == "uniform":
-            self._model_kwargs['phi_init'] = None
-            self._model_kwargs['etaC_init'] = None 
-            self._model_kwargs['etaT_init'] = None  
-        
-        # check that sigs are valid
-        if self._model_kwargs["phi_init"] is not None:
-            assert np.allclose(self._model_kwargs["phi_init"].sum(1), 1) 
-        # eta should be kxpxm
-        if self._model_kwargs["etaC_init"] is not None:
-            assert np.allclose(self._model_kwargs["etaC_init"].sum(1), 1) 
-        if self._model_kwargs["etaT_init"] is not None:
-            assert np.allclose(self._model_kwargs["etaT_init"].sum(1), 1)       
-    
+        super().__init__(dataset=dataset, n_damage_sigs = n_damage_sigs, n_misrepair_sigs = n_misrepair_sigs, opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
+        self._model_kwargs.pop('gamma_bias')
+        self.dataset.annotate_tissue_types(type_col) 
+
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, 
                      phi_init=None, etaC_init=None, etaT_init=None):
         """Compile a pymc3 model
@@ -409,9 +355,7 @@ class HierarchicalTandemLda(Model):
             
             # mutation counts
             pm.Multinomial('corpus', n = N, p = B, observed=data)
-    
-    
-    
+
     
 
 def vanilla_nmf(train, I):
