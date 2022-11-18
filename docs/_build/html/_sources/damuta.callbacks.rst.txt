@@ -1,5 +1,5 @@
-damuta.callbacks
-----------------
+damuta.callbacks module
+=======================
 
 .. automodule:: damuta.callbacks
    :members:
