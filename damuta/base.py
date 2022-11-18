@@ -108,7 +108,7 @@ class SignatureSet:
         eta = misrepair_signatures.copy()[mut6]
         cross_prod = get_tau(phi.to_numpy(), eta.to_numpy().reshape(-1,2,3))
         c = cls(pd.DataFrame(cross_prod, columns = mut96,
-                             index = [d + '_' + m for d in phi.index for m in eta.index]))
+                             index = [str(d) + '_' + str(m) for d in phi.index for m in eta.index]))
         c.damage_signatures = phi
         c.misrepair_signatures = eta
         return c
@@ -298,7 +298,7 @@ class Model(ABC):
             self._trace.fit(n=n, **pymc3_kwargs)
         
         self.approx = self._trace.approx
-        self._hat = self.approx.sample(10)
+        self._hat = self.approx.sample(1)
         
         return self
     
@@ -342,7 +342,7 @@ class Model(ABC):
         pass
 
     ################################################################################
-    # Plotting
+    # 
     ################################################################################    
     
     def get_sig_set(self) -> SignatureSet:

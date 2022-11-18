@@ -48,19 +48,19 @@ class Lda(Model):
     """
     
     def __init__(self, dataset: DataSet, n_sigs: int,
-                 alpha_bias=0.1, psi_bias=0.01,
+                 alpha_bias=0.1, psi_bias=0.01, tau_obs=None,
                  opt_method="ADVI", init_strategy="uniform",
                  init_signatures=None, seed=2021):
         
         super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
         self.n_sigs = n_sigs
-        self._model_kwargs = {"n_sigs": n_sigs, "alpha_bias": alpha_bias, "psi_bias": psi_bias}
+        self._model_kwargs = {"n_sigs": n_sigs, "alpha_bias": alpha_bias, "psi_bias": psi_bias, 'tau_obs': tau_obs}
         
     def _init_uniform(self):
         self._model_kwargs['tau_init'] = None 
         
     def _init_kmeans(self):
-        data=self.dataset.counts.to_numpy()
+        data=self.dataset.counts.to_numpy().copy()
         # add pseudo count to 0 categories
         data[data==0] = 1
         # get proportions for signature initialization
@@ -68,18 +68,17 @@ class Lda(Model):
         self._model_kwargs['tau_init'] = k_means(data, self.n_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0]
     
     def _init_from_sigs(self):
-        sigs = self.init_signatures
-        if self.n_sigs != sigs.n_sigs:
+        if self.n_sigs != self.init_signatures.n_sigs:
             warnings.warn(f'init_signatures signature dimension does not match n_sigs of {self.n_sigs}. Argument n_sigs will be ignored.')
-            self.n_sigs = sigs.n_sigs
-            self._model_kwargs['n_sigs'] = sigs.n_sigs
-        tau = sigs.signatures.to_numpy()
+            self.n_sigs = self.init_signatures.n_sigs
+            self._model_kwargs['n_sigs'] = self.init_signatures.n_sigs
+        tau = self.init_signatures.signatures.to_numpy()
         # add pseudo count to support and renormalize 
         tau[np.isclose(tau, 0)] = tau[np.isclose(tau, 0)] + 1e-7
         tau = tau/tau.sum(1)[:,None]
         self._model_kwargs['tau_init'] = tau
 
-    def _build_model(self, n_sigs, alpha_bias, psi_bias, tau_init=None):
+    def _build_model(self, n_sigs, alpha_bias, psi_bias, tau_init=None, tau_obs=None):
         """Compile a pymc3 model
         
         Parameters 
@@ -101,7 +100,7 @@ class Lda(Model):
         with pm.Model() as self.model:
             
             data = pm.Data("data", data)
-            tau = dirichlet('tau', a = np.ones(96) * alpha_bias, shape=(I, 96), testval = tau_init)
+            tau = dirichlet('tau', a = np.ones(96) * alpha_bias, shape=(I, 96), testval = tau_init, observed = tau_obs)
             theta = dirichlet("theta", a = np.ones(I) * psi_bias, shape=(S, I))
             B = pm.Deterministic("B", pm.math.dot(theta, tau))
             # mutation counts
@@ -147,7 +146,8 @@ class TandemLda(Model):
     """
     
     def __init__(self, dataset: DataSet, n_damage_sigs: int, n_misrepair_sigs: int,
-                 alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1, gamma_bias=0.01, 
+                 alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1, gamma_bias=0.01,
+                 phi_obs = None, etaC_obs = None, etaT_obs = None, 
                  opt_method="ADVI", init_strategy="kmeans", init_signatures=None, seed=2021):
         
         super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
@@ -155,7 +155,8 @@ class TandemLda(Model):
         self.n_misrepair_sigs = n_misrepair_sigs 
         self._model_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
                              "alpha_bias": alpha_bias, "psi_bias": psi_bias,
-                             "beta_bias": beta_bias, "gamma_bias": gamma_bias}
+                             "beta_bias": beta_bias, "gamma_bias": gamma_bias, 
+                             "phi_obs": phi_obs, "etaC_obs": etaC_obs, "etaT_obs": etaT_obs}
     
     def _init_uniform(self):
         self._model_kwargs['phi_init'] = None
@@ -163,7 +164,7 @@ class TandemLda(Model):
         self._model_kwargs['etaT_init'] = None 
         
     def _init_kmeans(self):
-        data=self.dataset.counts.to_numpy()
+        data=self.dataset.counts.to_numpy().copy()
         # add pseudo count to 0 categories
         data[data==0] = 1
         # get proportions for signature initialization
@@ -174,17 +175,16 @@ class TandemLda(Model):
         self._model_kwargs['etaT_init'] = eta[:,1,:]
     
     def _init_from_sigs(self):
-        sigs = self.init_signatures
-        if self.n_damage_sigs != sigs.n_damage_sigs:
+        if self.n_damage_sigs != self.init_signatures.n_damage_sigs:
             warnings.warn(f'init_signatures damage dimension does not match n_damage_sigs of {self.n_damage_sigs}. Argument n_damage_sigs will be ignored.')
-            self.n_damage_sigs = sigs.n_damage_sigs
-            self._model_kwargs['n_damage_sigs'] = sigs.n_damage_sigs
-        if self.n_misrepair_sigs != sigs.n_misrepair_sigs:
+            self.n_damage_sigs = self.init_signatures.n_damage_sigs
+            self._model_kwargs['n_damage_sigs'] = self.init_signatures.n_damage_sigs
+        if self.n_misrepair_sigs != self.init_signatures.n_misrepair_sigs:
             warnings.warn(f'init_signatures misrepair dimension does not match n_misrepair_sigs of {self.n_misrepair_sigs}. Argument n_misrepair_sigs will be ignored.')
-            self.n_misrepair_sigs = sigs.n_misrepair_sigs
-            self._model_kwargs['n_misrepair_sigs'] = sigs.n_misrepair_sigs
-        phi = sigs.damage_signatures.to_numpy()
-        eta = sigs.misrepair_signatures.to_numpy().reshape(-1,2,3)
+            self.n_misrepair_sigs = self.init_signatures.n_misrepair_sigs
+            self._model_kwargs['n_misrepair_sigs'] = self.init_signatures.n_misrepair_sigs
+        phi = self.init_signatures.damage_signatures.to_numpy()
+        eta = self.init_signatures.misrepair_signatures.to_numpy().reshape(-1,2,3)
         # add pseudo count to support and renormalize 
         phi[np.isclose(phi, 0)] = phi[np.isclose(phi, 0)] + 1e-7
         phi = phi/phi.sum(1)[:,None]
@@ -197,7 +197,7 @@ class TandemLda(Model):
            
     
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, gamma_bias,  
-                     phi_init=None, etaC_init = None, etaT_init = None):
+                     phi_init=None, etaC_init = None, etaT_init = None, phi_obs=None, etaC_obs=None, etaT_obs=None):
         """Compile a pymc3 model
         
         Parameters 
@@ -293,14 +293,21 @@ class HierarchicalTandemLda(TandemLda):
     
     def __init__(self, dataset: DataSet, n_damage_sigs: int, n_misrepair_sigs: int,
                  type_col: str, alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1,  
+                 phi_obs = None, etaC_obs = None, etaT_obs = None,
                  opt_method="ADVI", init_strategy="kmeans", init_signatures=None, seed=2021):
         
-        super().__init__(dataset=dataset, n_damage_sigs = n_damage_sigs, n_misrepair_sigs = n_misrepair_sigs, opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
+        
+        super().__init__(dataset=dataset, n_damage_sigs = n_damage_sigs, n_misrepair_sigs = n_misrepair_sigs, 
+                         # TODO : fix hyperprior bug by uncommenting following line
+                         #alpha_bias = alpha_bias, phi_bias = psi_bias, beta_bias = beta_bias,
+                         phi_obs = phi_obs, etaC_obs = etaC_obs, etaT_obs = etaT_obs,
+                         opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
         self._model_kwargs.pop('gamma_bias')
         self.dataset.annotate_tissue_types(type_col) 
 
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, 
-                     phi_init=None, etaC_init=None, etaT_init=None):
+                     phi_init=None, etaC_init=None, etaT_init=None,
+                     phi_obs=None, etaC_obs=None, etaT_obs=None):
         """Compile a pymc3 model
         
         Parameters 
@@ -336,7 +343,7 @@ class HierarchicalTandemLda(TandemLda):
         with pm.Model() as self.model:
             
             data = pm.Data("data", train)
-            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 32), testval = phi_init)
+            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 32), testval = phi_init, observed=phi_obs)
             theta = dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
             
             a_t = pm.Gamma('a_t',1,1,shape = (max(type_codes + 1),K))
@@ -346,8 +353,8 @@ class HierarchicalTandemLda(TandemLda):
 
             # 4 is constant for ACGT
             beta = np.ones(4) * beta_bias
-            etaC = dirichlet("etaC", a=beta[[0,2,3]], shape=(K,3), testval = etaC_init)
-            etaT = dirichlet("etaT", a=beta[[0,1,2]], shape=(K,3), testval = etaT_init)
+            etaC = dirichlet("etaC", a=beta[[0,2,3]], shape=(K,3), testval = etaC_init, observed = etaC_obs)
+            etaT = dirichlet("etaT", a=beta[[0,1,2]], shape=(K,3), testval = etaT_init, observed = etaT_obs)
             eta = pm.Deterministic('eta', pm.math.stack([etaC, etaT], axis=1)).dimshuffle(1,0,2)
 
             B = pm.Deterministic("B", (pm.math.dot(theta, phi).reshape((S,2,16))[:,:,None,:] * \
@@ -356,7 +363,7 @@ class HierarchicalTandemLda(TandemLda):
             # mutation counts
             pm.Multinomial('corpus', n = N, p = B, observed=data)
 
-    
+        
 
 def vanilla_nmf(train, I):
     """

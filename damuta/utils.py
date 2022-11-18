@@ -17,10 +17,10 @@ from scipy.stats import multinomial
 #M=3
 #P=2
 
-def dirichlet(node_name, a, shape, scale=1, testval = None):
+def dirichlet(node_name, a, shape, scale=1, testval=None, observed=None):
     # dirichlet reparameterized here because of stickbreaking bug
     # https://github.com/pymc-devs/pymc3/issues/4733
-    X = pm.Gamma(f'gamma_{node_name}', mu = a, sigma = scale, shape = shape, testval = testval)
+    X = pm.Gamma(f'gamma_{node_name}', mu = a, sigma = scale, shape = shape, testval = testval, observed = observed)
     Y = pm.Deterministic(node_name, (X/X.sum(axis = (X.ndim-1))[...,None]))
     return Y
 
