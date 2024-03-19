@@ -219,13 +219,14 @@ def get_phi(sigs):
     phi = wrapped.sum(2).reshape(-1,32)
     return phi
 
-def get_eta(sigs):
+def get_eta(sigs, normalize=True):
     # for each signature in sigs, get the corresponding eta 
     wrapped = sigs.reshape(-1, 6, 16)
     eta = wrapped.sum(2).reshape(-1,3)
-    # notrmalize such that etaC and etaT sum to 1 respectively.
-    eta = (eta/eta.sum(1)[:,None]).reshape(-1,6)
-    return eta
+    if normalize:
+        # normalize such that etaC and etaT sum to 1 respectively.
+        eta = (eta/eta.sum(1)[:,None])
+    return eta.reshape(-1,6)
 
 def flatten_eta(eta): # eta pkm -> kc
     warnings.warn('Eta no longer constructed as pkm - use reshape instead', DeprecationWarning)
