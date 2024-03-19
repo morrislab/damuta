@@ -11,7 +11,7 @@
 
 DAMUTA is built on pymc3 - which depends on theano. To use theano with gpu, you will need to install pygpu. The simplest way to do so is via conda.
 
-`conda env create -n damuta -c conda-forge python=3.8 pygpu=0.7.6`
+`conda create -n damuta -c conda-forge python=3.8 pygpu=0.7.6`
 
 ## from pipy
 
