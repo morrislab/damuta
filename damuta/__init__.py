@@ -8,7 +8,7 @@ The most commonly used functions/objects are:
 """
 
 from .base import DataSet, SignatureSet
-from damuta import models, plotting, callbacks
+from . import models, plotting, callbacks
 
 __version__ = "0.1.1"
 
