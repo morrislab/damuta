@@ -11,6 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from .constants import * 
 import pkg_resources
 from scipy.stats import multinomial
+from scipy.optimize import linear_sum_assignment
 
 # constants
 #C=32
@@ -273,26 +274,23 @@ def lap_B(data, Bs):
     assert Bs.ndim == 3, 'expected multiple trials for B'
     return logsumexp(np.vstack([mult_ll(data, B) for B in Bs]).sum(1)) - np.log(Bs.shape[0])
 
-def profile_sigs(sigs, refsigs, thresh = 0.9, refidx = None):
-    # return mapping of sigs to similar refsigs
-    
-    if isinstance(refsigs, pd.core.frame.DataFrame) and refsigs.index is not None:
-        refidx = refsigs.index
-    elif refidx is None:
-        refidx = pd.Index([f'refsig_{i}' for i in range(0,refsigs.shape[0])])
-    
-    sim = cosine_similarity(sigs, refsigs)
-    closest_dist = np.max(sim, axis=1)
-    closest = refidx[np.argmax(sim, axis=1)]
-    above_thresh = [str(refidx[x].to_numpy()) for x in sim > thresh]
-    
-    df=pd.DataFrame.from_dict({'inferred signature': [f'sig_{i}' for i in range(0,sigs.shape[0])],
-                               'closest reference signature':closest, 
-                               'dist to closest': closest_dist,
-                               f'reference signatures with >{thresh} similarity': above_thresh
-                              })
-    df.index = [f'sig_{i}' for i in range(0,sigs.shape[0])]
-    return df
+def profile_sigs(est_sigs, ref_sigs, thresh = 0.95):
+    # return mapping of sigs to similar refsigs 
+    # get most similar sig
+    dists = 1- cosine_similarity(est_sigs.to_numpy(), ref_sigs.to_numpy())
+    profile = pd.DataFrame({
+        'closest' : ref_sigs.index[dists.argmin(1)],
+        'closest_sim' : 1-dists.min(1),
+        }, index = est_sigs.index)
+    # hungarian algorithm to assign sigs uniquely
+    row_ind, col_ind = linear_sum_assignment(dists)
+    profile['hungarian_matched']  = profile.index.map({est_sigs.index[i]: (ref_sigs.index[col_ind]).to_list() for i in row_ind})
+    profile['hungarian_matched_sim'] = profile.index.map({est_sigs.index[i]: (1-(dists[row_ind, col_ind]))[row_ind==i][0] for i in row_ind})
+    # get any other sigs >=0.95 sim
+    est_ind, ref_ind = np.where(dists<(1-0.05))
+    profile['geq_95_sim'] = profile.index.map({est_sigs.index[i]: (ref_sigs.index[ref_ind])[est_ind == i].tolist() for i in np.unique(est_ind)}.get)
+    return profile
+
 
 def load_cosmic_V3():
     """Return a dataframe of COSMIC V3 signature definitions
