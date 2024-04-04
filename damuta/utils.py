@@ -284,7 +284,7 @@ def profile_sigs(est_sigs, ref_sigs, thresh = 0.95):
         }, index = est_sigs.index)
     # hungarian algorithm to assign sigs uniquely
     row_ind, col_ind = linear_sum_assignment(dists)
-    profile['hungarian_matched']  = profile.index.map({est_sigs.index[i]: (ref_sigs.index[col_ind]).to_list() for i in row_ind})
+    profile['hungarian_matched']  = profile.index.map({est_sigs.index[i]: (ref_sigs.index[col_ind[i]]) for i in row_ind})
     profile['hungarian_matched_sim'] = profile.index.map({est_sigs.index[i]: (1-(dists[row_ind, col_ind]))[row_ind==i][0] for i in row_ind})
     # get any other sigs >=0.95 sim
     est_ind, ref_ind = np.where(dists<(1-0.05))
