@@ -1,8 +1,16 @@
-# DAMUTA
-**D**irichlet **a**llocation of **muta**tions in cancer 
 
-[![Documentation Status](https://readthedocs.org/projects/damuta/badge/?version=latest)](https://damuta.readthedocs.io/en/latest/?badge=latest)
-      
+<div align="center">
+
+<p align="center"><img src="https://github.com/user-attachments/assets/4373ce68-13ee-4f8d-a1d9-229c4be8942a" width=300px /></p>
+
+**D**irichlet **A**llocation of **MUTA**tions in cancer 
+
+*Damage and Misrepair Signatures: Compact Representations of Pan-cancer Mutational Processes*
+
+[![Documentation Status](https://readthedocs.org/projects/damuta/badge/?version=latest)](https://damuta.readthedocs.io/en/latest/?badge=latest) [Preprint](https://www.biorxiv.org/content/10.1101/2025.05.29.656360v1)
+
+</div>
+
 
 ![image](https://user-images.githubusercontent.com/23587234/140100948-98f10395-2bdb-4cf5-ac8b-fd66396d8d7f.png)
 
