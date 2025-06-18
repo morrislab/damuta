@@ -8,8 +8,8 @@
 
 # DAMUTA signature definitions
 
-* [18 Damage signatures]()
-* [6 Misreapair signatures]()
+* [18 Damage signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/manuscript/results/damage_sigs.csv)
+* [6 Misreapair signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/manuscript/results/misreapair_sigs.csv)
 
 nb. internally these signatures are referred to by their symbols in the graphical model: eta and phi respectively.
 
