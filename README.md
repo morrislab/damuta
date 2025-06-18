@@ -7,10 +7,13 @@
 
 *Damage and Misrepair Signatures: Compact Representations of Pan-cancer Mutational Processes*
 
-[![Documentation Status](https://readthedocs.org/projects/damuta/badge/?version=latest)](https://damuta.readthedocs.io/en/latest/?badge=latest) [Preprint](https://www.biorxiv.org/content/10.1101/2025.05.29.656360v1)
+[![Documentation Status](https://readthedocs.org/projects/damuta/badge/?version=latest)](https://damuta.readthedocs.io/en/latest/?badge=latest) 
 
 </div>
 
+---
+
+# See our [preprint](https://www.biorxiv.org/content/10.1101/2025.05.29.656360v1) for model details
 
 ![image](https://user-images.githubusercontent.com/23587234/140100948-98f10395-2bdb-4cf5-ac8b-fd66396d8d7f.png)
 
