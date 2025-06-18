@@ -95,9 +95,9 @@ class SignatureSet:
         assert np.allclose(self.signatures.sum(1),1), "All signature definitions must sum to 1"
         assert self.signatures.columns.isin(mut96).all(), 'Check signature column names'
         self.signatures = self.signatures[mut96]
-        _phi = get_phi(self.signatures.to_numpy())
+        _phi = marginalize_for_phi(self.signatures.to_numpy())
         self.damage_signatures = pd.DataFrame(_phi, index = self.signatures.index, columns=mut32)
-        _eta = get_eta(self.signatures.to_numpy())
+        _eta = marginalize_for_eta(self.signatures.to_numpy())
         self.misrepair_signatures = pd.DataFrame(_eta, index = self.signatures.index, columns=mut6)
     
     @classmethod

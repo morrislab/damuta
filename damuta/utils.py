@@ -6,8 +6,6 @@ from sklearn.cluster import k_means
 from scipy.special import softmax, logsumexp, loggamma
 from sklearn.metrics.pairwise import cosine_similarity
 from .constants import * 
-import pkg_resources
-import yaml
 import pickle
 import wandb
 from scipy.optimize import linear_sum_assignment
@@ -47,26 +45,6 @@ def dirichlet(node_name, a, shape, scale=1, testval=None, observed=None):
     Y = pm.Deterministic(node_name, (X/X.sum(axis = (X.ndim-1))[...,None]))
     return Y
 
-
-def load_config(config_fp):
-
-    # load the yaml file 
-    with open(config_fp, 'r') as f:
-        config = yaml.safe_load(f)
-        print(f"Loaded configuration file {config_fp}")
-
-    # remove any parameters not applicable to selected data source
-    ds = config.pop('dataset')
-    ds[ds['dataset_sel']].update({'dataset_sel': ds['dataset_sel']})
-
-    # update dataset args to subsetted list
-    config.update({'dataset': ds[ds['dataset_sel']]})
-    
-    ## handle seeding
-    #config['dataset'].update({'data_rng': np.random.default_rng(config['dataset']['data_seed'])})
-    #config['model'].update({'model_rng': np.random.default_rng(config['model']['model_seed'])})
-    
-    return config['dataset'], config['model'], config['pymc3']
     
 def save_checkpoint(fp, model, trace, dataset_args, model_args, pymc3_args, run_id): 
     with open(f'{fp}', 'wb') as buff:
@@ -132,7 +110,7 @@ def get_tau(phi, eta):
     tau =  np.einsum('jpc,kpm->jkpmc', phi.reshape((-1,2,16)), eta).reshape((-1,96))
     return tau
 
-def get_phi(sigs):
+def marginalize_for_phi(sigs):
     """
     Compute damage signatures (phi) by marginalizing over misrepair classes.
 
@@ -150,7 +128,7 @@ def get_phi(sigs):
     phi = wrapped.sum(2).reshape(-1,32)
     return phi
 
-def get_eta(sigs, normalize=True):
+def marginalize_for_eta(sigs, normalize=True):
     """
     Compute misrepair signatures (eta) by marginalizing over trinucleotide context classes.
 

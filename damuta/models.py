@@ -1,6 +1,6 @@
 import pymc3 as pm
 import numpy as np
-from .utils import dirichlet, get_phi, get_eta
+from .utils import dirichlet, marginalize_for_phi, marginalize_for_eta
 from .base import Model, DataSet
 from theano.tensor import batched_dot
 from sklearn.cluster import k_means
@@ -65,12 +65,21 @@ class Lda(Model):
     
     """
     
-    def __init__(self, dataset: DataSet, n_sigs: int,
+    def __init__(self, dataset: DataSet, n_sigs=None,
                  alpha_bias=0.1, psi_bias=0.01, tau_obs=None,
                  opt_method="ADVI", init_strategy="uniform",
                  init_signatures=None, seed=2021):
         
         super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
+        
+        if n_sigs is None and tau_obs is None:
+            raise ValueError("n_sigs must be provided when tau_obs is None")
+        
+        if tau_obs is not None:
+            if n_sigs is not None:
+                warnings.warn("argument n_sigs ({}) is ignored when tau_obs is provided".format(n_sigs))
+            n_sigs = tau_obs.shape[0]
+
         self.n_sigs = n_sigs
         self._model_kwargs = {"n_sigs": n_sigs, "alpha_bias": alpha_bias, "psi_bias": psi_bias, 'tau_obs': tau_obs}
         
@@ -168,12 +177,34 @@ class TandemLda(Model):
         Unique identifier for the current run, used for saving checkpoint files and in wandb if enabled.
     """
     
-    def __init__(self, dataset: DataSet, n_damage_sigs: int, n_misrepair_sigs: int,
+    def __init__(self, dataset: DataSet, n_damage_sigs=None, n_misrepair_sigs=None,
                  alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1, gamma_bias=0.01,
                  phi_obs = None, etaC_obs = None, etaT_obs = None, 
                  opt_method="ADVI", init_strategy="kmeans", init_signatures=None, seed=2021):
         
         super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
+        # Check if n_damage_sigs and n_misrepair_sigs are None when obs are provided
+        if phi_obs is None and n_damage_sigs is None:
+            raise ValueError("n_damage_sigs must be provided when phi_obs is None")
+        if phi_obs is not None:
+            if n_damage_sigs is not None:
+                warnings.warn("argument n_damage_sigs ({}) is ignored when phi_obs is None".format(n_damage_sigs))
+            n_damage_sigs = phi_obs.shape[0]
+
+        if (etaC_obs is not None and etaT_obs is None) or (etaC_obs is None and etaT_obs is not None):
+            raise ValueError("etaC_obs and etaT_obs must be provided together.")
+        if (etaC_obs is None) and n_misrepair_sigs is None:
+            raise ValueError("n_misrepair_sigs must be provided when etaC_obs and etaT_obs are None")
+        if etaC_obs is not None:
+            if etaC_obs.shape[0] != etaT_obs.shape[0]:
+                raise ValueError("etaC_obs.shape[0] ({}) must equal etaT_obs.shape[0] ({})".format(etaC_obs.shape[0], etaT_obs.shape[0]))
+            if etaC_obs is not None:
+                if n_misrepair_sigs is not None:
+                    warnings.warn("argument n_misrepair_sigs ({}) is ignored when etaC_obs and etaT_obs are provided".format(n_misrepair_sigs))
+                n_misrepair_sigs = etaC_obs.shape[0]
+
+        assert n_damage_sigs is not None and n_misrepair_sigs is not None, "n_damage_sigs and n_misrepair_sigs must be provided"
+        
         self.n_damage_sigs = n_damage_sigs
         self.n_misrepair_sigs = n_misrepair_sigs 
         self._model_kwargs = {"n_damage_sigs": n_damage_sigs, "n_misrepair_sigs": n_misrepair_sigs, 
@@ -192,8 +223,8 @@ class TandemLda(Model):
         data[data==0] = 1
         # get proportions for signature initialization
         data = data/data.sum(1)[:,None]
-        self._model_kwargs['phi_init'] = k_means(get_phi(data), self.n_damage_sigs, init='k-means++',random_state=np.random.RandomState(self._rng.bit_generator))[0]
-        eta = k_means(get_eta(data).reshape(-1,6), self.n_misrepair_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0].reshape(-1,2,3)
+        self._model_kwargs['phi_init'] = k_means(marginalize_for_phi(data), self.n_damage_sigs, init='k-means++',random_state=np.random.RandomState(self._rng.bit_generator))[0]
+        eta = k_means(marginalize_for_eta(data).reshape(-1,6), self.n_misrepair_sigs, init='k-means++', random_state=np.random.RandomState(self._rng.bit_generator))[0].reshape(-1,2,3)
         self._model_kwargs['etaC_init'] = eta[:,0,:]
         self._model_kwargs['etaT_init'] = eta[:,1,:]
     
@@ -320,15 +351,15 @@ class HierarchicalTandemLda(TandemLda):
         Unique identifier for the current run, used for saving checkpoint files.
     """
     
-    def __init__(self, dataset: DataSet, n_damage_sigs: int, n_misrepair_sigs: int,
-                 type_col: str, alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1,  
+    def __init__(self, dataset: DataSet, type_col: str,
+                 n_damage_sigs=None, n_misrepair_sigs=None,
+                 alpha_bias=0.1, psi_bias=0.01, beta_bias=0.1,  
                  phi_obs = None, etaC_obs = None, etaT_obs = None,
                  opt_method="ADVI", init_strategy="kmeans", init_signatures=None, seed=2021):
         
         
         super().__init__(dataset=dataset, n_damage_sigs = n_damage_sigs, n_misrepair_sigs = n_misrepair_sigs, 
-                         # TODO : fix hyperprior bug by uncommenting following line
-                         #alpha_bias = alpha_bias, phi_bias = psi_bias, beta_bias = beta_bias,
+                         alpha_bias = alpha_bias, psi_bias = psi_bias, beta_bias = beta_bias,
                          phi_obs = phi_obs, etaC_obs = etaC_obs, etaT_obs = etaT_obs,
                          opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
         self._model_kwargs.pop('gamma_bias')
@@ -402,3 +433,4 @@ class HierarchicalTandemLda(TandemLda):
             
             # mutation counts
             pm.Multinomial('corpus', n = N, p = B, observed=data)
+
