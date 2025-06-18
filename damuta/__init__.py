@@ -8,7 +8,8 @@ The most commonly used functions/objects are:
 """
 
 from .base import DataSet, SignatureSet
-from . import models, plotting, callbacks
+from . import models, callbacks, plotting, utils
+from .constants import * 
 
 __version__ = "0.1.2"
 
@@ -17,6 +18,7 @@ __all__ = [
     "DataSet",
     "SignatureSet",
     "models",
+    "callbacks",
     "plotting",
-    "callbacks"
+    "utils"
 ]

@@ -1,11 +1,7 @@
 import pymc3 as pm
 import numpy as np
-import random
-from scipy.special import logsumexp
 from .utils import dirichlet, get_phi, get_eta
 from .base import Model, DataSet
-from .plotting import *
-#from sklearn.decomposition import NMF
 from theano.tensor import batched_dot
 from sklearn.cluster import k_means
 
@@ -16,35 +12,57 @@ from sklearn.cluster import k_means
 __all__ = ['Lda', 'TandemLda', 'HierarchicalTandemLda']
 
 class Lda(Model):
-    """Bayesian inference of mutational signautres and their activities.
+    """Bayesian inference of mutational signatures and their activities.
     
-    Fit COSMIC-style mutational signatures with a Latent Dirichlet Allocation model. 
+    Fit COSMIC-style mutational signatures using a Latent Dirichlet Allocation (LDA) model.
     
     Parameters
     ----------
     dataset : DataSet
-        Data for fitting.
-    n_sigs: int
-        Number of signautres to fit
-    alpha_bias: float, or numpy array of shape (96,)
-        Dirichlet concentration parameter on (0,inf). Determines prior probability of mutation types appearing in inferred signatures
-    psi_bias: float, or numpy array of shape (I,)
-        Dirichlet concentration parameter on (0,inf). Determines prior probability of each signature activities
-    opt_method: str 
-        one of "ADVI" for mean field inference, or "FullRankADVI" for full rank inference.
-    seed : int
-        Random seed 
+        Data object containing mutation counts for fitting.
+    n_sigs : int
+        Number of signatures to infer.
+    alpha_bias : float or numpy.ndarray of shape (96,), default=0.1
+        Dirichlet concentration parameter for signature prior. Controls the sparsity of inferred signatures.
+    psi_bias : float or numpy.ndarray of shape (n_sigs,), default=0.01
+        Dirichlet concentration parameter for signature activity prior. Controls the sparsity of signature activities.
+    tau_obs : numpy.ndarray, optional
+        Observed signatures to include in the model.
+    opt_method : {'ADVI', 'FullRankADVI'}, default='ADVI'
+        Optimization method for variational inference. 'ADVI' for mean-field, 'FullRankADVI' for full-rank.
+    init_strategy : {'uniform', 'kmeans', 'from_sigs'}, default='uniform'
+        Strategy for initializing signatures.
+    init_signatures : SignatureSet, optional
+        Pre-defined signatures for initialization when init_strategy is 'from_sigs'.
+    seed : int, default=2021
+        Random seed for reproducibility.
     
     Attributes
     ----------
-    model:
-        pymc3 model instance
-    model_kwargs: dict
-        dict of parameters to pass when constructing model (ex. hyperprior values)
-    approx:
-        pymc3 approximation object. Created via self.fit()
-    run_id: str
-        Unique label used to identify run. Used when saving checkpoint files, drawn from wandb run if wandb is enabled.
+    model : pymc3.Model
+        PyMC3 model instance.
+    model_kwargs : dict
+        Dictionary of parameters used in model construction.
+    approx : pymc3.approximations.Approximation
+        Variational approximation object. Created after calling self.fit().
+    run_id : str
+        Unique identifier for the current run. Used for checkpoint files and wandb logging.
+    n_sigs : int
+        Number of signatures being fit.
+    dataset : DataSet
+        Input dataset used for fitting.
+    
+    Methods
+    -------
+    fit(n_iter=30000, **kwargs)
+        Fit the model to the data using variational inference.
+    sample_posterior(n_samples=1000)
+        Sample from the fitted posterior distribution.
+    get_signatures()
+        Extract inferred signatures from the fitted model.
+    get_activities()
+        Extract inferred signature activities from the fitted model.
+    
     """
     
     def __init__(self, dataset: DataSet, n_sigs: int,
@@ -107,42 +125,47 @@ class Lda(Model):
             pm.Multinomial('corpus', n = N, p = B, observed=data)
     
 class TandemLda(Model):
-    """Bayesian inference of mutational signautres and their activities.
+    """Bayesian inference of mutational signatures and their activities using a Tandem LDA model.
     
-    Fit COSMIC-style mutational signatures with a Tandem LDA model, where damage signatures
-    and misrepair signatures each have their own set of activities. 
+    This class fits COSMIC-style mutational signatures using a Tandem Latent Dirichlet Allocation (LDA) model,
+    where damage signatures and misrepair signatures each have their own set of activities.
     
     Parameters
     ----------
     dataset : DataSet
-        Data for fitting.
-    n_damage_sigs: int
-        Number of damage signautres to fit
-    n_misrepair_sigs: int
-        Number of misrepair signatures to fit
-    alpha_bias: float, or numpy array of shape (32,)
-        Dirichlet concentration parameter on (0,inf). Determines prior probability of trinucleotide context types appearing in inferred damage signatures
-    psi_bias: float, or numpy array of shape (n_damage_sigs,)
-        Dirichlet concentration parameter on (0,inf). Determines prior probability of each damage signature activities
-    beta_bias: float, or numpy array of shape (6,)
-        Dirichlet concentration parameter on (0,inf). Determines prior probability of substitution types appearing in inferred damage signatures
-    gamma_bias: float, or numpy array of shape (n_missrepair_sigs,)
-        Dirichlet concentration parameter on (0,inf). Determines prior probability of each misrepair signature activities
-    opt_method: str 
-        one of "ADVI" for mean field inference, or "FullRankADVI" for full rank inference.
+        Data for fitting the model.
+    n_damage_sigs : int
+        Number of damage signatures to fit.
+    n_misrepair_sigs : int
+        Number of misrepair signatures to fit.
+    alpha_bias : float or numpy.ndarray of shape (32,)
+        Dirichlet concentration parameter on (0, inf) for damage signatures. Determines the prior probability
+        of trinucleotide context types appearing in inferred damage signatures.
+    psi_bias : float or numpy.ndarray of shape (n_damage_sigs,)
+        Dirichlet concentration parameter on (0, inf) for damage signature activities. Determines the prior
+        probability of each damage signature activity.
+    beta_bias : float or numpy.ndarray of shape (6,)
+        Dirichlet concentration parameter on (0, inf) for misrepair signatures. Determines the prior probability
+        of substitution types appearing in inferred misrepair signatures.
+    gamma_bias : float or numpy.ndarray of shape (n_misrepair_sigs,)
+        Dirichlet concentration parameter on (0, inf) for misrepair signature activities. Determines the prior
+        probability of each misrepair signature activity.
+    opt_method : str
+        Optimization method for variational inference. Either "ADVI" for mean-field inference or
+        "FullRankADVI" for full-rank inference.
     seed : int
-        Random seed 
+        Random seed for reproducibility.
     
     Attributes
     ----------
-    model:
-        pymc3 model instance
-    model_kwargs: dict
-        dict of parameters to pass when constructing model (ex. hyperprior values)
-    approx:
-        pymc3 approximation object. Created via self.fit()
-    run_id: str
-        Unique label used to identify run. Used when saving checkpoint files, drawn from wandb run if wandb is enabled.
+    model : pymc3.Model
+        PyMC3 model instance.
+    model_kwargs : dict
+        Dictionary of parameters passed when constructing the model (e.g., hyperprior values).
+    approx : pymc3.approximations.Approximation
+        PyMC3 approximation object created via self.fit().
+    run_id : str
+        Unique identifier for the current run, used for saving checkpoint files and in wandb if enabled.
     """
     
     def __init__(self, dataset: DataSet, n_damage_sigs: int, n_misrepair_sigs: int,
@@ -198,28 +221,34 @@ class TandemLda(Model):
     
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, gamma_bias,  
                      phi_init=None, etaC_init = None, etaT_init = None, phi_obs=None, etaC_obs=None, etaT_obs=None):
-        """Compile a pymc3 model
+        """Compile a PyMC3 model for mutational signature analysis.
         
         Parameters 
         ----------
-        n_damage_sigs: int
-            Number of damage signautres to fit
-        n_misrepair_sigs: int
-            Number of misrepair signautres to fit
-        alpha_bias: float, or numpy array of shape (32,)
-            Dirichlet concentration parameter on (0,inf). Determines prior probability of trinucleotide context types appearing in inferred damage signatures
-        psi_bias: float, or numpy array of shape (n_damage_sigs,)
-            Dirichlet concentration parameter on (0,inf). Determines prior probability of each damage signature activities
-        beta_bias: float, or numpy array of shape (6,)
-            Dirichlet concentration parameter on (0,inf). Determines prior probability of substitution types appearing in inferred damage signatures
-        gamma_bias: float, or numpy array of shape (n_missrepair_sigs,)
-            Dirichlet concentration parameter on (0,inf). Determines prior probability of each misrepair signature activities
-        phi_init: numpy array of shape (n_damage_sigs, 32)
-            Damage signatures to initialize inference with 
-        etaC_init: numpy array of shape (n_misrepair_sigs, 3)
-            C-context misrepair signatures to initialize inference with 
-        etaT_init: numpy array of shape (n_misrepair_sigs, 3)
-            T-context misrepair signatures to initialize inference with 
+        n_damage_sigs : int
+            Number of damage signatures to fit.
+        n_misrepair_sigs : int
+            Number of misrepair signatures to fit.
+        alpha_bias : float or numpy.ndarray of shape (32,)
+            Dirichlet concentration parameter for damage signature trinucleotide context priors.
+        psi_bias : float or numpy.ndarray of shape (n_damage_sigs,)
+            Dirichlet concentration parameter for damage signature activity priors.
+        beta_bias : float or numpy.ndarray of shape (6,)
+            Dirichlet concentration parameter for misrepair signature substitution type priors.
+        gamma_bias : float or numpy.ndarray of shape (n_misrepair_sigs,)
+            Dirichlet concentration parameter for misrepair signature activity priors.
+        phi_init : numpy.ndarray of shape (n_damage_sigs, 32), optional
+            Initial values for damage signatures.
+        etaC_init : numpy.ndarray of shape (n_misrepair_sigs, 3), optional
+            Initial values for C-context misrepair signatures.
+        etaT_init : numpy.ndarray of shape (n_misrepair_sigs, 3), optional
+            Initial values for T-context misrepair signatures.
+        phi_obs : numpy.ndarray, optional
+            Observed values for damage signatures (for partial fitting).
+        etaC_obs : numpy.ndarray, optional
+            Observed values for C-context misrepair signatures (for partial fitting).
+        etaT_obs : numpy.ndarray, optional
+            Observed values for T-context misrepair signatures (for partial fitting).
         """
         # latent dirichlet allocation with tandem signautres of damage and repair
         train = self.dataset.counts.to_numpy()
@@ -249,46 +278,46 @@ class TandemLda(Model):
 
     
 class HierarchicalTandemLda(TandemLda):
-    """Bayesian inference of mutational signautres and their activities.
+    """Bayesian inference of mutational signatures and their activities using a Hierarchical Tandem LDA model.
     
-    Fit COSMIC-style mutational signatures with a Hirearchical Tandem LDA model, where damage signatures
-    and misrepair signatures each have their own set of activities. A tissue-type hirearchical 
-    prior is fit over damage-misrepair signature associations, for improved interpretability of 
-    misrepair activity specificities. 
+    This class fits COSMIC-style mutational signatures using a Hierarchical Tandem LDA model,
+    where damage signatures and misrepair signatures have separate sets of activities. 
+    A tissue-type hierarchical prior is fitted over damage-misrepair signature associations
+    to improve the interpretability of misrepair activity specificities.
     
     Parameters
     ----------
     dataset : DataSet
-        Data for fitting.
-    n_damage_sigs: int
-        Number of damage signautres to fit
-    n_misrepair_sigs: int
-        Number of misrepair signatures to fit
-    type_col: str
-        The name of the annotation column that holds the tissue type of each sample
-    alpha_bias: float, or numpy array of shape (32,)
-        Dirichlet concentration parameter on (0,inf). Determines prior probability of trinucleotide context types appearing in inferred damage signatures
-    psi_bias: float, or numpy array of shape (n_damage_sigs,)
-        Dirichlet concentration parameter on (0,inf). Determines prior probability of each damage signature activities
-    beta_bias: float, or numpy array of shape (6,)
-        Dirichlet concentration parameter on (0,inf). Determines prior probability of substitution types appearing in inferred damage signatures
-    gamma_bias: float, or numpy array of shape (n_missrepair_sigs,)
-        Dirichlet concentration parameter on (0,inf). Determines prior probability of each misrepair signature activities
-    opt_method: str 
-        one of "ADVI" for mean field inference, or "FullRankADVI" for full rank inference.
+        Dataset containing mutation counts and sample annotations for fitting.
+    n_damage_sigs : int
+        Number of damage signatures to fit.
+    n_misrepair_sigs : int
+        Number of misrepair signatures to fit.
+    type_col : str
+        Name of the annotation column containing the tissue type of each sample.
+    alpha_bias : float or numpy.ndarray of shape (32,)
+        Dirichlet concentration parameter for damage signature trinucleotide context priors.
+    psi_bias : float or numpy.ndarray of shape (n_damage_sigs,)
+        Dirichlet concentration parameter for damage signature activity priors.
+    beta_bias : float or numpy.ndarray of shape (6,)
+        Dirichlet concentration parameter for misrepair signature substitution type priors.
+    gamma_bias : float or numpy.ndarray of shape (n_misrepair_sigs,)
+        Dirichlet concentration parameter for misrepair signature activity priors.
+    opt_method : str
+        Optimization method: "ADVI" for mean-field inference or "FullRankADVI" for full-rank inference.
     seed : int
-        Random seed 
+        Random seed for reproducibility.
     
     Attributes
     ----------
-    model:
-        pymc3 model instance
-    model_kwargs: dict
-        dict of parameters to pass when constructing model (ex. hyperprior values)
-    approx:
-        pymc3 approximation object. Created via self.fit()
-    run_id: str
-        Unique label used to identify run. Used when saving checkpoint files, drawn from wandb run if wandb is enabled.
+    model : pymc3.Model
+        PyMC3 model instance.
+    model_kwargs : dict
+        Dictionary of parameters used for constructing the model.
+    approx : pymc3.approximations.Approximation
+        PyMC3 approximation object created via self.fit().
+    run_id : str
+        Unique identifier for the current run, used for saving checkpoint files.
     """
     
     def __init__(self, dataset: DataSet, n_damage_sigs: int, n_misrepair_sigs: int,
@@ -308,26 +337,37 @@ class HierarchicalTandemLda(TandemLda):
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, 
                      phi_init=None, etaC_init=None, etaT_init=None,
                      phi_obs=None, etaC_obs=None, etaT_obs=None):
-        """Compile a pymc3 model
+        """Compile a PyMC3 model for mutation signature analysis.
         
         Parameters 
         ----------
-        n_damage_sigs: int
-            Number of damage signautres to fit
-        n_misrepair_sigs: int
-            Number of misrepair signautres to fit
-        alpha_bias: float, or numpy array of shape (32,)
-            Dirichlet concentration parameter on (0,inf). Determines prior probability of trinucleotide context types appearing in inferred damage signatures
-        psi_bias: float, or numpy array of shape (n_damage_sigs,)
-            Dirichlet concentration parameter on (0,inf). Determines prior probability of each damage signature activities
-        beta_bias: float, or numpy array of shape (6,)
-            Dirichlet concentration parameter on (0,inf). Determines prior probability of substitution types appearing in inferred damage signatures
-        phi_init: numpy array of shape (n_damage_sigs, 32)
-            Damage signatures to initialize inference with 
-        etaC_init: numpy array of shape (n_misrepair_sigs, 3)
-            C-context misrepair signatures to initialize inference with 
-        etaT_init: numpy array of shape (n_misrepair_sigs, 3)
-            T-context misrepair signatures to initialize inference with 
+        n_damage_sigs : int
+            Number of damage signatures to fit.
+        n_misrepair_sigs : int
+            Number of misrepair signatures to fit.
+        alpha_bias : float or numpy.ndarray of shape (32,)
+            Dirichlet concentration parameter on (0, inf) for damage signature trinucleotide context priors.
+        psi_bias : float or numpy.ndarray of shape (n_damage_sigs,)
+            Dirichlet concentration parameter on (0, inf) for damage signature activity priors.
+        beta_bias : float or numpy.ndarray of shape (6,)
+            Dirichlet concentration parameter on (0, inf) for misrepair signature substitution type priors.
+        phi_init : numpy.ndarray of shape (n_damage_sigs, 32), optional
+            Initial values for damage signatures.
+        etaC_init : numpy.ndarray of shape (n_misrepair_sigs, 3), optional
+            Initial values for C-context misrepair signatures.
+        etaT_init : numpy.ndarray of shape (n_misrepair_sigs, 3), optional
+            Initial values for T-context misrepair signatures.
+        phi_obs : numpy.ndarray of shape (n_damage_sigs, 32), optional
+            Observed values for damage signatures.
+        etaC_obs : numpy.ndarray of shape (n_misrepair_sigs, 3), optional
+            Observed values for C-context misrepair signatures.
+        etaT_obs : numpy.ndarray of shape (n_misrepair_sigs, 3), optional
+            Observed values for T-context misrepair signatures.
+
+        Returns
+        -------
+        pymc3.Model
+            Compiled PyMC3 model for mutation signature analysis.
         """
         # latent dirichlet allocation with tandem signautres of damage and repair
         # and hirearchical tissue-specific priors
@@ -362,28 +402,3 @@ class HierarchicalTandemLda(TandemLda):
             
             # mutation counts
             pm.Multinomial('corpus', n = N, p = B, observed=data)
-
-        
-
-def vanilla_nmf(train, I):
-    """
-    Examples
-    --------
-    >>> import pandas as pd
-    >>> from damuta.constants import mut96
-    >>> counts = pd.read_csv('data/pcawg_counts.csv', index_col=0, header=0)[mut96].to_numpy()
-    >>> nmf = NMF(n_components=20, init='random', random_state=0)
-    >>> w = nmf.fit_transform(counts)
-    >>> h = nmf.components_
-    >>> w_norm = nmf.fit_transform(counts/counts.sum(axis=1, keepdims=True))
-    >>> h_norm = nmf.components_
-    """
-    
-    
-    raise NotImplemented
-    #model = NMF(n_components=I, init='random', random_state=0)
-    #W = model.fit_transform(train)
-    #H = model.components_
-
-
-

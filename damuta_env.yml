@@ -1,0 +1,21 @@
+name: damuta
+channels:
+  - conda-forge
+dependencies:
+  - pygpu=0.7.6
+  - python=3.8
+  - mkl-service
+  - python-graphviz
+  - pip
+  - pip:
+      - arviz==0.12.0
+      - numpy==1.21.2
+      - pandas==1.1.3
+      - pymc3==3.11.2
+      - scikit-learn==0.24.2
+      - scipy==1.7.1
+      - theano-pymc==1.1.2
+      - ipykernel
+      - jupyter
+      - seaborn
+      - wandb

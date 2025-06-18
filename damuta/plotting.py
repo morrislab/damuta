@@ -31,7 +31,7 @@ eta_pal = sns.color_palette(eta_col)
 def plot_signatures(sigs, pal, aspect=5):
     df = sigs.reset_index().rename_axis(columns = 'type')
     df = df.melt('index')
-    g = sns.FacetGrid(df, row="index", sharey=False, aspect=aspect)
+    g = sns.FacetGrid(df, row="", sharey=False, aspect=aspect)
     g.map_dataframe(sns.barplot, x='type', y = 'value', palette = pal)
     plt.xticks(rotation=90)
     g.set_titles(row_template = '{row_name}')

@@ -23,7 +23,7 @@ nb. internally these signatures are referred to by their symbols in the graphica
 
 DAMUTA is built on pymc3 - which depends on theano. To use theano with gpu, you will need to install pygpu. The simplest way to do so is via conda.
 
-`conda create -n damuta -c conda-forge python=3.8 pygpu=0.7.6`
+`conda create -f damuta_env.yml`
 
 ## from pipy
 
@@ -32,8 +32,7 @@ DAMUTA is available on [pipy test server](https://test.pypi.org/project/damuta/)
 ## from github
 
 Clone this repo `git clone https://github.com/morrislab/damuta`
-Install requirements `pip install -r damuta/requirements.txt`
-Install damuta `pip install -e damuta`
+Install DAMUTA `pip install -e .`
 
 
 # theanorc
@@ -60,7 +59,7 @@ Some files are omitted from this repository due to access restrictions. access c
 
 ## Data for reproducing manuscript figures
 
-* Unrestricted-access data and certain useful intemediate files are also available via can be downloaded from [zenodo]()
+Unrestricted-access data and certain useful intemediate files are also available via can be downloaded from [zenodo](https://zenodo.org/records/15685052)
 
 To download and organize these data:
 
@@ -76,7 +75,6 @@ mv damuta_zenodo/figure_data/* manuscript/results/figure_data
 rmdir damuta_zenodo/data damuta_zenodo/figure_data damuta_zenodo
 ```
 
-
 ## Some useful public data
 
 file name | info |  source  
@@ -85,6 +83,6 @@ COSMIC_v3.2_SBS_GRCh37.csv | [COSMIC database](https://cancer.sanger.ac.uk/signa
 icgc_sample_annotations_summary_table.txt | sample annotations used by PCAWG heterogeneity & evolution working group | [ICGC data portal](https://dcc.icgc.org/releases/PCAWG/evolution_and_heterogeneity)
 PCAWG_sigProfiler_SBS_signatures_in_samples | counts of mutations attributed to each signature for PCAWG samples | [syn11738669.7](https://www.synapse.org/#!Synapse:syn11738669.7)
 pcawg_counts.csv | mutation type counts in PCAWG samples | Derived from [syn7357330](https://www.synapse.org/#!Synapse:syn7357330)
-pcawg_cancer_types.csv | sample annotations used in [Jiao et. al](https://doi.org/10.1038/s41467-019-13825-8) | modified from [z-scores file](https://github.com/ICGC-TCGA-PanCancer/TumorType-WGS/blob/master/pcawg_mutations_types.csv)
+pcawg_cancer_types.csv | sample annotations used in [Jiao et. al](https://doi.org/10.1038/s41467-019-13825-8) | Adapted from [z-scores file](https://github.com/ICGC-TCGA-PanCancer/TumorType-WGS/blob/master/pcawg_mutations_types.csv)
 gel_clinical_ann.csv  | tumour type annotations for 18640 samples (ICGC, HMF, GEL)| Adapted from [Degasperi et. al](https://doi.org/10.1126/science.abl9283) table S6
 gel_counts.csv  | mutation type counts for 18640 samples (ICGC, HMF, GEL) | Adapted from [Degasperi et. al](https://doi.org/10.1126/science.abl9283) table S7
