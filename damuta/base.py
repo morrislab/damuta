@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import pymc3 as pm
+import warnings
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from .constants import *
@@ -143,17 +144,23 @@ class SignatureSet:
         return self.misrepair_signatures.shape[0]
     
     def summarize_separation(self) -> pd.DataFrame:
-        """Summary statistics of pair-wise cosine distances for signautres, 
+        """Summary statistics of pair-wise cosine distances for signatures, 
         damage signatures, and misrepair signatures.
-        
         """
         
-        seps = {'Signature separation': cosine_similarity(self.signatures)[np.triu_indices(self.n_sigs, k=1)],
-                'Damage signature separation': cosine_similarity(self.damage_signatures)[np.triu_indices(self.n_damage_sigs, k=1)],
-                'Misrepair signature separation': cosine_similarity(self.misrepair_signatures)[np.triu_indices(self.n_misrepair_sigs, k=1)]
-               }
+        # Calculate each array separately
+        sig_seps = cosine_similarity(self.signatures)[np.triu_indices(self.n_sigs, k=1)]
+        damage_seps = cosine_similarity(self.damage_signatures)[np.triu_indices(self.n_damage_sigs, k=1)]
+        misrepair_seps = cosine_similarity(self.misrepair_signatures)[np.triu_indices(self.n_misrepair_sigs, k=1)]
         
-        return pd.DataFrame.from_dict(seps).describe()
+        # Create separate DataFrames for each
+        results = pd.DataFrame()
+        
+        results['Mutational signature similarity'] = pd.Series(sig_seps).describe()
+        results['Damage signature similarity'] = pd.Series(damage_seps).describe()
+        results['Misrepair signature similarity'] = pd.Series(misrepair_seps).describe()
+        
+        return results
     
 class Model(ABC):
     """
@@ -204,12 +211,12 @@ class Model(ABC):
         self.seed = seed
         self.model = None
         self.approx = None
-        
+        self.fitted_ = False
+
         # hidden attributes
         self._model_kwargs = None
         self._opt = _opt_methods[self.opt_method]
         self._trace = None
-        self._hat = None
         self._rng = np.random.default_rng(self.seed)
         
         # set seed
@@ -275,6 +282,18 @@ class Model(ABC):
         
         self._validate_init_sigs()
 
+    def check_is_fitted(self):
+        """Check if the model has been fitted.
+        
+        Raises
+        ------
+        ValueError
+            If the model has not been fitted yet.
+        """
+        if not self.fitted_:
+            raise ValueError("This model instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.")
+    
+
     def fit(self, n, **pymc3_kwargs):
         """Fit model to the dataset specified by self.dataset
         
@@ -298,22 +317,11 @@ class Model(ABC):
             self._trace.fit(n=n, **pymc3_kwargs)
         
         self.approx = self._trace.approx
-        self._hat = self.approx.sample(1)
+        #self._hat = self.approx.sample(1)
+        self.fitted_ = True
         
         return self
     
-    #@abstractmethod
-    #def predict_activites(self, new_data, *args, **kwargs):
-    #    """Defined by subclass
-    #    """
-    #    pass
-    
-
-    #def model_to_gv(self, *args, **kwargs):
-    #    """Defined by subclass
-    #    """
-    #    pass
-
     
     ################################################################################
     # Metrics
@@ -340,17 +348,22 @@ class Model(ABC):
         """Defined by subclass
         """
         pass
-
-    ################################################################################
-    # 
-    ################################################################################    
     
-    def get_sig_set(self) -> SignatureSet:
-        ''' Construct a Signature Set with one sample from the model posterior.
-        '''
-        hat = self.approx.sample(1)
-        damage = pd.DataFrame(hat.phi[0], columns = mut32)
-        misrepair = pd.DataFrame(hat.eta[0].reshape(-1,6), columns=mut6)
-        damage.index = ['D'+str(n) for n in damage.index]
-        misrepair.index = ['M'+str(n) for n in misrepair.index]
-        return SignatureSet.from_damage_misrepair(damage, misrepair)
+    ################################################################################
+    # Posterior sampling
+    ################################################################################
+
+    @abstractmethod
+    def get_estimated_signatures(self, n_draws=1):
+        """Extract signatures from model posterior - implemented by subclass"""
+        pass
+
+    @abstractmethod 
+    def get_estimated_SignatureSet(self, n_draws=1):
+        """Construct SignatureSet from posterior - implemented by subclass"""
+        pass
+
+    @abstractmethod
+    def get_estimated_activities_DataFrame(self, n_draws=1):
+        """Extract activities as DataFrame - implemented by subclass"""
+        pass

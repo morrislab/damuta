@@ -1,14 +1,54 @@
 Installation
-======================
+============
 
-You can install the development version of Damuta from `github <https://github.com/morrislab/damuta/tree/pkg>`_.
+You can install DAMUTA using pip from PyPI or directly from GitHub.
 
-PIP
-~~~~~~~~~~
+From PyPI
+---------
 
-`pip install -i https://test.pypi.org/simple/ damuta`
+To install the latest stable version from PyPI, run:
 
-See `pipy <https://test.pypi.org/project/damuta/>`_.
+.. code-block:: bash
+
+    pip install damuta
+
+From GitHub
+-----------
+
+To install the latest development version from GitHub, run:
+
+.. code-block:: bash
+
+    pip install git+https://github.com/morrislab/damuta.git
+
+Requirements
+------------
+
+DAMUTA requires Python 3.8 or later. The main dependencies are:
+
+- NumPy
+- Pandas
+- PyMC3
+- Theano
+- Scikit-learn
+
+These dependencies will be automatically installed when you install Damuta.
 
 
+theanorc
+------------
 
+To use the GPU, ~/.theanorc should contain the following:
+
+.. code-block:: ini
+
+    [global]
+    floatX = float64
+    device = cuda
+
+Otherwise, device will default to CPU. If complilation is slow you can increase the timeout with:
+
+.. code-block:: ini
+
+    [global]
+    config.compile.timeout = 1000

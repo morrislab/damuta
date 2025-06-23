@@ -1,5 +1,5 @@
 import pandas as pd
-from damuta.utils import get_phi, get_eta, mut32, mut6
+from damuta.utils import marginalize_for_phi, marginalize_for_eta, mut32, mut6
 from damuta.base import SignatureSet
 
 def test_DataSet_init(pcawg):
@@ -18,8 +18,8 @@ def test_SignatureSet_init_from_signatures(cosmic):
     assert from_tau.n_misrepair_sigs == 78
 
 def test_SignatureSet_init_from_damage_misrepair(cosmic):
-    phi = pd.DataFrame(get_phi(cosmic.signatures.to_numpy()), index = cosmic.signatures.index, columns = mut32)[0:10]
-    eta = pd.DataFrame(get_eta(cosmic.signatures.to_numpy()), index = cosmic.signatures.index, columns = mut6)[0:5]
+    phi = pd.DataFrame(marginalize_for_phi(cosmic.signatures.to_numpy()), index = cosmic.signatures.index, columns = mut32)[0:10]
+    eta = pd.DataFrame(marginalize_for_eta(cosmic.signatures.to_numpy()), index = cosmic.signatures.index, columns = mut6)[0:5]
     from_phi_eta = SignatureSet.from_damage_misrepair(phi, eta)
     assert from_phi_eta.n_sigs == 50
     assert from_phi_eta.n_damage_sigs == 10

@@ -242,6 +242,15 @@ def mult_ll(x, p):
     np.ndarray
         Log-likelihood values for each sample.
     """
+    # Validate inputs first
+    if x.shape != p.shape:
+        raise ValueError(f"Shape mismatch: x.shape {x.shape} != p.shape {p.shape}")
+    
+    # Check for problematic zero probabilities  
+    if np.any((p == 0) & (x > 0)):
+        raise ValueError("Cannot compute log-likelihood: zero probability with non-zero count")
+    
+    # Original computation - let it warn if needed
     return loggamma(x.sum(1) + 1) - loggamma(x+1).sum(1) + (x * np.log(p)).sum(1)
 
 def alp_B(data, B):

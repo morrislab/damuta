@@ -4,18 +4,35 @@
    contain the root `toctree` directive.
 
 
-Welcome to damuta's documentation!
+
+
+DAMUTA documentation
 ==================================
 
-**Damuta** is a Python library for exploring mutational signatures in cancer. Damuta requires only mutation type counts to get started. 
+.. image:: thumbnails/damuta_logo.png
+   :width: 200px
+   :align: center
 
-You can optionally provide: 
-i) Custom signature definitions
-ii) Sample meta-data, such as tissue type, data source, driver mutations, and more.
+| 
 
-.. note::
+**DAMUTA** is a hierarchical Bayesian probabilistic model that separates DNA damage and misrepair processes.
 
-   This project is under active development.
+
+**Key Capabilities:**
+
+* **Damage-Misrepair Separation**: Infers distinct signatures for DNA damage processes and repair mechanisms
+* **Hierarchical Modeling**: Captures sample-specific interactions and tissue-type effects  
+* **Pan-Cancer Analysis**: DAMUTA signatures estimated from 18,974 whole genome sequencing samples across 23 cancer types
+* **Biological Insights**: Reveals tissue-specificity patterns and DNA damage response deficiencies
+* **Compact Representation**: Resolves redundancies in current signature models
+
+| 
+
+DAMUTA requires only mutation type counts to begin analysis. You can optionally provide:
+
+* Custom signature definitions (damage and misrepair signatures)
+* Hierarchical sample groupings for enhanced tissue-specific modeling
+
 
 .. automodule:: damuta
    :show-inheritance:
@@ -27,8 +44,6 @@ ii) Sample meta-data, such as tissue type, data source, driver mutations, and mo
    installation
    examples/quickstart
    examples/index
-
-All example notebooks can be downloaded from [github](https://github.com/morrislab/damuta/tree/pkg/docs/examples)
 
 .. toctree::
    :maxdepth: 3

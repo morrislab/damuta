@@ -61,6 +61,14 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', '_templates', 'stubs', 'damuta.rst']
 
+# Skip notebooks if pandoc is not available (for local builds)
+import shutil
+if not shutil.which('pandoc'):
+    print("Warning: pandoc not found, skipping notebook examples")
+    exclude_patterns.extend(['examples/*.ipynb'])
+else:
+    nbsphinx_allow_errors = True
+
 
 # -- Options for HTML output -------------------------------------------------
 

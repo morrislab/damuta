@@ -11,9 +11,9 @@
     "## Setup WandB\n",
     "After initializing a run, we can track all the Damuta model specs to the wandb run config. Specs you may want to track are: datasets (as [artifacts](https://docs.wandb.ai/guides/artifacts)), model parameters (as a [config](https://docs.wandb.ai/guides/track/config)) or metrics and plots (as [logged data](https://docs.wandb.ai/guides/track/log))\n",
     "\n",
-    "**Warning**: Private data may not be appropriate to upload to WandB. See [storage FAQ](https://docs.wandb.ai/guides/artifacts/artifacts-faqs#where-are-artifact-files-stored) to ensure that WandB policies are compliant with your data-handling requirements.\n",
+    "**Warning**: Certain private health data may not be appropriate to upload to wandb. See [storage FAQ](https://docs.wandb.ai/guides/artifacts/artifacts-faqs#where-are-artifact-files-stored) to ensure that wandb policies are compliant with your data-handling requirements.\n",
     "\n",
-    "The wandb dashboard associated with this notebook is available [here](https://wandb.ai/harrig12/damuta-docs_examples)"
+    "See the wandb dashboard associated with this notebook [here](https://wandb.ai/harrig12/damuta-docs_examples)"
    ]
   },
   {

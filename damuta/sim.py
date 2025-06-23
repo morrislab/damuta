@@ -130,23 +130,24 @@ def encode_counts(counts):
     This function takes a DataFrame of mutation counts and encodes it into two lists
     of indices: one for the 32 mutation types and another for the 6 possible base changes.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     counts : pandas.DataFrame
         A DataFrame where each row represents a sample and each column represents
         a mutation type (96 mutation types in total).
 
-    Returns:
-    --------
+    Returns
+    -------
     tuple
         A tuple containing two elements:
+        
         1. list of lists: Each inner list contains indices (0-31) representing the
            32 mutation types for each mutation in each sample.
         2. list of lists: Each inner list contains indices (0-5) representing the
            6 possible base changes for each mutation in each sample.
 
-    Notes:
-    ------
+    Notes
+    -----
     The encoding is based on the 96 mutation types, which are converted into
     32 mutation types (context) and 6 base changes. This encoding is useful
     for topic modeling approaches in mutation signature analysis.

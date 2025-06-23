@@ -7,28 +7,33 @@
 
 *Damage and Misrepair Signatures: Compact Representations of Pan-cancer Mutational Processes*
 
-[![Documentation Status](https://readthedocs.org/projects/damuta/badge/?version=latest)](https://damuta.readthedocs.io/en/latest/?badge=latest) 
+[![Documentation Status](https://readthedocs.org/projects/damuta/badge/?version=latest)](https://damuta.readthedocs.io/en/latest/?badge=latest)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![PyPI version](https://badge.fury.io/py/damuta.svg)](https://badge.fury.io/py/damuta) 
 
 </div>
 
 ---
 
-# See our [preprint](https://www.biorxiv.org/content/10.1101/2025.05.29.656360v1) for model details
-
-![image](https://user-images.githubusercontent.com/23587234/140100948-98f10395-2bdb-4cf5-ac8b-fd66396d8d7f.png)
 
 # DAMUTA signature definitions
 
 * [18 Damage signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/manuscript/results/damage_sigs.csv)
-* [6 Misreapair signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/manuscript/results/misreapair_sigs.csv)
+* [6 Misrepair signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/manuscript/results/misreapair_sigs.csv)
 
 nb. internally these signatures are referred to by their symbols in the graphical model: eta and phi respectively.
 
-# Feautures
+# Features
 
 * Separately model damage and misrepair processes
 * Estimate activities of DAMUTA signatures
 * Fit new Damage- and Misrepair-signatures denovo
+
+# Model
+
+
+![image](https://user-images.githubusercontent.com/23587234/140100948-98f10395-2bdb-4cf5-ac8b-fd66396d8d7f.png)
 
 # Installation
 
@@ -38,15 +43,22 @@ DAMUTA is built on pymc3 - which depends on theano. To use theano with gpu, you 
 
 ## from pipy
 
-DAMUTA is available on [pipy test server](https://test.pypi.org/project/damuta/)
+```bash
+pip install damuta
+```
 
-## from github
+## From Environment File
 
 Clone this repo `git clone https://github.com/morrislab/damuta`
-Install DAMUTA `pip install -e .`
 
 
-# theanorc
+```bash
+conda env create -f damuta_env.yml
+conda activate damuta
+pip install -e .
+```
+
+## theanorc
 
 To use the GPU, `~/.theanorc` should contain the following:
 
@@ -97,3 +109,23 @@ pcawg_counts.csv | mutation type counts in PCAWG samples | Derived from [syn7357
 pcawg_cancer_types.csv | sample annotations used in [Jiao et. al](https://doi.org/10.1038/s41467-019-13825-8) | Adapted from [z-scores file](https://github.com/ICGC-TCGA-PanCancer/TumorType-WGS/blob/master/pcawg_mutations_types.csv)
 gel_clinical_ann.csv  | tumour type annotations for 18640 samples (ICGC, HMF, GEL)| Adapted from [Degasperi et. al](https://doi.org/10.1126/science.abl9283) table S6
 gel_counts.csv  | mutation type counts for 18640 samples (ICGC, HMF, GEL) | Adapted from [Degasperi et. al](https://doi.org/10.1126/science.abl9283) table S7
+
+## Citation
+
+```
+
+@misc{harrigan_damage_2025,
+	title = {Damage and {Misrepair} {Signatures}: {Compact} {Representations} of {Pan}-cancer {Mutational} {Processes}},
+	copyright = {© 2025, Posted by Cold Spring Harbor Laboratory. This pre-print is available under a Creative Commons License (Attribution-NonCommercial 4.0 International), CC BY-NC 4.0, as described at http://creativecommons.org/licenses/by-nc/4.0/},
+	shorttitle = {Damage and {Misrepair} {Signatures}},
+	url = {https://www.biorxiv.org/content/10.1101/2025.05.29.656360v1},
+	doi = {10.1101/2025.05.29.656360},
+	language = {en},
+	urldate = {2025-06-02},
+	publisher = {bioRxiv},
+	author = {Harrigan, Caitlin F. and Campbell, Kieran and Morris, Quaid and Funnell, Tyler},
+	month = jun,
+	year = {2025},
+}
+
+```

@@ -1,7 +1,10 @@
 import pymc3 as pm
 import numpy as np
+import pandas as pd
+import warnings
 from .utils import dirichlet, marginalize_for_phi, marginalize_for_eta
-from .base import Model, DataSet
+from .base import Model, DataSet, SignatureSet
+from .constants import mut96, mut32, mut6
 from theano.tensor import batched_dot
 from sklearn.cluster import k_means
 
@@ -132,6 +135,33 @@ class Lda(Model):
             B = pm.Deterministic("B", pm.math.dot(theta, tau))
             # mutation counts
             pm.Multinomial('corpus', n = N, p = B, observed=data)
+    
+
+    def get_estimated_signatures(self, n_draws=1):
+        """Extract signatures from model posterior"""
+        self.check_is_fitted()
+        hat = self.approx.sample(n_draws)
+        return hat.tau
+
+    def get_estimated_SignatureSet(self, n_draws=1):
+        """Construct SignatureSet from posterior"""
+        self.check_is_fitted()
+        hat = self.approx.sample(n_draws)
+        if n_draws > 1:
+            warnings.warn(f"Signatures will be summarized as the mean of {n_draws} posterior samples")
+        signatures = pd.DataFrame(hat.tau.mean(0), columns=mut96)
+        signatures.index = [f'S{i+1}' for i in range(self.n_sigs)]
+        return SignatureSet(signatures)
+
+    def get_estimated_activities_DataFrame(self, n_draws=1):
+        """Extract activities as DataFrame"""
+        self.check_is_fitted()
+        hat = self.approx.sample(n_draws)
+        if n_draws > 1:
+            warnings.warn(f"Activities will be summarized as the mean of {n_draws} posterior samples")
+        return pd.DataFrame(hat.theta.mean(0), 
+                        index=self.dataset.ids, 
+                        columns=[f'S{i+1}' for i in range(self.n_sigs)])
     
 class TandemLda(Model):
     """Bayesian inference of mutational signatures and their activities using a Tandem LDA model.
@@ -308,6 +338,126 @@ class TandemLda(Model):
             pm.Multinomial('corpus', n = N, p = B, observed=data)
 
     
+    def get_estimated_signatures(self, n_draws=1):
+        """Extract damage and misrepair signatures from model posterior.
+        
+        Parameters
+        ----------
+        n_draws : int, default=1
+            Number of posterior samples to draw.
+            
+        Returns
+        -------
+        tuple
+            Tuple containing (phi, eta) where phi is damage signatures array 
+            and eta is misrepair signatures array reshaped to (n_draws, n_sigs, 6).
+        """
+        self.check_is_fitted()
+        hat = self.approx.sample(n_draws)
+        return hat.phi, hat.eta.reshape(n_draws, -1, 6)
+
+    def get_estimated_SignatureSet(self, n_draws=1):
+        """Construct a SignatureSet object from model posterior samples.
+        
+        Parameters
+        ----------
+        n_draws : int, default=1
+            Number of posterior samples to draw. If >1, samples are averaged in the signature space
+            
+        Returns
+        -------
+        SignatureSet
+            SignatureSet constructed from damage and misrepair signatures.
+        """
+        self.check_is_fitted()
+        phi, eta = self.get_estimated_signatures(n_draws)
+        if n_draws > 1:
+            warnings.warn("Signatures will be summarized as the mean of {} posterior samples".format(n_draws))
+        damage = pd.DataFrame(phi.mean(0), columns=mut32)
+        misrepair = pd.DataFrame(eta.mean(0).reshape(-1, 6), columns=mut6)
+        damage.index = ['D'+str(n+1) for n in damage.index]
+        misrepair.index = ['M'+str(n+1) for n in misrepair.index]
+        return SignatureSet.from_damage_misrepair(damage, misrepair)
+
+    def get_estimated_W(self, n_draws=1):
+        """Extract signature activity tensor from model posterior.
+        
+        Parameters
+        ----------
+        n_draws : int, default=1
+            Number of posterior samples to draw.
+            
+        Returns
+        -------
+        np.ndarray
+            4D array of signature activities with shape (n_draws, n_samples, n_damage_sigs, n_misrepair_sigs).
+        """
+        self.check_is_fitted()
+
+        hat = self.approx.sample(n_draws)
+
+        theta = hat.theta
+        A = hat.A
+
+        # A has misrepair dimension last
+        assert theta.shape == A.shape[:-1], "theta and A shape mismatch"
+
+        W = (theta[:,:,:,None]*A)
+        assert np.allclose(W.sum(-1), theta), "W does not sum to theta over misrepair axis"
+        return W
+    
+    def get_estimated_activities(self, n_draws=1):
+        """"""
+        W = self.get_estimated_W(n_draws)
+        theta = W.sum(-1)
+        gamma = W.sum(-2)
+        return theta, gamma
+
+    def get_estimated_activities_DataFrame(self, n_draws=1):
+        """Extract damage and misrepair signature activities as DataFrames.
+        
+        Parameters
+        ----------
+        n_draws : int, default=1
+            Number of posterior samples to draw. If >1, samples are averaged in the activity space.
+            
+        Returns
+        -------
+        tuple
+            Tuple of (theta, gamma) DataFrames where theta contains damage signature 
+            activities and gamma contains misrepair signature activities.
+        """
+        self.check_is_fitted()
+        W = self.get_estimated_W(n_draws)
+        if n_draws > 1:
+            warnings.warn(f"Signatures will be sumarized as the mean of {n_draws} posterior samples")
+        theta = pd.DataFrame(W.sum(-1).mean(0), index = self.dataset.ids, columns = ["D"+str(i+1) for i in range(self.n_damage_sigs)])
+        gamma = pd.DataFrame(W.sum(-2).mean(0), index = self.dataset.ids, columns = ["M"+str(i+1) for i in range(self.n_misrepair_sigs)])
+        return theta, gamma
+
+    def get_estimated_connections_DataFrame(self, n_draws=1):
+        """Extract damage-misrepair signature connections as DataFrame.
+        
+        Parameters
+        ----------
+        n_draws : int, default=1
+            Number of posterior samples to draw. If >1, samples are averaged in the connection space.
+            
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with damage-misrepair signature combinations as columns,
+            with column names like 'D1_M1', 'D1_M2', etc.
+        """
+        self.check_is_fitted()
+        W = self.get_estimated_W(n_draws)
+        if n_draws > 1:
+            warnings.warn("Signatures will be summarized as the mean of {} posterior samples".format(n_draws))
+        W_df = pd.DataFrame(W.mean(0).reshape(self.dataset.n_samples, -1), index=self.dataset.ids)
+        W_df = W_df.rename(columns=lambda x: 'D{}_M{}'.format(x//self.n_misrepair_sigs + 1, x%self.n_misrepair_sigs + 1))
+        return W_df
+
+    
 class HierarchicalTandemLda(TandemLda):
     """Bayesian inference of mutational signatures and their activities using a Hierarchical Tandem LDA model.
     
@@ -434,3 +584,30 @@ class HierarchicalTandemLda(TandemLda):
             # mutation counts
             pm.Multinomial('corpus', n = N, p = B, observed=data)
 
+    def get_estimated_W(self, n_draws=1):
+        """Extract signature activity tensor from model posterior.
+        
+        Parameters
+        ----------
+        n_draws : int, default=1
+            Number of posterior samples to draw.
+            
+        Returns
+        -------
+        np.ndarray
+            4D array of signature activities with shape (n_draws, n_samples, n_damage_sigs, n_misrepair_sigs).
+        """
+        self.check_is_fitted()
+
+        hat = self.approx.sample(n_draws)
+
+        theta = hat.theta
+        A = hat.A
+        A = np.moveaxis(A,1,2)
+
+        # A has misrepair dimension last
+        assert theta.shape == A.shape[:-1], "theta and A shape mismatch"
+
+        W = (theta[:,:,:,None]*A)
+        assert np.allclose(W.sum(-1), theta), "W does not sum to theta over misrepair axis"
+        return W
