@@ -37,28 +37,19 @@ nb. internally these signatures are referred to by their symbols in the graphica
 - [example notebook](./docs/examples/) usage examples
 - [manuscript](./docs/examples/) code for reproducing experiments and plots reported in manuscript
 
+# Docs
+
+DAMUTA documentation is hosted on [readthedocs](https://damuta.readthedocs.io/en/latest/)
 
 # Model
 
-
 ![image](https://user-images.githubusercontent.com/23587234/140100948-98f10395-2bdb-4cf5-ac8b-fd66396d8d7f.png)
+
+# System requirements
 
 # Installation
 
-
-
-```
-conda create -f damuta_env.yml
-conda activate damuta
-```
-
-## from PyPI
-
-```bash
-pip install damuta
-```
-
-## From Environment File
+## From github
 
 Clone this repo `git clone https://github.com/morrislab/damuta`
 
@@ -68,6 +59,13 @@ conda env create -f damuta_env.yml
 conda activate damuta
 pip install -e .
 ```
+
+## from PyPI
+
+```bash
+pip install damuta
+```
+
 
 ## theanorc
 
