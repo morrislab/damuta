@@ -29,5 +29,6 @@ sphinx:
 # Install the package itself so Sphinx can import it
 python:
   install:
+    - requirements: docs/requirements.txt
     - method: pip
       path: .
