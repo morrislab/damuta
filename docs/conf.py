@@ -22,7 +22,7 @@ copyright = '2022, Cait Harrigan'
 author = 'Cait Harrigan'
 
 # The full version, including alpha/beta/rc tags
-release = "release = "1.0.0""
+release = "1.0.0"
 
 
 # -- General configuration ---------------------------------------------------

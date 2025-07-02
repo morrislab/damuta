@@ -19,8 +19,8 @@
 
 # DAMUTA signature definitions
 
-* [18 Damage signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/manuscript/results/damage_sigs.csv)
-* [6 Misrepair signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/manuscript/results/misreapair_sigs.csv)
+* [18 Damage signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/docs/examples/example_data/damage_signatures.csv)
+* [6 Misrepair signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/docs/examples/example_data/misrepair_signatures.csv)
 
 nb. internally these signatures are referred to by their symbols in the graphical model: eta and phi respectively.
 
@@ -30,6 +30,14 @@ nb. internally these signatures are referred to by their symbols in the graphica
 * Estimate activities of DAMUTA signatures
 * Fit new Damage- and Misrepair-signatures denovo
 
+# Repo contents
+
+- [damuta](./damuta) python package
+- [docs](./docs): package documentation
+- [example notebook](./docs/examples/) usage examples
+- [manuscript](./docs/examples/) code for reproducing experiments and plots reported in manuscript
+
+
 # Model
 
 
@@ -37,11 +45,14 @@ nb. internally these signatures are referred to by their symbols in the graphica
 
 # Installation
 
-DAMUTA is built on pymc3 - which depends on theano. To use theano with gpu, you will need to install pygpu. The simplest way to do so is via conda.
 
-`conda create -f damuta_env.yml`
 
-## from pipy
+```
+conda create -f damuta_env.yml
+conda activate damuta
+```
+
+## from PyPI
 
 ```bash
 pip install damuta
