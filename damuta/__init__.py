@@ -2,7 +2,7 @@ from .base import DataSet, SignatureSet
 from . import models, callbacks, plotting, utils
 from .constants import * 
 
-__version__ =  "1.0.3"
+__version__ =  "1.0.4"
 
 __all__ = [
     "__version__",
