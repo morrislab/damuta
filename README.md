@@ -37,7 +37,7 @@ nb. internally these signatures are referred to by their symbols in the graphica
 # Repo contents
 
 - [damuta](./damuta) python package
-- [docs](./docs): package documentation
+- [docs](./docs) package documentation
 - [example notebooks](./docs/examples/) usage examples & tutorials
 - [manuscript code](./manuscript) code to reproduce experiments and plots reported in manuscript
 
