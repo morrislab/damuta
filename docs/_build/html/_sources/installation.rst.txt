@@ -32,9 +32,6 @@ DAMUTA requires Python 3.8 or later. The main dependencies are:
 - Theano
 - Scikit-learn
 
-These dependencies will be automatically installed when you install Damuta.
-
-
 theanorc
 ------------
 

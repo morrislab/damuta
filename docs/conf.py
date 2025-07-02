@@ -46,11 +46,12 @@ add_module_names = False
 
 nbsphinx_thumbnails = {
     'examples/quickstart': '_static/quickstart.png',
-    'examples/config': '_static/config.png',
-    'examples/data': '_static/data.png',
+    'examples/data': '_static/data.png', 
     'examples/models': '_static/models.png',
     'examples/wandb': '_static/wandb.png',
+    'examples/estimate_signatures_and_activities': '_static/sigs.png', 
 }
+
 
 
 # Add any paths that contain templates here, relative to this directory.

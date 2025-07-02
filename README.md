@@ -17,35 +17,46 @@
 ---
 
 
-# DAMUTA signature definitions
-
-* [18 Damage signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/docs/examples/example_data/damage_signatures.csv)
-* [6 Misrepair signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/docs/examples/example_data/misrepair_signatures.csv)
-
-nb. internally these signatures are referred to by their symbols in the graphical model: eta and phi respectively.
-
 # Features
 
 * Separately model damage and misrepair processes
 * Estimate activities of DAMUTA signatures
 * Fit new Damage- and Misrepair-signatures denovo
 
+## DAMUTA signature definitions
+
+* [18 Damage signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/docs/examples/example_data/damage_signatures.csv)
+* [6 Misrepair signatures](https://raw.githubusercontent.com/morrislab/damuta/refs/heads/main/docs/examples/example_data/misrepair_signatures.csv)
+
+nb. internally these signatures are referred to by their symbols in the graphical model: eta and phi respectively.
+
+## Model
+
+![image](https://user-images.githubusercontent.com/23587234/140100948-98f10395-2bdb-4cf5-ac8b-fd66396d8d7f.png)
+
 # Repo contents
 
 - [damuta](./damuta) python package
 - [docs](./docs): package documentation
-- [example notebook](./docs/examples/) usage examples
-- [manuscript](./docs/examples/) code for reproducing experiments and plots reported in manuscript
+- [example notebooks](./docs/examples/) usage examples & tutorials
+- [manuscript code](./manuscript) code to reproduce experiments and plots reported in manuscript
 
-# Docs
+# Documention
 
-DAMUTA documentation is hosted on [readthedocs](https://damuta.readthedocs.io/en/latest/)
+DAMUTA documentation is hosted via [readthedocs](https://damuta.readthedocs.io/en/latest/)
 
-# Model
-
-![image](https://user-images.githubusercontent.com/23587234/140100948-98f10395-2bdb-4cf5-ac8b-fd66396d8d7f.png)
 
 # System requirements
+
+Recommended Requirements:
+
+* Unix-based system (tested on CentOS Linux 7)
+* RAM: 16+ GB (for large-scale pan-cancer datasets)
+* CPU: 4+ cores, 3.0+ GHz/core
+* GPU: NVIDIA GPU with CUDA support (optional, for GPU acceleration via Theano)
+
+
+Software dependencies are specified in (damuta_env.yml)[./damuta_env.yml]
 
 # Installation
 
@@ -79,10 +90,21 @@ device = cuda
 
 Otherwise, device will default to CPU. 
 
+## Installation Time Estimates
 
-# Data
+Conda environment setup: ~3-5 minutes
+Package installation: ~2-3 minutes
 
-Some files are omitted from this repository due to access restrictions. access can be requested from the corresponding sources: 
+
+# Demo
+
+See [quickstart](https://damuta.readthedocs.io/en/latest/examples/quickstart.html) to get started (~5 min)
+
+# Reproducing manuscript results
+
+See [manuscript code](./manuscript) for code to reproduce experiments and plots reported in manuscript
+
+Some data files are omitted from this repository due to access restrictions. Access can be requested from the corresponding sources: 
 
 * [PCAWG/ICGC](https://platform.icgc-argo.org/)
 * [Hartwig](https://www.hartwigmedicalfoundation.nl)

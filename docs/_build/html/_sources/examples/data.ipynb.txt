@@ -611,7 +611,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# DAMUTA signatures\n",
+    "## DAMUTA signatures\n",
     "\n",
     "We can also initialize a signature set from just the damage and misrepair signature definitions."
    ]
@@ -1217,7 +1217,7 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
+   "display_name": "damuta-dev",
    "language": "python",
    "name": "python3"
   },
