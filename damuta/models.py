@@ -322,13 +322,13 @@ class TandemLda(Model):
         with pm.Model() as self.model:
             
             data = pm.Data("data", train)
-            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 32), testval = phi_init)
+            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 32), testval = phi_init, observed = phi_obs)
             theta = dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
             A = dirichlet("A", a = np.ones(K) * gamma_bias, shape = (S, J, K))
             # 4 is constant for ACGT
             beta = np.ones(4) * beta_bias
-            etaC = dirichlet("etaC", a=beta[[0,2,3]], shape=(K, 3), testval = etaC_init)
-            etaT = dirichlet("etaT", a=beta[[0,1,2]], shape=(K, 3), testval = etaT_init)
+            etaC = dirichlet("etaC", a=beta[[0,2,3]], shape=(K, 3), testval = etaC_init, observed = etaC_obs)
+            etaT = dirichlet("etaT", a=beta[[0,1,2]], shape=(K, 3), testval = etaT_init, observed = etaT_obs)
             eta = pm.Deterministic('eta', pm.math.stack([etaC, etaT], axis=1))
 
             B = pm.Deterministic("B", (pm.math.dot(theta, phi).reshape((S,2,16))[:,:,None,:] * \
