@@ -70,7 +70,7 @@ class Lda(Model):
     
     def __init__(self, dataset: DataSet, n_sigs=None,
                  alpha_bias=0.1, psi_bias=0.01, tau_obs=None,
-                 opt_method="ADVI", init_strategy="uniform",
+                 opt_method="ADVI", init_strategy="kmeans",
                  init_signatures=None, seed=2021):
         
         super().__init__(dataset=dataset, opt_method=opt_method, init_strategy=init_strategy, init_signatures=init_signatures, seed=seed)
