@@ -1,6 +1,13 @@
+"""
+Constants and mutation type definitions for DAMUTA.
+
+This module defines standard mutation type nomenclatures used throughout DAMUTA,
+including COSMIC-style mutation signatures and various groupings of mutation types
+for different modeling approaches.
+"""
 import pandas as pd
 
-# labels
+# 96-channel mutation types with hierarchical index
 idx96 = pd.MultiIndex.from_tuples([
             ('C>A', 'ACA'), ('C>A', 'ACC'), ('C>A', 'ACG'), ('C>A', 'ACT'), 
             ('C>A', 'CCA'), ('C>A', 'CCC'), ('C>A', 'CCG'), ('C>A', 'CCT'), 
@@ -27,6 +34,7 @@ idx96 = pd.MultiIndex.from_tuples([
             ('T>G', 'GTA'), ('T>G', 'GTC'), ('T>G', 'GTG'), ('T>G', 'GTT'), 
             ('T>G', 'TTA'), ('T>G', 'TTC'), ('T>G', 'TTG'), ('T>G', 'TTT')],
             names=['Type', 'Subtype'])
+"""pd.MultiIndex: Hierarchical index for 96 mutation types grouped by substitution type and trinucleotide context."""
     
 mut96 = ['A[C>A]A', 'A[C>A]C', 'A[C>A]G', 'A[C>A]T', 'C[C>A]A', 'C[C>A]C', 'C[C>A]G', 'C[C>A]T', 
          'G[C>A]A', 'G[C>A]C', 'G[C>A]G', 'G[C>A]T', 'T[C>A]A', 'T[C>A]C', 'T[C>A]G', 'T[C>A]T', 
@@ -40,18 +48,23 @@ mut96 = ['A[C>A]A', 'A[C>A]C', 'A[C>A]G', 'A[C>A]T', 'C[C>A]A', 'C[C>A]C', 'C[C>
          'G[T>C]A', 'G[T>C]C', 'G[T>C]G', 'G[T>C]T', 'T[T>C]A', 'T[T>C]C', 'T[T>C]G', 'T[T>C]T', 
          'A[T>G]A', 'A[T>G]C', 'A[T>G]G', 'A[T>G]T', 'C[T>G]A', 'C[T>G]C', 'C[T>G]G', 'C[T>G]T', 
          'G[T>G]A', 'G[T>G]C', 'G[T>G]G', 'G[T>G]T', 'T[T>G]A', 'T[T>G]C', 'T[T>G]G', 'T[T>G]T']
+"""list of str: 96 COSMIC-style mutation types in format X[Y>Z]W where X and W are flanking bases."""
 
 mut32 = ['ACA', 'ACC', 'ACG', 'ACT', 'CCA', 'CCC', 'CCG', 'CCT', 
          'GCA', 'GCC', 'GCG', 'GCT', 'TCA', 'TCC', 'TCG', 'TCT', 
          'ATA', 'ATC', 'ATG', 'ATT', 'CTA', 'CTC', 'CTG', 'CTT', 
          'GTA', 'GTC', 'GTG', 'GTT', 'TTA', 'TTC', 'TTG', 'TTT']
+"""list of str: 32 trinucleotide contexts (damage signature mutation types)."""
 
 mut16 = ['A_A', 'A_C', 'A_G', 'A_T', 'C_A', 'C_C', 'C_G', 'C_T', 
          'G_A', 'G_C', 'G_G', 'G_T', 'T_A', 'T_C', 'T_G', 'T_T']
+"""list of str: 16 dinucleotide contexts."""
 
 mut6 = ['C>A','C>G','C>T','T>A','T>C','T>G']
+"""list of str: 6 substitution types (misrepair signature mutation types)."""
 
-# COSMIC artifact signaures
+# COSMIC artifact signatures
 COSMIC_artifact = ['SBS27', 'SBS43', 'SBS45', 'SBS46', 'SBS47', 'SBS48',
                    'SBS49', 'SBS50', 'SBS51', 'SBS52', 'SBS53', 'SBS54', 
                    'SBS55', 'SBS56', 'SBS57', 'SBS58', 'SBS59', 'SBS60']
+"""list of str: COSMIC Single Base Substitution signatures identified as sequencing/processing artifacts."""
