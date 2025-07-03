@@ -43,7 +43,7 @@ nb. internally these signatures are referred to by their symbols in the graphica
 
 # Documention
 
-DAMUTA documentation is hosted via [readthedocs](https://damuta.readthedocs.io/en/latest/)
+DAMUTA documentation is hosted via [readthedocs](https://damuta.readthedocs.io)
 
 
 # System requirements
