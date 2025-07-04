@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>damuta.base module &mdash; DAMUTA 1.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css?v=d2d258e8" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c0ddf5a4"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="damuta.callbacks module" href="damuta.callbacks.html" />
+    <link rel="prev" title="Experiment tracking with WandB" href="examples/wandb.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            DAMUTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/index.html">Tutorials</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">damuta.base module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#damuta.base.DataSet"><code class="docutils literal notranslate"><span class="pre">DataSet</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.DataSet.annotate_tissue_types"><code class="docutils literal notranslate"><span class="pre">DataSet.annotate_tissue_types()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.DataSet.annotation"><code class="docutils literal notranslate"><span class="pre">DataSet.annotation</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.DataSet.counts"><code class="docutils literal notranslate"><span class="pre">DataSet.counts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.DataSet.ids"><code class="docutils literal notranslate"><span class="pre">DataSet.ids</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.DataSet.n_samples"><code class="docutils literal notranslate"><span class="pre">DataSet.n_samples</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#damuta.base.SignatureSet"><code class="docutils literal notranslate"><span class="pre">SignatureSet</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.SignatureSet.from_damage_misrepair"><code class="docutils literal notranslate"><span class="pre">SignatureSet.from_damage_misrepair()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.SignatureSet.index"><code class="docutils literal notranslate"><span class="pre">SignatureSet.index</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.SignatureSet.n_damage_sigs"><code class="docutils literal notranslate"><span class="pre">SignatureSet.n_damage_sigs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.SignatureSet.n_misrepair_sigs"><code class="docutils literal notranslate"><span class="pre">SignatureSet.n_misrepair_sigs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.SignatureSet.n_sigs"><code class="docutils literal notranslate"><span class="pre">SignatureSet.n_sigs</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.SignatureSet.signatures"><code class="docutils literal notranslate"><span class="pre">SignatureSet.signatures</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#damuta.base.SignatureSet.summarize_separation"><code class="docutils literal notranslate"><span class="pre">SignatureSet.summarize_separation()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="damuta.callbacks.html">damuta.callbacks module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="damuta.constants.html">damuta.constants module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="damuta.models.html">damuta.models module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="damuta.plotting.html">damuta.plotting module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="damuta.sim.html">damuta.sim module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="damuta.utils.html">damuta.utils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DAMUTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">damuta.base module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/damuta.base.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-damuta.base">
+<span id="damuta-base-module"></span><h1>damuta.base module<a class="headerlink" href="#module-damuta.base" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="damuta.base.DataSet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DataSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">counts</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">annotation</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#damuta.base.DataSet" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Container for tabular data, allowing simple access to a mutation data set and corresponding annotation for each sample.</p>
+<p><a class="reference internal" href="#damuta.base.DataSet" title="damuta.base.DataSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataSet</span></code></a> is instatiated from a pandas dataframe of mutation counts, and (optionally) a pandas dataframe of the
+same size of sample annotations. The dataframe index is taken as sample ids. All samples that appear in counts should
+also appear in annotation, and vice versa. Mutation types are expect to be in COSMIC format (ex. A[C&gt;A]A).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>counts</strong> (<em>pd.DataFrame</em>) – Nx96 dataframe of mutation counts, one sample per row. Index is assumed to be sample ids.</p></li>
+<li><p><strong>annotation</strong> (<em>pd.DataFrame</em>) – NxF dataframe of meta-data features to annotate samples with. Index is assumed to be sample ids.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;tests/test_data/pcawg_counts.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">annotation</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;tests/test_data/pcawg_cancer_types.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcawg</span> <span class="o">=</span> <span class="n">DataSet</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">annotation</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pcawg</span><span class="o">.</span><span class="n">nsamples</span>
+<span class="go">2778</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="damuta.base.DataSet.annotate_tissue_types">
+<span class="sig-name descname"><span class="pre">annotate_tissue_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_col</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">array</span></span></span><a class="headerlink" href="#damuta.base.DataSet.annotate_tissue_types" title="Permalink to this definition"></a></dt>
+<dd><p>Set a specified column of annotation as the sample tissue type</p>
+<p>Tissue type information is used by hirearchical models to create tissue-type prior.
+See class:<cite>HierarchicalTendemLda</cite> for more details.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="damuta.base.DataSet.annotation">
+<span class="sig-name descname"><span class="pre">annotation</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#damuta.base.DataSet.annotation" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="damuta.base.DataSet.counts">
+<span class="sig-name descname"><span class="pre">counts</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#damuta.base.DataSet.counts" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="damuta.base.DataSet.ids">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span></em><a class="headerlink" href="#damuta.base.DataSet.ids" title="Permalink to this definition"></a></dt>
+<dd><p>List sample ids in dataset</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="damuta.base.DataSet.n_samples">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_samples</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#damuta.base.DataSet.n_samples" title="Permalink to this definition"></a></dt>
+<dd><p>Number of samples in dataset</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="damuta.base.SignatureSet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SignatureSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">signatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#damuta.base.SignatureSet" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Container for tabular data, allowing simple access to a set of mutational signature definitions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>signatures</strong> (<em>pd.DataFrame</em>) – Nx96 dataframe of signautre definitions, one signature per row. Rows must sum to 1.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="damuta.base.SignatureSet.from_damage_misrepair">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_damage_misrepair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">damage_signatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">misrepair_signatures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DataFrame</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#damuta.base.SignatureSet.from_damage_misrepair" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="damuta.base.SignatureSet.index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#damuta.base.SignatureSet.index" title="Permalink to this definition"></a></dt>
+<dd><p>Names of signatures in dataset</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="damuta.base.SignatureSet.n_damage_sigs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_damage_sigs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#damuta.base.SignatureSet.n_damage_sigs" title="Permalink to this definition"></a></dt>
+<dd><p>Number of damage signatures in dataset</p>
+<p>Damage signatures represent the distribution of mutations over 32 trinucleotide contexts.
+They are computed by marginalizing over substitution classes.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="damuta.base.SignatureSet.n_misrepair_sigs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_misrepair_sigs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#damuta.base.SignatureSet.n_misrepair_sigs" title="Permalink to this definition"></a></dt>
+<dd><p>Number of misrepair signatures in dataset</p>
+<p>Misrepair signatures represent the distribution of mutations over 6 substitution types.
+They are computed by marginalizing over trinucleotide context classes.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="damuta.base.SignatureSet.n_sigs">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_sigs</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#damuta.base.SignatureSet.n_sigs" title="Permalink to this definition"></a></dt>
+<dd><p>Number of signatures in dataset</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="damuta.base.SignatureSet.signatures">
+<span class="sig-name descname"><span class="pre">signatures</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">DataFrame</span></em><a class="headerlink" href="#damuta.base.SignatureSet.signatures" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="damuta.base.SignatureSet.summarize_separation">
+<span class="sig-name descname"><span class="pre">summarize_separation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">DataFrame</span></span></span><a class="headerlink" href="#damuta.base.SignatureSet.summarize_separation" title="Permalink to this definition"></a></dt>
+<dd><p>Summary statistics of pair-wise cosine distances for signatures,
+damage signatures, and misrepair signatures.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="examples/wandb.html" class="btn btn-neutral float-left" title="Experiment tracking with WandB" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="damuta.callbacks.html" class="btn btn-neutral float-right" title="damuta.callbacks module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Cait Harrigan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

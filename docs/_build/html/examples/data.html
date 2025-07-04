@@ -1,0 +1,1098 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simulating and Loading Data &mdash; DAMUTA 1.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c0ddf5a4"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Models" href="models.html" />
+    <link rel="prev" title="De-novo signature inference and activity estimation" href="estimate_signatures_and_activities.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DAMUTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="estimate_signatures_and_activities.html">De-novo signature inference and activity estimation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Simulating and Loading Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Simulating-Data">Simulating Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Loading-signature-data">Loading signature data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#DAMUTA-signatures">DAMUTA signatures</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="wandb.html">Experiment tracking with WandB</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.base.html">damuta.base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.callbacks.html">damuta.callbacks module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.constants.html">damuta.constants module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.models.html">damuta.models module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.plotting.html">damuta.plotting module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.sim.html">damuta.sim module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.utils.html">damuta.utils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DAMUTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Simulating and Loading Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/data.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Simulating-and-Loading-Data">
+<h1>Simulating and Loading Data<a class="headerlink" href="#Simulating-and-Loading-Data" title="Permalink to this heading"></a></h1>
+<p>Damuta provides two classes for input data: <code class="docutils literal notranslate"><span class="pre">DataSet</span></code> and <code class="docutils literal notranslate"><span class="pre">SignatureSet</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">DataSet</span></code> ensures that a counts dataframe and sample annotation can be easily aligned via matching on sample ids.</p>
+<p><code class="docutils literal notranslate"><span class="pre">SignatureSet</span></code> provides some simple methods for summarizing and understanding mutational signatures, as well for extracing damage and misrepair signatures from COSMIC-format signatures.</p>
+<section id="Simulating-Data">
+<h2>Simulating Data<a class="headerlink" href="#Simulating-Data" title="Permalink to this heading"></a></h2>
+<p>We can simulate a dataset of mutation counts using the function <code class="docutils literal notranslate"><span class="pre">sim_parametric</span></code>. We will simulate <code class="docutils literal notranslate"><span class="pre">500</span></code> samples containing <code class="docutils literal notranslate"><span class="pre">10000</span></code> mutations each, with varying activities of <code class="docutils literal notranslate"><span class="pre">10</span></code> damage signatures, and <code class="docutils literal notranslate"><span class="pre">8</span></code> misrepair signatures.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">damuta.sim</span><span class="w"> </span><span class="kn">import</span> <span class="n">sim_parametric</span>
+
+<span class="n">counts</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">sim_parametric</span><span class="p">(</span><span class="n">S</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">n_damage_sigs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_misrepair_sigs</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1992</span><span class="p">)</span>
+<span class="n">counts</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+WARNING (theano.tensor.blas): Using NumPy C-API based implementation for BLAS functions.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A[C&gt;A]A</th>
+      <th>A[C&gt;A]C</th>
+      <th>A[C&gt;A]G</th>
+      <th>A[C&gt;A]T</th>
+      <th>C[C&gt;A]A</th>
+      <th>C[C&gt;A]C</th>
+      <th>C[C&gt;A]G</th>
+      <th>C[C&gt;A]T</th>
+      <th>G[C&gt;A]A</th>
+      <th>G[C&gt;A]C</th>
+      <th>...</th>
+      <th>C[T&gt;G]G</th>
+      <th>C[T&gt;G]T</th>
+      <th>G[T&gt;G]A</th>
+      <th>G[T&gt;G]C</th>
+      <th>G[T&gt;G]G</th>
+      <th>G[T&gt;G]T</th>
+      <th>T[T&gt;G]A</th>
+      <th>T[T&gt;G]C</th>
+      <th>T[T&gt;G]G</th>
+      <th>T[T&gt;G]T</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>simulated_sample_0</th>
+      <td>55</td>
+      <td>16</td>
+      <td>63</td>
+      <td>87</td>
+      <td>20</td>
+      <td>23</td>
+      <td>142</td>
+      <td>29</td>
+      <td>35</td>
+      <td>31</td>
+      <td>...</td>
+      <td>157</td>
+      <td>162</td>
+      <td>42</td>
+      <td>66</td>
+      <td>59</td>
+      <td>95</td>
+      <td>49</td>
+      <td>29</td>
+      <td>76</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <th>simulated_sample_1</th>
+      <td>122</td>
+      <td>92</td>
+      <td>133</td>
+      <td>135</td>
+      <td>73</td>
+      <td>43</td>
+      <td>116</td>
+      <td>19</td>
+      <td>17</td>
+      <td>22</td>
+      <td>...</td>
+      <td>118</td>
+      <td>168</td>
+      <td>21</td>
+      <td>4</td>
+      <td>92</td>
+      <td>29</td>
+      <td>51</td>
+      <td>104</td>
+      <td>101</td>
+      <td>55</td>
+    </tr>
+    <tr>
+      <th>simulated_sample_2</th>
+      <td>140</td>
+      <td>227</td>
+      <td>481</td>
+      <td>172</td>
+      <td>358</td>
+      <td>360</td>
+      <td>106</td>
+      <td>56</td>
+      <td>171</td>
+      <td>142</td>
+      <td>...</td>
+      <td>24</td>
+      <td>23</td>
+      <td>23</td>
+      <td>13</td>
+      <td>53</td>
+      <td>55</td>
+      <td>57</td>
+      <td>10</td>
+      <td>43</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <th>simulated_sample_3</th>
+      <td>19</td>
+      <td>18</td>
+      <td>38</td>
+      <td>56</td>
+      <td>9</td>
+      <td>190</td>
+      <td>31</td>
+      <td>35</td>
+      <td>75</td>
+      <td>29</td>
+      <td>...</td>
+      <td>387</td>
+      <td>96</td>
+      <td>69</td>
+      <td>461</td>
+      <td>426</td>
+      <td>212</td>
+      <td>552</td>
+      <td>43</td>
+      <td>30</td>
+      <td>203</td>
+    </tr>
+    <tr>
+      <th>simulated_sample_4</th>
+      <td>194</td>
+      <td>188</td>
+      <td>236</td>
+      <td>238</td>
+      <td>178</td>
+      <td>97</td>
+      <td>16</td>
+      <td>54</td>
+      <td>40</td>
+      <td>79</td>
+      <td>...</td>
+      <td>18</td>
+      <td>95</td>
+      <td>15</td>
+      <td>8</td>
+      <td>34</td>
+      <td>7</td>
+      <td>22</td>
+      <td>134</td>
+      <td>80</td>
+      <td>63</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 96 columns</p>
+</div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 640x480 with 0 Axes&gt;
+</pre></div></div>
+</div>
+<p>Next, lets make use of <code class="docutils literal notranslate"><span class="pre">DataSet</span></code> to organize our data for us.</p>
+<p>We will simulate some metadata annotate our 500 samples with. This is most applicable for pan-cancer data, and necessary when fitting Damuta’s <code class="docutils literal notranslate"><span class="pre">HierarchicalTandemLda</span></code> model, but the annotation slot of the <code class="docutils literal notranslate"><span class="pre">DataSet</span></code> is also useful for holding clinical metadata about each sample.</p>
+<p>Note: Pan-cancer data is not required. All Damuta models can just as easily fit a dataset where all samples come from the same tissue type.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">DataSet</span></code> class at minimum acts as a container for a pandas DataFrame of mutation type counts. The metadata annotation is also be a pandas DataFrame, in <a class="reference external" href="https://en.wikipedia.org/wiki/Tidy_data">tidy format</a> (ie. each row is a sample, each column is a feature). The DataFrame index of both the count data and annotation data is the sample id.</p>
+<p>In this example, we simulated the counts dataframe, but in principle any trinucleotide count data that can be loaded with <code class="docutils literal notranslate"><span class="pre">pd.read_csv</span></code> can be used.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">damuta</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">da</span>
+
+<span class="c1"># pick from 3 tissues</span>
+<span class="n">tissues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;Breast-AdenoCA&quot;</span><span class="p">,</span> <span class="s2">&quot;Kidney-RCC&quot;</span><span class="p">,</span> <span class="s2">&quot;ColoRect-AdenoCA&quot;</span><span class="p">])</span>
+
+<span class="c1"># pick from primary or metastatic tumour</span>
+<span class="n">types</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;primary&#39;</span><span class="p">,</span> <span class="s1">&#39;metastatic&#39;</span><span class="p">])</span>
+
+
+<span class="c1"># randomly assign tissue type to samples</span>
+<span class="n">annotation</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span><span class="s2">&quot;tissue_type&quot;</span><span class="p">:</span> <span class="n">tissues</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">500</span><span class="p">)],</span>
+                                     <span class="s2">&quot;tumour_type&quot;</span><span class="p">:</span> <span class="n">types</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">500</span><span class="p">)]</span>
+                                     <span class="p">})</span>
+<span class="n">annotation</span> <span class="o">=</span> <span class="n">annotation</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+<span class="n">annotation</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>tissue_type</th>
+      <th>tumour_type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>simulated_sample_0</th>
+      <td>Breast-AdenoCA</td>
+      <td>primary</td>
+    </tr>
+    <tr>
+      <th>simulated_sample_1</th>
+      <td>ColoRect-AdenoCA</td>
+      <td>metastatic</td>
+    </tr>
+    <tr>
+      <th>simulated_sample_2</th>
+      <td>ColoRect-AdenoCA</td>
+      <td>metastatic</td>
+    </tr>
+    <tr>
+      <th>simulated_sample_3</th>
+      <td>Breast-AdenoCA</td>
+      <td>primary</td>
+    </tr>
+    <tr>
+      <th>simulated_sample_4</th>
+      <td>ColoRect-AdenoCA</td>
+      <td>metastatic</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Pair the counts and metadata with the <code class="docutils literal notranslate"><span class="pre">DataSet</span></code> class.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">simulated_data</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">DataSet</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">annotation</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;simulated_data contains </span><span class="si">{</span><span class="n">simulated_data</span><span class="o">.</span><span class="n">n_samples</span><span class="si">}</span><span class="s2"> samples&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">simulated_data</span><span class="o">.</span><span class="n">ids</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+simulated_data contains 500 samples
+[&#39;simulated_sample_0&#39;, &#39;simulated_sample_1&#39;, &#39;simulated_sample_2&#39;, &#39;simulated_sample_3&#39;, &#39;simulated_sample_4&#39;]
+</pre></div></div>
+</div>
+</section>
+<section id="Loading-signature-data">
+<h2>Loading signature data<a class="headerlink" href="#Loading-signature-data" title="Permalink to this heading"></a></h2>
+<p>Lastly, let’s retrieve a set of mutational signatures from the <a class="reference external" href="https://cancer.sanger.ac.uk/signatures/">COSMIC database</a>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">signatures</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;https://cancer.sanger.ac.uk/signatures/documents/452/COSMIC_v3.2_SBS_GRCh37.txt&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span> <span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">COSMIC</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">SignatureSet</span><span class="p">(</span><span class="n">signatures</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;COSMIC contains </span><span class="si">{</span><span class="n">COSMIC</span><span class="o">.</span><span class="n">n_sigs</span><span class="si">}</span><span class="s2"> signatures&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+COSMIC contains 78 signatures
+</pre></div></div>
+</div>
+<p>Every COSMIC mutational signature can be re-written as a product of a damage signautre and misrepair signature.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">damuta.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">plot_damage_signatures</span><span class="p">(</span><span class="n">COSMIC</span><span class="o">.</span><span class="n">damage_signatures</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s2">&quot;SBS2&quot;</span><span class="p">,</span> <span class="s2">&quot;SBS5&quot;</span><span class="p">,</span> <span class="s2">&quot;SBS6&quot;</span><span class="p">]])</span>
+<span class="n">plot_misrepair_signatures</span><span class="p">(</span><span class="n">COSMIC</span><span class="o">.</span><span class="n">misrepair_signatures</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s2">&quot;SBS2&quot;</span><span class="p">,</span> <span class="s2">&quot;SBS5&quot;</span><span class="p">,</span> <span class="s2">&quot;SBS6&quot;</span><span class="p">]])</span>
+<span class="n">plot_cosmic_signatures</span><span class="p">(</span><span class="n">COSMIC</span><span class="o">.</span><span class="n">signatures</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s2">&quot;SBS2&quot;</span><span class="p">,</span> <span class="s2">&quot;SBS5&quot;</span><span class="p">,</span> <span class="s2">&quot;SBS6&quot;</span><span class="p">]])</span>
+<br/><br/><br/></pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;seaborn.axisgrid.FacetGrid at 0x2b4c3cf129a0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_data_10_1.png" src="../_images/examples_data_10_1.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_data_10_2.png" src="../_images/examples_data_10_2.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_data_10_3.png" src="../_images/examples_data_10_3.png" />
+</div>
+</div>
+<p>The COSMIC signautres are a high quality reference set, as can seen in their high degree of separation (low cosine similarity between different signatures). However there is higher similarity in the Damage and Misrepair aspects of this signature set.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">COSMIC</span><span class="o">.</span><span class="n">summarize_separation</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Mutational signature similarity</th>
+      <th>Damage signature similarity</th>
+      <th>Misrepair signature similarity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>3003.000000</td>
+      <td>3003.000000</td>
+      <td>3003.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>0.188203</td>
+      <td>0.339645</td>
+      <td>0.684479</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>0.188601</td>
+      <td>0.240654</td>
+      <td>0.196205</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>0.000346</td>
+      <td>0.001997</td>
+      <td>0.194228</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>0.047759</td>
+      <td>0.137200</td>
+      <td>0.526309</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>0.118585</td>
+      <td>0.286935</td>
+      <td>0.703217</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>0.276046</td>
+      <td>0.518048</td>
+      <td>0.850554</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>0.979184</td>
+      <td>0.980951</td>
+      <td>0.999338</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="DAMUTA-signatures">
+<h2>DAMUTA signatures<a class="headerlink" href="#DAMUTA-signatures" title="Permalink to this heading"></a></h2>
+<p>We can also initialize a signature set from just the damage and misrepair signature definitions.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;/home/harrigan/damuta-package/docs/examples&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DAMUTA</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">SignatureSet</span><span class="o">.</span><span class="n">from_damage_misrepair</span><span class="p">(</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;example_data/damage_signatures.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;example_data/misrepair_signatures.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_damage_signatures</span><span class="p">(</span><span class="n">DAMUTA</span><span class="o">.</span><span class="n">damage_signatures</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s2">&quot;D1&quot;</span><span class="p">,</span> <span class="s2">&quot;D2&quot;</span><span class="p">,</span> <span class="s2">&quot;D3&quot;</span><span class="p">]])</span>
+<span class="n">plot_misrepair_signatures</span><span class="p">(</span><span class="n">DAMUTA</span><span class="o">.</span><span class="n">misrepair_signatures</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s2">&quot;M1&quot;</span><span class="p">,</span> <span class="s2">&quot;M2&quot;</span><span class="p">,</span> <span class="s2">&quot;M3&quot;</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;seaborn.axisgrid.FacetGrid at 0x2b4c3e0e3a60&gt;
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_data_16_1.png" src="../_images/examples_data_16_1.png" />
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_data_16_2.png" src="../_images/examples_data_16_2.png" />
+</div>
+</div>
+<p>In this case, the signature set will also contain the outer product: all (unweighted) combinations of damage and misrepair signatures</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DAMUTA</span><span class="o">.</span><span class="n">signatures</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A[C&gt;A]A</th>
+      <th>A[C&gt;A]C</th>
+      <th>A[C&gt;A]G</th>
+      <th>A[C&gt;A]T</th>
+      <th>C[C&gt;A]A</th>
+      <th>C[C&gt;A]C</th>
+      <th>C[C&gt;A]G</th>
+      <th>C[C&gt;A]T</th>
+      <th>G[C&gt;A]A</th>
+      <th>G[C&gt;A]C</th>
+      <th>...</th>
+      <th>C[T&gt;G]G</th>
+      <th>C[T&gt;G]T</th>
+      <th>G[T&gt;G]A</th>
+      <th>G[T&gt;G]C</th>
+      <th>G[T&gt;G]G</th>
+      <th>G[T&gt;G]T</th>
+      <th>T[T&gt;G]A</th>
+      <th>T[T&gt;G]C</th>
+      <th>T[T&gt;G]G</th>
+      <th>T[T&gt;G]T</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>D1_M1</th>
+      <td>0.018900</td>
+      <td>0.006087</td>
+      <td>0.049454</td>
+      <td>0.006764</td>
+      <td>0.003098</td>
+      <td>0.003505</td>
+      <td>1.931383e-02</td>
+      <td>0.016475</td>
+      <td>0.032477</td>
+      <td>0.012318</td>
+      <td>...</td>
+      <td>0.000178</td>
+      <td>0.001199</td>
+      <td>0.000683</td>
+      <td>0.000283</td>
+      <td>0.000313</td>
+      <td>0.000501</td>
+      <td>0.003581</td>
+      <td>0.000477</td>
+      <td>0.000749</td>
+      <td>0.000913</td>
+    </tr>
+    <tr>
+      <th>D1_M2</th>
+      <td>0.045850</td>
+      <td>0.014768</td>
+      <td>0.119973</td>
+      <td>0.016409</td>
+      <td>0.007516</td>
+      <td>0.008502</td>
+      <td>4.685471e-02</td>
+      <td>0.039969</td>
+      <td>0.078787</td>
+      <td>0.029884</td>
+      <td>...</td>
+      <td>0.001342</td>
+      <td>0.009065</td>
+      <td>0.005168</td>
+      <td>0.002140</td>
+      <td>0.002369</td>
+      <td>0.003789</td>
+      <td>0.027079</td>
+      <td>0.003609</td>
+      <td>0.005662</td>
+      <td>0.006902</td>
+    </tr>
+    <tr>
+      <th>D1_M3</th>
+      <td>0.001538</td>
+      <td>0.000495</td>
+      <td>0.004024</td>
+      <td>0.000550</td>
+      <td>0.000252</td>
+      <td>0.000285</td>
+      <td>1.571713e-03</td>
+      <td>0.001341</td>
+      <td>0.002643</td>
+      <td>0.001002</td>
+      <td>...</td>
+      <td>0.000005</td>
+      <td>0.000032</td>
+      <td>0.000018</td>
+      <td>0.000008</td>
+      <td>0.000008</td>
+      <td>0.000014</td>
+      <td>0.000097</td>
+      <td>0.000013</td>
+      <td>0.000020</td>
+      <td>0.000025</td>
+    </tr>
+    <tr>
+      <th>D1_M4</th>
+      <td>0.001658</td>
+      <td>0.000534</td>
+      <td>0.004339</td>
+      <td>0.000593</td>
+      <td>0.000272</td>
+      <td>0.000308</td>
+      <td>1.694615e-03</td>
+      <td>0.001446</td>
+      <td>0.002850</td>
+      <td>0.001081</td>
+      <td>...</td>
+      <td>0.000316</td>
+      <td>0.002132</td>
+      <td>0.001215</td>
+      <td>0.000503</td>
+      <td>0.000557</td>
+      <td>0.000891</td>
+      <td>0.006369</td>
+      <td>0.000849</td>
+      <td>0.001332</td>
+      <td>0.001623</td>
+    </tr>
+    <tr>
+      <th>D1_M5</th>
+      <td>0.059906</td>
+      <td>0.019295</td>
+      <td>0.156753</td>
+      <td>0.021440</td>
+      <td>0.009820</td>
+      <td>0.011109</td>
+      <td>6.121874e-02</td>
+      <td>0.052222</td>
+      <td>0.102941</td>
+      <td>0.039046</td>
+      <td>...</td>
+      <td>0.000079</td>
+      <td>0.000531</td>
+      <td>0.000303</td>
+      <td>0.000125</td>
+      <td>0.000139</td>
+      <td>0.000222</td>
+      <td>0.001585</td>
+      <td>0.000211</td>
+      <td>0.000331</td>
+      <td>0.000404</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>D18_M2</th>
+      <td>0.036187</td>
+      <td>0.088653</td>
+      <td>0.017828</td>
+      <td>0.138128</td>
+      <td>0.001980</td>
+      <td>0.006050</td>
+      <td>1.689988e-03</td>
+      <td>0.084667</td>
+      <td>0.033732</td>
+      <td>0.060501</td>
+      <td>...</td>
+      <td>0.000455</td>
+      <td>0.001164</td>
+      <td>0.001911</td>
+      <td>0.002536</td>
+      <td>0.000773</td>
+      <td>0.001977</td>
+      <td>0.000882</td>
+      <td>0.001352</td>
+      <td>0.000847</td>
+      <td>0.000382</td>
+    </tr>
+    <tr>
+      <th>D18_M3</th>
+      <td>0.001214</td>
+      <td>0.002974</td>
+      <td>0.000598</td>
+      <td>0.004633</td>
+      <td>0.000066</td>
+      <td>0.000203</td>
+      <td>5.668964e-05</td>
+      <td>0.002840</td>
+      <td>0.001132</td>
+      <td>0.002029</td>
+      <td>...</td>
+      <td>0.000002</td>
+      <td>0.000004</td>
+      <td>0.000007</td>
+      <td>0.000009</td>
+      <td>0.000003</td>
+      <td>0.000007</td>
+      <td>0.000003</td>
+      <td>0.000005</td>
+      <td>0.000003</td>
+      <td>0.000001</td>
+    </tr>
+    <tr>
+      <th>D18_M4</th>
+      <td>0.001309</td>
+      <td>0.003206</td>
+      <td>0.000645</td>
+      <td>0.004996</td>
+      <td>0.000072</td>
+      <td>0.000219</td>
+      <td>6.112254e-05</td>
+      <td>0.003062</td>
+      <td>0.001220</td>
+      <td>0.002188</td>
+      <td>...</td>
+      <td>0.000107</td>
+      <td>0.000274</td>
+      <td>0.000449</td>
+      <td>0.000596</td>
+      <td>0.000182</td>
+      <td>0.000465</td>
+      <td>0.000207</td>
+      <td>0.000318</td>
+      <td>0.000199</td>
+      <td>0.000090</td>
+    </tr>
+    <tr>
+      <th>D18_M5</th>
+      <td>0.047281</td>
+      <td>0.115832</td>
+      <td>0.023294</td>
+      <td>0.180473</td>
+      <td>0.002587</td>
+      <td>0.007904</td>
+      <td>2.208080e-03</td>
+      <td>0.110624</td>
+      <td>0.044073</td>
+      <td>0.079049</td>
+      <td>...</td>
+      <td>0.000027</td>
+      <td>0.000068</td>
+      <td>0.000112</td>
+      <td>0.000148</td>
+      <td>0.000045</td>
+      <td>0.000116</td>
+      <td>0.000052</td>
+      <td>0.000079</td>
+      <td>0.000050</td>
+      <td>0.000022</td>
+    </tr>
+    <tr>
+      <th>D18_M6</th>
+      <td>0.000021</td>
+      <td>0.000052</td>
+      <td>0.000010</td>
+      <td>0.000080</td>
+      <td>0.000001</td>
+      <td>0.000004</td>
+      <td>9.836452e-07</td>
+      <td>0.000049</td>
+      <td>0.000020</td>
+      <td>0.000035</td>
+      <td>...</td>
+      <td>0.000117</td>
+      <td>0.000298</td>
+      <td>0.000489</td>
+      <td>0.000649</td>
+      <td>0.000198</td>
+      <td>0.000506</td>
+      <td>0.000226</td>
+      <td>0.000346</td>
+      <td>0.000217</td>
+      <td>0.000098</td>
+    </tr>
+  </tbody>
+</table>
+<p>108 rows × 96 columns</p>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_cosmic_signatures</span><span class="p">(</span><span class="n">DAMUTA</span><span class="o">.</span><span class="n">signatures</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="s2">&quot;D1_M1&quot;</span><span class="p">,</span> <span class="s2">&quot;D7_M4&quot;</span><span class="p">,</span> <span class="s2">&quot;D18_M6&quot;</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;seaborn.axisgrid.FacetGrid at 0x2b4c3d53c9a0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_data_19_1.png" src="../_images/examples_data_19_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DAMUTA</span><span class="o">.</span><span class="n">summarize_separation</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Mutational signature similarity</th>
+      <th>Damage signature similarity</th>
+      <th>Misrepair signature similarity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>5778.000000</td>
+      <td>153.000000</td>
+      <td>15.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>0.176980</td>
+      <td>0.270253</td>
+      <td>0.524924</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>0.194173</td>
+      <td>0.209966</td>
+      <td>0.220816</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>0.000980</td>
+      <td>0.031818</td>
+      <td>0.254266</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>0.047516</td>
+      <td>0.120673</td>
+      <td>0.320952</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>0.109671</td>
+      <td>0.184103</td>
+      <td>0.504210</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>0.235473</td>
+      <td>0.367171</td>
+      <td>0.643424</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>0.999640</td>
+      <td>0.981909</td>
+      <td>0.893437</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="estimate_signatures_and_activities.html" class="btn btn-neutral float-left" title="De-novo signature inference and activity estimation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="models.html" class="btn btn-neutral float-right" title="Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Cait Harrigan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

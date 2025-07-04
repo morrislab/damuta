@@ -1,0 +1,517 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experiment tracking with WandB &mdash; DAMUTA 1.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c0ddf5a4"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="damuta.base module" href="../damuta.base.html" />
+    <link rel="prev" title="Models" href="models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DAMUTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="estimate_signatures_and_activities.html">De-novo signature inference and activity estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Simulating and Loading Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="models.html">Models</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Experiment tracking with WandB</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Setup-WandB">Setup WandB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Callbacks">Callbacks</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.base.html">damuta.base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.callbacks.html">damuta.callbacks module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.constants.html">damuta.constants module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.models.html">damuta.models module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.plotting.html">damuta.plotting module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.sim.html">damuta.sim module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.utils.html">damuta.utils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DAMUTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Experiment tracking with WandB</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/wandb.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Experiment-tracking-with-WandB">
+<h1>Experiment tracking with <a class="reference external" href="https://wandb.ai/">WandB</a><a class="headerlink" href="#Experiment-tracking-with-WandB" title="Permalink to this heading"></a></h1>
+<p><a class="reference external" href="https://wandb.ai/">Weights and Biases</a> is an experment tracking tool that is great for its lightweight logging utilities.</p>
+<section id="Setup-WandB">
+<h2>Setup WandB<a class="headerlink" href="#Setup-WandB" title="Permalink to this heading"></a></h2>
+<p>After initializing a run, we can track all the Damuta model specs to the wandb run config. Specs you may want to track are: datasets (as <a class="reference external" href="https://docs.wandb.ai/guides/artifacts">artifacts</a>), model parameters (as a <a class="reference external" href="https://docs.wandb.ai/guides/track/config">config</a>) or metrics and plots (as <a class="reference external" href="https://docs.wandb.ai/guides/track/log">logged data</a>)</p>
+<p><strong>Warning</strong>: Certain private health data may not be appropriate to upload to wandb. See <a class="reference external" href="https://docs.wandb.ai/guides/artifacts/artifacts-faqs#where-are-artifact-files-stored">storage FAQ</a> to ensure that wandb policies are compliant with your data-handling requirements.</p>
+<p>See the wandb dashboard associated with this notebook <a class="reference external" href="https://wandb.ai/harrig12/damuta-docs_examples">here</a></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">wandb</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">damuta</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">da</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize wandb run</span>
+<span class="n">run</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+
+<span class="c1"># Read in example pcawg data</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;example_data/pcawg_counts.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">annotation</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;example_data/pcawg_cancer_types.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Log data as an artifact</span>
+<span class="n">artifact</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">Artifact</span><span class="p">(</span><span class="s1">&#39;pcawg&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;dataset&#39;</span><span class="p">)</span>
+<span class="n">artifact</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">wandb</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">counts</span><span class="p">),</span> <span class="s1">&#39;counts&#39;</span><span class="p">)</span>
+<span class="n">artifact</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">wandb</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">annotation</span><span class="p">),</span> <span class="s1">&#39;annotation&#39;</span><span class="p">)</span>
+<span class="n">wandb</span><span class="o">.</span><span class="n">log_artifact</span><span class="p">(</span><span class="n">artifact</span><span class="p">)</span>
+
+<span class="c1"># Create input DataSet</span>
+<span class="n">pcawg</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">DataSet</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span><span class="n">annotation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-blue-intense-fg ansi-bold">wandb</span>: Currently logged in as: <span class="ansi-yellow-fg">harrig12</span> (use `wandb login --relogin` to force relogin)
+<span class="ansi-blue-intense-fg ansi-bold">wandb</span>: wandb version 0.12.11 is available!  To upgrade, please run:
+<span class="ansi-blue-intense-fg ansi-bold">wandb</span>:  $ pip install wandb --upgrade
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+Tracking run with wandb version 0.11.2<br/>
+Syncing run <strong style="color:#cdcd00">fanciful-gorge-25</strong> to <a href="https://wandb.ai" target="_blank">Weights & Biases</a> <a href="https://docs.wandb.com/integrations/jupyter.html" target="_blank">(Documentation)</a>.<br/>
+Project page: <a href="https://wandb.ai/harrig12/damuta-docs_examples" target="_blank">https://wandb.ai/harrig12/damuta-docs_examples</a><br/>
+Run page: <a href="https://wandb.ai/harrig12/damuta-docs_examples/runs/281tmodh" target="_blank">https://wandb.ai/harrig12/damuta-docs_examples/runs/281tmodh</a><br/>
+Run data is saved locally in <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_135008-281tmodh</code><br/><br/></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Instantiate the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Lda</span><span class="p">(</span><span class="n">pcawg</span><span class="p">,</span> <span class="n">n_sigs</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># Log model parameters, and fitting parameters to wandb</span>
+<span class="n">run</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s2">&quot;n_sigs&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">n_sigs</span><span class="p">,</span> <span class="s2">&quot;init_strategy&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">init_strategy</span><span class="p">,</span>
+                   <span class="s2">&quot;opt_method&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">opt_method</span><span class="p">,</span> <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+                   <span class="p">})</span>
+
+<span class="c1"># Fit the model</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='1000' class='' max='1000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [1000/1000 09:55<00:00 Average Loss = 4.9125e+07]
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Finished [100%]: Average Loss = 4.9086e+07
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;damuta.models.Lda at 0x7f0b0c29f550&gt;
+</pre></div></div>
+</div>
+<p>If necessary, The wandb config can also be updated after <code class="docutils literal notranslate"><span class="pre">model.fit()</span></code> has been called.</p>
+<p>Now that we have fit the model, we can plot the ELBO, and log the final value with wandb.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">approx</span><span class="o">.</span><span class="n">hist</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&lt;matplotlib.lines.Line2D at 0x7f0a9c26bca0&gt;]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_wandb_5_1.png" src="../_images/examples_wandb_5_1.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wandb</span><span class="o">.</span><span class="n">log</span><span class="p">({</span><span class="s2">&quot;final ELBO value&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">approx</span><span class="o">.</span><span class="n">hist</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]})</span>
+<span class="n">wandb</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<br/>Waiting for W&B process to finish, PID 405371<br/>Program ended successfully.</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "0bfbfea5fbe74301a4908ed5f38e30dc", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+Find user logs for this run at: <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_135008-281tmodh/logs/debug.log</code></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+Find internal logs for this run at: <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_135008-281tmodh/logs/debug-internal.log</code></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Run summary:</h3><br/><style>
+    table.wandb td:nth-child(1) { padding: 0 10px; text-align: right }
+    </style><table class="wandb">
+<tr><td>final ELBO value</td><td>43818341.95693</td></tr><tr><td>_runtime</td><td>657</td></tr><tr><td>_timestamp</td><td>1648576865</td></tr><tr><td>_step</td><td>0</td></tr></table></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Run history:</h3><br/><style>
+    table.wandb td:nth-child(1) { padding: 0 10px; text-align: right }
+    </style><table class="wandb">
+<tr><td>final ELBO value</td><td>▁</td></tr><tr><td>_runtime</td><td>▁</td></tr><tr><td>_timestamp</td><td>▁</td></tr><tr><td>_step</td><td>▁</td></tr></table><br/></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+Synced 5 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<br/>Synced <strong style="color:#cdcd00">fanciful-gorge-25</strong>: <a href="https://wandb.ai/harrig12/damuta-docs_examples/runs/281tmodh" target="_blank">https://wandb.ai/harrig12/damuta-docs_examples/runs/281tmodh</a><br/></div>
+</div>
+</section>
+<section id="Callbacks">
+<h2>Callbacks<a class="headerlink" href="#Callbacks" title="Permalink to this heading"></a></h2>
+<p>We can also make use of callbacks to log this value over the course of the fitting procedure. This way, our ELBO plot will be automatically generated by wandb, and will live-update on the wandb dashboard as we fit the model. Let ‘s create a new run with a callback to demonstrate this.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">damuta.callbacks</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogELBO</span>
+
+<span class="c1"># Initialize run</span>
+<span class="n">my_config</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;n_sigs&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+           <span class="s2">&quot;init_strategy&quot;</span><span class="p">:</span> <span class="s2">&quot;uniform&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;opt_method&quot;</span><span class="p">:</span> <span class="s2">&quot;ADVI&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="mi">360</span>
+          <span class="p">}</span>
+
+<span class="n">run</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">config</span> <span class="o">=</span> <span class="n">my_config</span><span class="p">)</span>
+
+<span class="c1"># Log data</span>
+<span class="n">artifact</span> <span class="o">=</span> <span class="n">wandb</span><span class="o">.</span><span class="n">Artifact</span><span class="p">(</span><span class="s1">&#39;pcawg&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;dataset&#39;</span><span class="p">)</span>
+<span class="n">artifact</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">wandb</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">counts</span><span class="p">),</span> <span class="s1">&#39;counts&#39;</span><span class="p">)</span>
+<span class="n">artifact</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">wandb</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">annotation</span><span class="p">),</span> <span class="s1">&#39;annotation&#39;</span><span class="p">)</span>
+<span class="n">wandb</span><span class="o">.</span><span class="n">log_artifact</span><span class="p">(</span><span class="n">artifact</span><span class="p">)</span>
+
+<span class="c1"># Build and fit the model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">Lda</span><span class="p">(</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">DataSet</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">annotation</span><span class="p">),</span> <span class="o">**</span><span class="n">my_config</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[</span><span class="n">LogELBO</span><span class="p">(</span><span class="n">every</span><span class="o">=</span><span class="mi">1</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+<span class="ansi-blue-intense-fg ansi-bold">wandb</span>: wandb version 0.12.11 is available!  To upgrade, please run:
+<span class="ansi-blue-intense-fg ansi-bold">wandb</span>:  $ pip install wandb --upgrade
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+Tracking run with wandb version 0.11.2<br/>
+Syncing run <strong style="color:#cdcd00">helpful-wildflower-28</strong> to <a href="https://wandb.ai" target="_blank">Weights & Biases</a> <a href="https://docs.wandb.com/integrations/jupyter.html" target="_blank">(Documentation)</a>.<br/>
+Project page: <a href="https://wandb.ai/harrig12/damuta-docs_examples" target="_blank">https://wandb.ai/harrig12/damuta-docs_examples</a><br/>
+Run page: <a href="https://wandb.ai/harrig12/damuta-docs_examples/runs/3ox666dh" target="_blank">https://wandb.ai/harrig12/damuta-docs_examples/runs/3ox666dh</a><br/>
+Run data is saved locally in <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_140208-3ox666dh</code><br/><br/></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+    <style>
+        /* Turns off some styling */
+        progress {
+            /* gets rid of default border in Firefox and Opera. */
+            border: none;
+            /* Needs to be in here for Safari polyfill so background images work as expected. */
+            background-size: auto;
+        }
+        .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+            background: #F44336;
+        }
+    </style>
+  <progress value='1000' class='' max='1000' style='width:300px; height:20px; vertical-align: middle;'></progress>
+  100.00% [1000/1000 10:00<00:00 Average Loss = 4.9057e+07]
+</div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Finished [100%]: Average Loss = 4.9012e+07
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;damuta.models.Lda at 0x7f0a4c26b820&gt;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">wandb</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<br/>Waiting for W&B process to finish, PID 410928<br/>Program ended successfully.</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "0003baaf0c98441aabb6f3bc5a3190ec", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+Find user logs for this run at: <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_140208-3ox666dh/logs/debug.log</code></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+Find internal logs for this run at: <code>/lila/home/harrigan/damuta/docs/examples/wandb/run-20220329_140208-3ox666dh/logs/debug-internal.log</code></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Run summary:</h3><br/><style>
+    table.wandb td:nth-child(1) { padding: 0 10px; text-align: right }
+    </style><table class="wandb">
+<tr><td>ELBO</td><td>43278176.76101</td></tr><tr><td>_runtime</td><td>608</td></tr><tr><td>_timestamp</td><td>1648577536</td></tr><tr><td>_step</td><td>999</td></tr></table></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<h3>Run history:</h3><br/><style>
+    table.wandb td:nth-child(1) { padding: 0 10px; text-align: right }
+    </style><table class="wandb">
+<tr><td>ELBO</td><td>███▇▇█▆▆▆▇▆▆▆▆▅▅▄▅▅▄▄▅▃▅▄▄▄▄▂▄▃▂▃▃▂▁▂▁▂▂</td></tr><tr><td>_runtime</td><td>▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███</td></tr><tr><td>_timestamp</td><td>▁▁▁▁▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███</td></tr><tr><td>_step</td><td>▁▁▁▂▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███</td></tr></table><br/></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+Synced 5 W&B file(s), 0 media file(s), 2 artifact file(s) and 0 other file(s)</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area rendered_html docutils container">
+<br/>Synced <strong style="color:#cdcd00">helpful-wildflower-28</strong>: <a href="https://wandb.ai/harrig12/damuta-docs_examples/runs/3ox666dh" target="_blank">https://wandb.ai/harrig12/damuta-docs_examples/runs/3ox666dh</a><br/></div>
+</div>
+<p>Callbacks can be implemented by extending the <code class="docutils literal notranslate"><span class="pre">Callback</span></code> class. At minimum, they need a <code class="docutils literal notranslate"><span class="pre">__call__</span></code> method with signature <code class="docutils literal notranslate"><span class="pre">(self,</span> <span class="pre">approx,</span> <span class="pre">loss,</span> <span class="pre">i)</span></code>. See <a class="reference external" href="https://docs.pymc.io/en/v3/pymc-examples/examples/pymc3_howto/sampling_callback.html">pymc3 docs</a> for moer details.</p>
+<p>Here’s the definition of <code class="docutils literal notranslate"><span class="pre">LogELBO</span></code>, the callback we just used:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>class LogELBO(Callback):
+    &quot;&quot;&quot;Log ELBO using `wandb.log()`. `wandb.init()` must be run first.
+
+    Parameters
+    ----------
+    every: int
+        Frequency at which wandb.log() is called
+
+    Examples
+    --------
+    &gt;&gt;&gt; with model:
+    ...     approx = pm.fit(n=1000, callbacks=[LogELBO(every=50)])
+    &quot;&quot;&quot;
+
+    def __init__(self, every=100):
+        self.every = every
+
+    def __call__(self, approx, loss, i):
+        if i % self.every or i &lt; self.every:
+            return
+
+        wandb.log({&quot;ELBO&quot;: loss[i-1]})
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="models.html" class="btn btn-neutral float-left" title="Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../damuta.base.html" class="btn btn-neutral float-right" title="damuta.base module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Cait Harrigan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Models &mdash; DAMUTA 1.0.6 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=d2d258e8" />
+      <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css?v=2aa19091" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=c0ddf5a4"></script>
+      <script src="../_static/doctools.js?v=888ff710"></script>
+      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+      <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Experiment tracking with WandB" href="wandb.html" />
+    <link rel="prev" title="Simulating and Loading Data" href="data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            DAMUTA
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Get started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="estimate_signatures_and_activities.html">De-novo signature inference and activity estimation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Simulating and Loading Data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Choosing-a-Model">Choosing a Model</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Overview-of-available-models-(Lda,-TandemLda,-HierarchicalTandemLda)">Overview of available models (Lda, TandemLda, HierarchicalTandemLda)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#When-to-use-each-model">When to use each model</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Baseline-model">Baseline model</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Tandem-LDA">Tandem LDA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Hierarchical-Tandem-LDA">Hierarchical Tandem LDA</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="wandb.html">Experiment tracking with WandB</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.base.html">damuta.base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.callbacks.html">damuta.callbacks module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.constants.html">damuta.constants module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.models.html">damuta.models module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.plotting.html">damuta.plotting module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.sim.html">damuta.sim module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../damuta.utils.html">damuta.utils module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DAMUTA</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Tutorials</a></li>
+      <li class="breadcrumb-item active">Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/examples/models.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="Models">
+<h1>Models<a class="headerlink" href="#Models" title="Permalink to this heading"></a></h1>
+<p>DAMUTA provides several latent variable models for probabilistic mutational signature analysis. Here, models are visualized with <a class="reference external" href="https://graphviz.org/">graphviz</a>.</p>
+<p>PyMC3 has some tutorials to help you get familiar with <a class="reference external" href="https://www.pymc.io/projects/examples/en/latest/mixture_models/dirichlet_mixture_of_multinomials.html">dirichlet-multinomial</a> models.</p>
+<section id="Choosing-a-Model">
+<h2>Choosing a Model<a class="headerlink" href="#Choosing-a-Model" title="Permalink to this heading"></a></h2>
+<section id="Overview-of-available-models-(Lda,-TandemLda,-HierarchicalTandemLda)">
+<h3>Overview of available models (Lda, TandemLda, HierarchicalTandemLda)<a class="headerlink" href="#Overview-of-available-models-(Lda,-TandemLda,-HierarchicalTandemLda)" title="Permalink to this heading"></a></h3>
+<p>Damuta offers three main types of models:</p>
+<ol class="arabic simple">
+<li><p><strong>Lda (Latent Dirichlet Allocation)</strong>:</p>
+<ul class="simple">
+<li><p>Provided primarily as a baseline for comparison with other probabilistic models.</p></li>
+<li><p>Not recommended for fitting COSMIC activities in practice.</p></li>
+</ul>
+</li>
+<li><p><strong>TandemLda (Tandem Latent Dirichlet Allocation)</strong>:</p>
+<ul class="simple">
+<li><p>Use when you don’t have hierarchical sample information.</p></li>
+<li><p>Suitable for most mutational signature analysis tasks.</p></li>
+</ul>
+</li>
+<li><p><strong>HierarchicalTandemLda (Hierarchical Tandem Latent Dirichlet Allocation)</strong>:</p>
+<ul class="simple">
+<li><p>Use when you have hierarchical sample information (e.g., tissue type).</p></li>
+<li><p>Provides more nuanced analysis by incorporating sample metadata.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="When-to-use-each-model">
+<h3>When to use each model<a class="headerlink" href="#When-to-use-each-model" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>HierarchicalTandemLda</strong>:</p>
+<ul>
+<li><p>Choose this model if you have hierarchical sample information, such as tissue type.</p></li>
+<li><p>It allows for more detailed analysis by incorporating sample metadata.</p></li>
+</ul>
+</li>
+<li><p><strong>TandemLda</strong>:</p>
+<ul>
+<li><p>Use when you don’t have hierarchical sample information.</p></li>
+<li><p>Suitable for standard mutational signature analysis.</p></li>
+</ul>
+</li>
+<li><p><strong>Lda</strong>:</p>
+<ul>
+<li><p>Primarily used as a baseline for comparing other probabilistic models.</p></li>
+<li><p>Not recommended for practical COSMIC activity fitting.</p></li>
+<li><p>If you need to fit COSMIC activities, consider using tools like SigProfiler or deconstructSigs instead.</p></li>
+</ul>
+</li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pymc3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">arviz</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">az</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">damuta</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">da</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">damuta.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lda</span><span class="p">,</span> <span class="n">TandemLda</span><span class="p">,</span> <span class="n">HierarchicalTandemLda</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load data</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;example_data/pcawg_counts.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">annotation</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;example_data/pcawg_cancer_types.csv&#39;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">pcawg</span> <span class="o">=</span> <span class="n">da</span><span class="o">.</span><span class="n">DataSet</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">annotation</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="Baseline-model">
+<h2>Baseline model<a class="headerlink" href="#Baseline-model" title="Permalink to this heading"></a></h2>
+<p>Dirichlet-multinomial set up like latent dirichlet allocation. Infers COSMIC-format 96-dimensional mutational signatures and their activities.</p>
+<p><img alt="LDA Model" src="../_images/lda.png" /></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">lda</span> <span class="o">=</span> <span class="n">Lda</span><span class="p">(</span><span class="n">pcawg</span><span class="p">,</span> <span class="n">n_sigs</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">lda</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="o">**</span><span class="n">lda</span><span class="o">.</span><span class="n">_model_kwargs</span><span class="p">)</span>
+<span class="n">pm</span><span class="o">.</span><span class="n">model_graph</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">lda</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_models_4_0.svg" src="../_images/examples_models_4_0.svg" /></div>
+</div>
+</section>
+<section id="Tandem-LDA">
+<h2>Tandem LDA<a class="headerlink" href="#Tandem-LDA" title="Permalink to this heading"></a></h2>
+<p>Two LDA’s at once! Infers Damage and Misrepair signatures and their activities.</p>
+<p><img alt="Tandem LDA Model" src="../_images/t_lda.png" /></p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">t_lda</span> <span class="o">=</span> <span class="n">TandemLda</span><span class="p">(</span><span class="n">pcawg</span><span class="p">,</span> <span class="n">n_damage_sigs</span> <span class="o">=</span> <span class="mi">18</span><span class="p">,</span> <span class="n">n_misrepair_sigs</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">t_lda</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="o">**</span><span class="n">t_lda</span><span class="o">.</span><span class="n">_model_kwargs</span><span class="p">)</span>
+<span class="n">pm</span><span class="o">.</span><span class="n">model_graph</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">t_lda</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Hierarchical-Tandem-LDA">
+<h2>Hierarchical Tandem LDA<a class="headerlink" href="#Hierarchical-Tandem-LDA" title="Permalink to this heading"></a></h2>
+<p>The full Hierarchical Tandem LDA model is similar to the Tandem LDA model, with an added hierarchical prior to incorporate information shared across tissue-type. Infers Damage and Misrepair signatures, their activities, and their tissue-specific sparsity.</p>
+<p><img alt="Hierarchical Tandem LDA Model" src="../_images/ht_lda.png" /></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ht_lda</span> <span class="o">=</span> <span class="n">HierarchicalTandemLda</span><span class="p">(</span><span class="n">pcawg</span><span class="p">,</span> <span class="n">type_col</span><span class="o">=</span><span class="s2">&quot;pcawg_class&quot;</span><span class="p">,</span> <span class="n">n_damage_sigs</span> <span class="o">=</span> <span class="mi">18</span><span class="p">,</span> <span class="n">n_misrepair_sigs</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">ht_lda</span><span class="o">.</span><span class="n">_build_model</span><span class="p">(</span><span class="o">**</span><span class="n">ht_lda</span><span class="o">.</span><span class="n">_model_kwargs</span><span class="p">)</span>
+<span class="n">pm</span><span class="o">.</span><span class="n">model_graph</span><span class="o">.</span><span class="n">model_to_graphviz</span><span class="p">(</span><span class="n">ht_lda</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_models_8_0.svg" src="../_images/examples_models_8_0.svg" /></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data.html" class="btn btn-neutral float-left" title="Simulating and Loading Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="wandb.html" class="btn btn-neutral float-right" title="Experiment tracking with WandB" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Cait Harrigan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
