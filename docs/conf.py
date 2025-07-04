@@ -40,6 +40,13 @@ extensions = [
     "nbsphinx_link",
 ]
 
+# Mock imports for packages that might not be available on RTD or are heavy dependencies
+autodoc_mock_imports = [
+    'wandb',
+    'pymc3',  # Also mock pymc3 as it's heavy
+    'theano',
+]
+
 autodoc_default_options = {"autosummary": True}
 autodoc_default_flags = ['members']
 add_module_names = False
