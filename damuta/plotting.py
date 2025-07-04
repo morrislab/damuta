@@ -19,7 +19,25 @@ cosmic_palette = sns.color_palette(tau_col)
 damage_palette = sns.color_palette(phi_col)
 misrepair_palette = sns.color_palette(eta_col)
 
-def plot_signatures(sigs, pal=cosmic_palette, aspect=5):
+def plot_signatures(sigs, pal=None, aspect=5):
+    """Plot mutational signatures as bar plots using seaborn FacetGrid.
+    
+    Parameters
+    ----------
+    sigs : pandas.DataFrame
+        DataFrame containing signature data with signatures as rows and mutation types as columns.
+    pal : list or seaborn color palette, optional
+        Color palette for the bar plots. If None, uses cosmic_palette.
+    aspect : float, default=5
+        Aspect ratio for each subplot in the FacetGrid.
+        
+    Returns
+    -------
+    seaborn.FacetGrid
+        FacetGrid object containing the signature plots.
+    """
+    if pal is None:
+        pal = cosmic_palette
     df = sigs.reset_index()
     df = df.melt('index', var_name = 'Type', value_name = 'Value')
     g = sns.FacetGrid(df, row="index", sharey=False, aspect=aspect)
@@ -29,23 +47,88 @@ def plot_signatures(sigs, pal=cosmic_palette, aspect=5):
     return g
 
 def plot_cosmic_signatures(sigs, pal=None, aspect=5):
+    """Plot COSMIC-style mutational signatures with 96 trinucleotide contexts.
+    
+    Parameters
+    ----------
+    sigs : pandas.DataFrame
+        DataFrame containing COSMIC signature data with signatures as rows and 96 mutation types as columns.
+    pal : list or seaborn color palette, optional
+        Color palette for the bar plots. If None, uses cosmic_palette.
+    aspect : float, default=5
+        Aspect ratio for each subplot in the FacetGrid.
+        
+    Returns
+    -------
+    seaborn.FacetGrid
+        FacetGrid object containing the COSMIC signature plots.
+    """
     if pal is None:
         pal = cosmic_palette
     return plot_signatures(sigs, pal, aspect)
 
 def plot_damage_signatures(sigs, pal=None, aspect=3):
+    """Plot damage signatures with 32 trinucleotide contexts.
+    
+    Parameters
+    ----------
+    sigs : pandas.DataFrame
+        DataFrame containing damage signature data with signatures as rows and 32 mutation types as columns.
+    pal : list or seaborn color palette, optional
+        Color palette for the bar plots. If None, uses damage_palette.
+    aspect : float, default=3
+        Aspect ratio for each subplot in the FacetGrid.
+        
+    Returns
+    -------
+    seaborn.FacetGrid
+        FacetGrid object containing the damage signature plots.
+    """
     if pal is None:
         pal = damage_palette
     return plot_signatures(sigs, pal, aspect)
 
-def plot_misrepair_signatures(sigs, pals=None, aspect=1):
+def plot_misrepair_signatures(sigs, pal=None, aspect=1):
+    """Plot misrepair signatures with 6 substitution types.
+    
+    Parameters
+    ----------
+    sigs : pandas.DataFrame
+        DataFrame containing misrepair signature data with signatures as rows and 6 mutation types as columns.
+    pal : list or seaborn color palette, optional
+        Color palette for the bar plots. If None, uses misrepair_palette.
+    aspect : float, default=1
+        Aspect ratio for each subplot in the FacetGrid.
+        
+    Returns
+    -------
+    seaborn.FacetGrid
+        FacetGrid object containing the misrepair signature plots.
+    """
     if pal is None:
         pal = misrepair_palette
     return plot_signatures(sigs, pal, aspect)
 
 
     
-def plot_phi_posterior(phi_approx, cols = phi_col):
+def plot_phi_posterior(phi_approx, cols = None):
+    """Plot posterior distributions of damage signature parameters (phi).
+    
+    Parameters
+    ----------
+    phi_approx : numpy.ndarray
+        3D array of posterior samples with shape (n_samples, n_damage_sigs, n_contexts).
+        Contains posterior samples of damage signature parameters.
+    cols : list, optional
+        List of colors for each mutation context. If None, uses phi_col.
+        
+    Returns
+    -------
+    matplotlib.figure.Figure
+        Figure object containing the posterior distribution plots.
+    """
+    if cols is None:
+        cols = phi_col
     assert len(phi_approx.shape) == 3
     T, J, C = phi_approx.shape
     if cols is None: cols = [None]*32
@@ -65,7 +148,24 @@ def plot_phi_posterior(phi_approx, cols = phi_col):
     return fig
 
 
-def plot_eta_posterior(eta_approx, cols = eta_col):
+def plot_eta_posterior(eta_approx, cols = None):
+    """Plot posterior distributions of misrepair signature parameters (eta).
+    
+    Parameters
+    ----------
+    eta_approx : numpy.ndarray
+        4D array of posterior samples with shape (n_samples, n_misrepair_sigs, 2, 3).
+        Contains posterior samples of misrepair signature parameters for C and T contexts.
+    cols : list, optional
+        List of colors for each mutation type. If None, uses eta_col.
+        
+    Returns
+    -------
+    matplotlib.figure.Figure
+        Figure object containing the posterior distribution plots.
+    """
+    if cols is None:
+        cols = eta_col
     assert len(eta_approx.shape) == 4
     T, K, C, M  = eta_approx.shape
     assert C==2
