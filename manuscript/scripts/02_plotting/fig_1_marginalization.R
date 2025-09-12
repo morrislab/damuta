@@ -167,13 +167,18 @@ sims_dist <- tibble(COSMIC = sbs_sim[upper.tri(sbs_sim)],
   `Marginalized for substitution` = misrepair_sim[upper.tri(misrepair_sim)]) %>%
   pivot_longer(everything()) %>%
   mutate(name = ordered(name, levels = c('COSMIC', 'Marginalized for trinucleotide context', 'Marginalized for substitution'))) %>%
-  mutate(redund = value >= 0.8) %>%
+  mutate(redund = case_when(
+      name == 'SBS_96' & value >= 0.85 ~ TRUE,
+      name == 'Marginalized for trinucleotide context' & value >= 0.84 ~ TRUE,
+      name == 'Marginalized for substitution' & value >= 0.94 ~ TRUE,
+      TRUE ~ FALSE
+    )) %>%
   group_by(name) %>%
   ggplot(aes(x = value, y= after_stat(scaled), fill=name, colour=name)) + 
   geom_density(alpha = 0.4, linewidth = 1/.pt) + 
-  geom_vline(xintercept = 0.8, linetype='dashed') +
-  geom_segment(aes(x = 0.9, y = 0.7, xend = 1, yend = 0.7),
-               arrow = arrow(length = unit(5, "pt")), colour = 'black', linewidth = 0.8/.pt) + 
+  #geom_vline(xintercept = 0.8, linetype='dashed') +
+  #geom_segment(aes(x = 0.9, y = 0.7, xend = 1, yend = 0.7),
+  #             arrow = arrow(length = unit(5, "pt")), colour = 'black', linewidth = 0.8/.pt) + 
   geom_text(data = . %>% summarize(redund = 100*round(sum(redund)/n(),2)),
             size = 5/.pt, colour = 'black', aes(x = .95, y =0.8, 
                             label = paste0(redund, '% redundant'))) +

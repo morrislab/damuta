@@ -206,7 +206,7 @@ hist_redund <- function(def, database_name) {
     group_by(name) %>%
     ggplot(aes(x = value, y= after_stat(scaled), fill=name, colour=name)) + 
     geom_density(alpha = 0.4, linewidth = 1/.pt) + 
-    geom_vline(data = medians, aes(xintercept = value), colour = 'black', linetype = 'dashed') +
+    geom_vline(data = medians, aes(xintercept = value), colour = 'grey10', linetype = 'dashed', linewidth = 0.5) +
     geom_text(data = medians, aes(x = 0.2, y = 0.9, label = paste0('Median: ', round(value, 2))), size = 5/.pt, colour = 'black') +
     geom_text(data = . %>% summarize(redund = 100*round(sum(redund)/n(),2)),
               size = 5/.pt, colour = 'black', aes(x = 0.2, y =0.8, label = paste0(redund, '% redundant'))) + 
@@ -231,6 +231,7 @@ plot_grid(
   nrow = 1, labels = c('a', 'b', 'c', 'd'), label_size = 8
 ) + theme(title = element_text(face = 'bold'))
 ggsave('figures/hist_redund.pdf', width=8, height=5)
+ggsave('figures/hist_redund.png', width=8, height=5, dpi = 600)
 
 
 
