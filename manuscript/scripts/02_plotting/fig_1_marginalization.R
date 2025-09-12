@@ -1,5 +1,5 @@
-source('plotting_header.R')
-
+source('scripts/02_plotting/plotting_header.R')
+library(ggtext)
 
 cosmic <- read_delim('data/COSMIC_v3.2_SBS_GRCh37.txt', delim='\t') %>%
   pivot_longer(-c(Type)) %>%
@@ -101,11 +101,11 @@ misrepair_marg <- cosmic %>%
   ) + 
   scale_y_continuous(n.breaks = 3)
 
-pdf('figures/sigs_marg.pdf', width=4.4, height=4.2)
 plot_grid(cosmic_marg, 
           plot_grid(damage_marg, misrepair_marg, ncol = 2, rel_widths = c(3,1.5)), 
           rel_heights = c(1, 1), ncol = 1, labels = 'c', label_size = 8)
-dev.off()
+ggsave('figures/sigs_marg.pdf', width=4.4, height=4.2)
+
 
 # Histogram of redundancy
 sbs_sim <- cosmic %>%
@@ -150,9 +150,6 @@ tibble(value = sbs_v2_sim[upper.tri(sbs_v2_sim)]) %>%
   summarize(redund = 100*round(sum(redund)/n(),2))
 
 
-
-
-
 # marginalization
 labs_df = data.frame(lab = c('SBS4/22','SBS4/22','SBS4/22','SBS2/13','SBS2/13','SBS2/13'), 
                      x = c(sbs_sim['SBS22',]['SBS4'], damage_sim['SBS22',]['SBS4'], 
@@ -192,9 +189,8 @@ sims_dist <- tibble(COSMIC = sbs_sim[upper.tri(sbs_sim)],
   coord_trans(clip='off')
 
 
-pdf('figures/sims_dist.pdf', width=2.6, height=4.2)
 plot_grid(sims_dist, labels = 'd', label_size = 8)
-dev.off()
+ggsave('figures/sims_dist.pdf', width=2.6, height=4.2)
 
 
 left <- plot_grid(cosmic_marg, 
@@ -204,82 +200,5 @@ left <- plot_grid(cosmic_marg,
 right <- plot_grid(sims_dist, labels = 'd', label_size = 8)
 
 
-pdf('figures/cosmic_marginalization.pdf', width=7, height=4.3)
 plot_grid(left, right, ncol=2, rel_widths = c(1.7, 1))
-dev.off()
-
-
-
-# elbow of hierarchical clustering clusters
-hclust(as.dist(1-damage_sim), method = 'average') -> d_hc
-d_cut <- sapply(FUN=function(h) max(cutree(d_hc, h=h)), seq(0, 1, 0.01))
-
-hclust(as.dist(1-misrepair_sim), method = 'average') -> m_hc
-m_cut <- sapply(FUN=function(h) max(cutree(m_hc, h=h)), seq(0, 1, 0.01))
-
-
-elbow <- bind_cols(d_cut, m_cut) %>%
-  rename(Damage = `...1`, Misrepair = `...2`) %>%
-  mutate(K=seq(0, 1, 0.01)) %>%
-  pivot_longer(-c(K)) %>%
-  ggplot(aes(y = K, x = value, colour = name)) +
-  geom_point(size = 1) +
-  geom_path() + 
-  facet_wrap(~name, nrow =2) + 
-  geom_vline(data = tibble(xint=c(18,6), name=c('Damage', 'Misrepair')), 
-             aes(xintercept=xint, colour = name), linetype = 'dashed') + 
-  theme_ch() + 
-  theme(legend.position='none')+
-  labs(x = 'Number of clusters', 
-       y = 'Dendrogrm cut height (cosine distance)',) + 
-  scale_colour_manual(values = c(Damage = 'maroon3', 
-                                 Misrepair = 'aquamarine3'))
-
-
-pdf('figures/cosmic_marg_n.pdf', width = 7, height = 5)
-dends <- plot_grid(ggdendro::ggdendrogram(d_hc, rotate=T) + 
-            rotate_x_text(90) + theme_ch() + 
-            labs(x= '', y='Cosine distance', title = 'Clustered on damage'), 
-          ggdendro::ggdendrogram(m_hc, rotate=T) + 
-            rotate_x_text(90) + theme_ch() + 
-            labs(x= '', y='Cosine distance', title= 'Clustered on misrepair'),
-          labels = c('a', 'b'), label_size = 8)
-plot_grid(dends, elbow, ncol=2, labels = c('', 'c'), label_size = 8)
-dev.off()
-
-
-# picking number of signatures by average
-df <- read_csv('results/figure_data/wandb_export_2024-05-05T14 27 49.308+01 00.csv') %>%
-  left_join(read_csv('results/figure_data/wandb_export_2024-05-05T14 28 20.053+01 00.csv'))
-
-pdf('figures/elbow_nsigs.pdf', width=7, height=6)
-p1 <- df %>%
-  mutate(nLL = -LL) %>%
-  pivot_longer(c(nLL, ELBO)) %>%
-  ggplot(aes(x=n_damage_sigs, y=value)) + 
-  geom_point(aes(colour=n_misrepair_sigs)) + 
-  geom_smooth(colour = 'red') +
-  geom_vline(xintercept = 18, colour='grey50', linetype = 'dashed', linewidth=1) + 
-  facet_wrap(~name, nrow=2, scales='free_y', strip.position = 'left') + 
-  scale_colour_gradientn(colours = c('navy', 'yellow')) + 
-  theme_ch() + 
-  theme(strip.placement = "outside") +
-  labs(x = 'Number of Damage signatures', y = '', colour = 'Number of Misrepair signatures') + 
-  guides(colour = guide_colourbar(title.position = "top"))
-
-p2 <- df %>%
-  mutate(nLL = -LL) %>%
-  pivot_longer(c(nLL, ELBO)) %>%
-  ggplot(aes(x=n_misrepair_sigs, y=value)) + 
-  geom_point(aes(colour=n_damage_sigs)) + 
-  geom_smooth(colour = 'red') +
-  geom_vline(xintercept = 6, colour='grey50', linetype = 'dashed', linewidth=1) + 
-  facet_wrap(~name, nrow=2, scales='free_y', strip.position = 'left') + 
-  scale_colour_gradientn(colours = c('navy', 'yellow')) + 
-  theme_ch() + 
-  theme(strip.placement = "outside") +
-  labs(colour = 'Number of Damage signatures', y = '', x = 'Number of Misrepair signatures') + 
-  guides(colour = guide_colourbar(title.position = "top"))
-plot_grid(p1,p2, ncol=2, labels = c('a', 'b'), label_size = 8)
-dev.off()
-
+ggsave('figures/cosmic_marginalization.pdf', width=7, height=4.3)
