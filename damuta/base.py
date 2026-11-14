@@ -1,13 +1,13 @@
 import numpy as np
 import pandas as pd
-import pymc3 as pm
+import pymc as pm
 import warnings
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from .constants import *
 from .utils import *
 
-__all__ = ['Damuta', 'DataSet', 'SignatureSet']
+__all__ = ['DataSet', 'SignatureSet']
 
 _opt_methods = {"ADVI": pm.ADVI, "FullRankADVI": pm.FullRankADVI}
 _init_strats = ['uniform', 'kmeans', 'from_sigs']
@@ -93,7 +93,7 @@ class SignatureSet:
     def __post_init__(self):
         # check for shape, valid signautre definitions
         assert self.signatures.shape[1] == 96, f"Expected 96 mutation types, got {self.signatures.shape[1]}"
-        assert np.allclose(self.signatures.sum(1),1), "All signature definitions must sum to 1"
+        assert np.allclose(self.signatures.sum(axis=1),1), "All signature definitions must sum to 1"
         assert self.signatures.columns.isin(mut96).all(), 'Check signature column names'
         self.signatures = self.signatures[mut96]
         _phi = marginalize_for_phi(self.signatures.to_numpy())
@@ -221,7 +221,6 @@ class Model(ABC):
         
         # set seed
         np.random.seed(self.seed)
-        pm.set_tt_rng(self.seed)
 
     ################################################################################
     # Model building and fitting
@@ -282,6 +281,10 @@ class Model(ABC):
         
         self._validate_init_sigs()
 
+    def _sample(self, n_draws):
+        """Draw from the fitted approximation"""
+        return self.approx.sample(n_draws, return_inferencedata=False, random_seed=self._rng)
+
     def check_is_fitted(self):
         """Check if the model has been fitted.
         
@@ -317,7 +320,7 @@ class Model(ABC):
             self._trace.fit(n=n, **pymc3_kwargs)
         
         self.approx = self._trace.approx
-        #self._hat = self.approx.sample(1)
+        #self._hat = self._sample(1)
         self.fitted_ = True
         
         return self
@@ -330,18 +333,18 @@ class Model(ABC):
     def ALP(self, n_samples = 20):
         """Average log probability per mutation 
         """
-        if self.approx is None: warnings.warn("self.approx is None... Fit the model first!", ValueError)
+        self.check_is_fitted()
         
-        B = self.approx.sample(n_samples).B.mean(0)
+        B = self._sample(n_samples).B.mean(0)
         return alp_B(self.dataset.counts.to_numpy(), B)
 
     
     def LAP(self, n_samples = 20):
         """Log average data likelihood (bayesian version of reconstruction error)
         """
-        if self.approx is None: warnings.warn("self.trace is None... Fit the model first!", ValueError)
-        
-        B = self.approx.sample(n_samples).B
+        self.check_is_fitted()
+
+        B = self._sample(n_samples).B
         return lap_B(self.dataset.counts.to_numpy(), B)
     
     def reconstruction_err(self, *args, **kwargs):

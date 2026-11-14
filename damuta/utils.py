@@ -1,5 +1,5 @@
 import numpy as np
-import pymc3 as pm
+import pymc as pm
 import pandas as pd
 import warnings
 from sklearn.cluster import k_means
@@ -15,7 +15,7 @@ from scipy.optimize import linear_sum_assignment
 #M=3
 #P=2
 
-def dirichlet(node_name, a, shape, scale=1, testval=None, observed=None):
+def dirichlet(node_name, a, shape, scale=1, initval=None, observed=None):
     """
     Create a reparameterized Dirichlet distribution using Gamma variables for use in PyMC3 models.
 
@@ -29,8 +29,8 @@ def dirichlet(node_name, a, shape, scale=1, testval=None, observed=None):
         Shape of the resulting variable.
     scale : float, optional
         Scale parameter for the Gamma distribution (default: 1).
-    testval : array-like, optional
-        Test value for the variable.
+    initval : array-like, optional
+        Initial value for the variable.
     observed : array-like, optional
         Observed values for the variable.
 
@@ -41,7 +41,7 @@ def dirichlet(node_name, a, shape, scale=1, testval=None, observed=None):
     """
     # dirichlet reparameterized here because of stickbreaking bug
     # https://github.com/pymc-devs/pymc3/issues/4733
-    X = pm.Gamma(f'gamma_{node_name}', mu = a, sigma = scale, shape = shape, testval = testval, observed = observed)
+    X = pm.Gamma(f'gamma_{node_name}', mu = a, sigma = scale, shape = shape, initval = initval, observed = observed)
     Y = pm.Deterministic(node_name, (X/X.sum(axis = (X.ndim-1))[...,None]))
     return Y
 

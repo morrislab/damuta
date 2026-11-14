@@ -1,7 +1,7 @@
 import wandb
 
 
-__all__ = ["Callback", "LogELBO", "LogWandB"]
+__all__ = ["Callback", "LogELBO"]
 
 
 class Callback:

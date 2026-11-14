@@ -44,7 +44,7 @@ def fitted_lda_model(mock_dataset):
     model.approx = Mock()
     
     # Create a side effect function that respects n_draws parameter
-    def mock_sample(n_draws):
+    def mock_sample(n_draws, **kwargs):
         mock_hat = Mock()
         mock_hat.tau = np.random.dirichlet([1]*96, size=(n_draws, 3))  # n_draws, 3 sigs, 96 mut types
         mock_hat.theta = np.random.dirichlet([1]*3, size=(n_draws, 20))  # n_draws, 20 samples, 3 sigs
@@ -65,7 +65,7 @@ def fitted_tandem_model(mock_dataset):
     model.approx = Mock()
     
     # Create a side effect function that respects n_draws parameter
-    def mock_sample(n_draws):
+    def mock_sample(n_draws, **kwargs):
         mock_hat = Mock()
         mock_hat.phi = np.random.dirichlet([1]*32, size=(n_draws, 2))  # n_draws, 2 damage sigs, 32 contexts
         mock_hat.eta = np.random.dirichlet([1]*3, size=(n_draws, 2, 2))  # n_draws, 2 contexts, 2 misrepair sigs → (1,2,2,3)
@@ -89,7 +89,7 @@ def fitted_hierarchical_model(mock_dataset):
     model.approx = Mock()
     
     # Create a side effect function that respects n_draws parameter
-    def mock_sample(n_draws):
+    def mock_sample(n_draws, **kwargs):
         mock_hat = Mock()
         mock_hat.phi = np.random.dirichlet([1]*32, size=(n_draws, 2))
         mock_hat.eta = np.random.dirichlet([1]*3, size=(n_draws, 2, 2))  # Fixed: removed extra 3
@@ -111,15 +111,17 @@ class TestLdaMethods:
         
         # Check shape: (1 draw, 3 signatures, 96 mutation types)
         assert result.shape == (1, 3, 96)
-        fitted_lda_model.approx.sample.assert_called_once_with(1)
-    
+        fitted_lda_model.approx.sample.assert_called_once_with(
+            1, return_inferencedata=False, random_seed=fitted_lda_model._rng)
+
     def test_get_estimated_signatures_multiple_draws(self, fitted_lda_model):
         """Test getting signatures with multiple posterior draws"""
         result = fitted_lda_model.get_estimated_signatures(n_draws=10)
         
         assert result.shape == (10, 3, 96)
-        fitted_lda_model.approx.sample.assert_called_once_with(10)
-    
+        fitted_lda_model.approx.sample.assert_called_once_with(
+            10, return_inferencedata=False, random_seed=fitted_lda_model._rng)
+
     def test_get_estimated_SignatureSet_single_draw(self, fitted_lda_model):
         """Test creating SignatureSet from single draw"""
         result = fitted_lda_model.get_estimated_SignatureSet(n_draws=1)
@@ -260,7 +262,7 @@ class TestDataFrameProperties:
         
         # Should be numeric
         assert all(activities.dtypes == 'float64')
-        assert activities.index.dtype == 'object'  # Sample names
+        assert pd.api.types.is_string_dtype(activities.index) # Sample names
     
     # Removed tandem dataframe test that depends on get_estimated_W
     
@@ -300,4 +302,4 @@ class TestIntegrationWithExistingMethods:
 
 
 if __name__ == "__main__":
-    pytest.main([__file__]) 
+    pytest.main([__file__])
