@@ -1,15 +1,12 @@
-import pymc3 as pm
+import pymc as pm
 import numpy as np
 import pandas as pd
+import pytensor.tensor as pt
 import warnings
 from .utils import dirichlet, marginalize_for_phi, marginalize_for_eta
 from .base import Model, DataSet, SignatureSet
 from .constants import mut96, mut32, mut6
-from theano.tensor import batched_dot
 from sklearn.cluster import k_means
-
-# note: model factories will likely be depricated in the future of pymc3
-# see https://lucianopaz.github.io/2019/08/19/pymc3-shape-handling/
 
 
 __all__ = ['Lda', 'TandemLda', 'HierarchicalTandemLda']
@@ -42,11 +39,11 @@ class Lda(Model):
     
     Attributes
     ----------
-    model : pymc3.Model
-        PyMC3 model instance.
+    model : pymc.Model
+        PyMC model instance.
     model_kwargs : dict
         Dictionary of parameters used in model construction.
-    approx : pymc3.approximations.Approximation
+    approx : pymc.Approximation
         Variational approximation object. Created after calling self.fit().
     run_id : str
         Unique identifier for the current run. Used for checkpoint files and wandb logging.
@@ -102,14 +99,14 @@ class Lda(Model):
             warnings.warn(f'init_signatures signature dimension does not match n_sigs of {self.n_sigs}. Argument n_sigs will be ignored.')
             self.n_sigs = self.init_signatures.n_sigs
             self._model_kwargs['n_sigs'] = self.init_signatures.n_sigs
-        tau = self.init_signatures.signatures.to_numpy()
+        tau = self.init_signatures.signatures.to_numpy().copy()
         # add pseudo count to support and renormalize 
         tau[np.isclose(tau, 0)] = tau[np.isclose(tau, 0)] + 1e-7
         tau = tau/tau.sum(1)[:,None]
         self._model_kwargs['tau_init'] = tau
 
     def _build_model(self, n_sigs, alpha_bias, psi_bias, tau_init=None, tau_obs=None):
-        """Compile a pymc3 model
+        """Compile a pymc model
         
         Parameters 
         ----------
@@ -124,13 +121,13 @@ class Lda(Model):
         """
         data=self.dataset.counts.to_numpy()
         S = data.shape[0]
-        N = data.sum(1).reshape(S,1)
+        N = data.sum(1)
         I = n_sigs
         
         with pm.Model() as self.model:
             
             data = pm.Data("data", data)
-            tau = dirichlet('tau', a = np.ones(96) * alpha_bias, shape=(I, 96), testval = tau_init, observed = tau_obs)
+            tau = dirichlet('tau', a = np.ones(96) * alpha_bias, shape=(I, 96), initval = tau_init, observed = tau_obs)
             theta = dirichlet("theta", a = np.ones(I) * psi_bias, shape=(S, I))
             B = pm.Deterministic("B", pm.math.dot(theta, tau))
             # mutation counts
@@ -140,13 +137,13 @@ class Lda(Model):
     def get_estimated_signatures(self, n_draws=1):
         """Extract signatures from model posterior"""
         self.check_is_fitted()
-        hat = self.approx.sample(n_draws)
+        hat = self._sample(n_draws)
         return hat.tau
 
     def get_estimated_SignatureSet(self, n_draws=1):
         """Construct SignatureSet from posterior"""
         self.check_is_fitted()
-        hat = self.approx.sample(n_draws)
+        hat = self._sample(n_draws)
         if n_draws > 1:
             warnings.warn(f"Signatures will be summarized as the mean of {n_draws} posterior samples")
         signatures = pd.DataFrame(hat.tau.mean(0), columns=mut96)
@@ -156,7 +153,7 @@ class Lda(Model):
     def get_estimated_activities_DataFrame(self, n_draws=1):
         """Extract activities as DataFrame"""
         self.check_is_fitted()
-        hat = self.approx.sample(n_draws)
+        hat = self._sample(n_draws)
         if n_draws > 1:
             warnings.warn(f"Activities will be summarized as the mean of {n_draws} posterior samples")
         return pd.DataFrame(hat.theta.mean(0), 
@@ -197,12 +194,12 @@ class TandemLda(Model):
     
     Attributes
     ----------
-    model : pymc3.Model
-        PyMC3 model instance.
+    model : pymc.Model
+        PyMC model instance.
     model_kwargs : dict
         Dictionary of parameters passed when constructing the model (e.g., hyperprior values).
-    approx : pymc3.approximations.Approximation
-        PyMC3 approximation object created via self.fit().
+    approx : pymc.Approximation
+        PyMC approximation object created via self.fit().
     run_id : str
         Unique identifier for the current run, used for saving checkpoint files and in wandb if enabled.
     """
@@ -218,7 +215,7 @@ class TandemLda(Model):
             raise ValueError("n_damage_sigs must be provided when phi_obs is None")
         if phi_obs is not None:
             if n_damage_sigs is not None:
-                warnings.warn("argument n_damage_sigs ({}) is ignored when phi_obs is None".format(n_damage_sigs))
+                warnings.warn("argument n_damage_sigs ({}) is ignored when phi_obs is provided".format(n_damage_sigs))
             n_damage_sigs = phi_obs.shape[0]
 
         if (etaC_obs is not None and etaT_obs is None) or (etaC_obs is None and etaT_obs is not None):
@@ -267,8 +264,8 @@ class TandemLda(Model):
             warnings.warn(f'init_signatures misrepair dimension does not match n_misrepair_sigs of {self.n_misrepair_sigs}. Argument n_misrepair_sigs will be ignored.')
             self.n_misrepair_sigs = self.init_signatures.n_misrepair_sigs
             self._model_kwargs['n_misrepair_sigs'] = self.init_signatures.n_misrepair_sigs
-        phi = self.init_signatures.damage_signatures.to_numpy()
-        eta = self.init_signatures.misrepair_signatures.to_numpy().reshape(-1,2,3)
+        phi = self.init_signatures.damage_signatures.to_numpy().copy()
+        eta = self.init_signatures.misrepair_signatures.to_numpy().copy().reshape(-1,2,3)
         # add pseudo count to support and renormalize 
         phi[np.isclose(phi, 0)] = phi[np.isclose(phi, 0)] + 1e-7
         phi = phi/phi.sum(1)[:,None]
@@ -282,7 +279,7 @@ class TandemLda(Model):
     
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, gamma_bias,  
                      phi_init=None, etaC_init = None, etaT_init = None, phi_obs=None, etaC_obs=None, etaT_obs=None):
-        """Compile a PyMC3 model for mutational signature analysis.
+        """Compile a PyMC model for mutational signature analysis.
         
         Parameters 
         ----------
@@ -315,24 +312,25 @@ class TandemLda(Model):
         train = self.dataset.counts.to_numpy()
         
         S = train.shape[0]
-        N = train.sum(1).reshape(S,1)
+        N = train.sum(1)
         J = n_damage_sigs
         K = n_misrepair_sigs
         
         with pm.Model() as self.model:
             
             data = pm.Data("data", train)
-            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 32), testval = phi_init, observed = phi_obs)
+            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 32), initval = phi_init, observed = phi_obs)
             theta = dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
             A = dirichlet("A", a = np.ones(K) * gamma_bias, shape = (S, J, K))
             # 4 is constant for ACGT
             beta = np.ones(4) * beta_bias
-            etaC = dirichlet("etaC", a=beta[[0,2,3]], shape=(K, 3), testval = etaC_init, observed = etaC_obs)
-            etaT = dirichlet("etaT", a=beta[[0,1,2]], shape=(K, 3), testval = etaT_init, observed = etaT_obs)
+            etaC = dirichlet("etaC", a=beta[[0,2,3]], shape=(K, 3), initval = etaC_init, observed = etaC_obs)
+            etaT = dirichlet("etaT", a=beta[[0,1,2]], shape=(K, 3), initval = etaT_init, observed = etaT_obs)
             eta = pm.Deterministic('eta', pm.math.stack([etaC, etaT], axis=1))
 
-            B = pm.Deterministic("B", (pm.math.dot(theta, phi).reshape((S,2,16))[:,:,None,:] * \
-                                    pm.math.dot(batched_dot(theta,A), eta.dimshuffle(1,0,2))[:,:,:,None]).reshape((S, -1)))
+            B = pm.Deterministic("B",
+                                 (pm.math.dot(theta, phi).reshape((S,2,16))[:,:,None,:] * \
+                                  pm.math.dot((theta[:, :, None] * A).sum(axis=1), eta.dimshuffle(1,0,2))[:,:,:,None]).reshape((S, -1)))
             
             # mutation counts
             pm.Multinomial('corpus', n = N, p = B, observed=data)
@@ -353,7 +351,7 @@ class TandemLda(Model):
             and eta is misrepair signatures array reshaped to (n_draws, n_sigs, 6).
         """
         self.check_is_fitted()
-        hat = self.approx.sample(n_draws)
+        hat = self._sample(n_draws)
         return hat.phi, hat.eta.reshape(n_draws, -1, 6)
 
     def get_estimated_SignatureSet(self, n_draws=1):
@@ -394,7 +392,7 @@ class TandemLda(Model):
         """
         self.check_is_fitted()
 
-        hat = self.approx.sample(n_draws)
+        hat = self._sample(n_draws)
 
         theta = hat.theta
         A = hat.A
@@ -491,12 +489,12 @@ class HierarchicalTandemLda(TandemLda):
     
     Attributes
     ----------
-    model : pymc3.Model
-        PyMC3 model instance.
+    model : pymc.Model
+        PyMC model instance.
     model_kwargs : dict
         Dictionary of parameters used for constructing the model.
-    approx : pymc3.approximations.Approximation
-        PyMC3 approximation object created via self.fit().
+    approx : pymc.Approximation
+        PyMC approximation object created via self.fit().
     run_id : str
         Unique identifier for the current run, used for saving checkpoint files.
     """
@@ -518,7 +516,7 @@ class HierarchicalTandemLda(TandemLda):
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, 
                      phi_init=None, etaC_init=None, etaT_init=None,
                      phi_obs=None, etaC_obs=None, etaT_obs=None):
-        """Compile a PyMC3 model for mutation signature analysis.
+        """Compile a PyMC model for mutation signature analysis.
         
         Parameters 
         ----------
@@ -547,8 +545,8 @@ class HierarchicalTandemLda(TandemLda):
 
         Returns
         -------
-        pymc3.Model
-            Compiled PyMC3 model for mutation signature analysis.
+        pymc.Model
+            Compiled PyMC model for mutation signature analysis.
         """
         # latent dirichlet allocation with tandem signautres of damage and repair
         # and hirearchical tissue-specific priors
@@ -557,14 +555,14 @@ class HierarchicalTandemLda(TandemLda):
         type_codes = self.dataset.type_codes
         
         S = train.shape[0]
-        N = train.sum(1).reshape(S,1)
+        N = train.sum(1)
         J = n_damage_sigs
         K = n_misrepair_sigs
         
         with pm.Model() as self.model:
             
             data = pm.Data("data", train)
-            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 32), testval = phi_init, observed=phi_obs)
+            phi = dirichlet('phi', a = np.ones(32) * alpha_bias, shape=(J, 32), initval = phi_init, observed=phi_obs)
             theta = dirichlet("theta", a = np.ones(J) * psi_bias, shape=(S, J))
             
             a_t = pm.Gamma('a_t',1,1,shape = (max(type_codes + 1),K))
@@ -574,12 +572,12 @@ class HierarchicalTandemLda(TandemLda):
 
             # 4 is constant for ACGT
             beta = np.ones(4) * beta_bias
-            etaC = dirichlet("etaC", a=beta[[0,2,3]], shape=(K,3), testval = etaC_init, observed = etaC_obs)
-            etaT = dirichlet("etaT", a=beta[[0,1,2]], shape=(K,3), testval = etaT_init, observed = etaT_obs)
+            etaC = dirichlet("etaC", a=beta[[0,2,3]], shape=(K,3), initval = etaC_init, observed = etaC_obs)
+            etaT = dirichlet("etaT", a=beta[[0,1,2]], shape=(K,3), initval = etaT_init, observed = etaT_obs)
             eta = pm.Deterministic('eta', pm.math.stack([etaC, etaT], axis=1)).dimshuffle(1,0,2)
 
             B = pm.Deterministic("B", (pm.math.dot(theta, phi).reshape((S,2,16))[:,:,None,:] * \
-                                    pm.math.dot(batched_dot(theta,A), eta)[:,:,:,None]).reshape((S, -1)))
+                                    pm.math.dot((theta[:, :, None] * A).sum(axis=1), eta)[:,:,:,None]).reshape((S, -1)))
             
             # mutation counts
             pm.Multinomial('corpus', n = N, p = B, observed=data)
@@ -599,7 +597,7 @@ class HierarchicalTandemLda(TandemLda):
         """
         self.check_is_fitted()
 
-        hat = self.approx.sample(n_draws)
+        hat = self._sample(n_draws)
 
         theta = hat.theta
         A = hat.A

@@ -43,8 +43,8 @@ extensions = [
 # Mock imports for packages that might not be available on RTD or are heavy dependencies
 autodoc_mock_imports = [
     'wandb',
-    'pymc3',  # Also mock pymc3 as it's heavy
-    'theano',
+    'pymc',  # Also mock pymc as it's heavy
+    'pytensor'
 ]
 
 autodoc_default_options = {"autosummary": True}
