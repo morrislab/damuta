@@ -8,9 +8,6 @@ from .base import Model, DataSet, SignatureSet
 from .constants import mut96, mut32, mut6
 from sklearn.cluster import k_means
 
-# note: model factories will likely be depricated in the future of pymc3
-# see https://lucianopaz.github.io/2019/08/19/pymc3-shape-handling/
-
 
 __all__ = ['Lda', 'TandemLda', 'HierarchicalTandemLda']
 
@@ -42,11 +39,11 @@ class Lda(Model):
     
     Attributes
     ----------
-    model : pymc3.Model
-        PyMC3 model instance.
+    model : pymc.Model
+        PyMC model instance.
     model_kwargs : dict
         Dictionary of parameters used in model construction.
-    approx : pymc3.approximations.Approximation
+    approx : pymc.Approximation
         Variational approximation object. Created after calling self.fit().
     run_id : str
         Unique identifier for the current run. Used for checkpoint files and wandb logging.
@@ -109,7 +106,7 @@ class Lda(Model):
         self._model_kwargs['tau_init'] = tau
 
     def _build_model(self, n_sigs, alpha_bias, psi_bias, tau_init=None, tau_obs=None):
-        """Compile a pymc3 model
+        """Compile a pymc model
         
         Parameters 
         ----------
@@ -197,12 +194,12 @@ class TandemLda(Model):
     
     Attributes
     ----------
-    model : pymc3.Model
-        PyMC3 model instance.
+    model : pymc.Model
+        PyMC model instance.
     model_kwargs : dict
         Dictionary of parameters passed when constructing the model (e.g., hyperprior values).
-    approx : pymc3.approximations.Approximation
-        PyMC3 approximation object created via self.fit().
+    approx : pymc.Approximation
+        PyMC approximation object created via self.fit().
     run_id : str
         Unique identifier for the current run, used for saving checkpoint files and in wandb if enabled.
     """
@@ -282,7 +279,7 @@ class TandemLda(Model):
     
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, gamma_bias,  
                      phi_init=None, etaC_init = None, etaT_init = None, phi_obs=None, etaC_obs=None, etaT_obs=None):
-        """Compile a PyMC3 model for mutational signature analysis.
+        """Compile a PyMC model for mutational signature analysis.
         
         Parameters 
         ----------
@@ -492,12 +489,12 @@ class HierarchicalTandemLda(TandemLda):
     
     Attributes
     ----------
-    model : pymc3.Model
-        PyMC3 model instance.
+    model : pymc.Model
+        PyMC model instance.
     model_kwargs : dict
         Dictionary of parameters used for constructing the model.
-    approx : pymc3.approximations.Approximation
-        PyMC3 approximation object created via self.fit().
+    approx : pymc.Approximation
+        PyMC approximation object created via self.fit().
     run_id : str
         Unique identifier for the current run, used for saving checkpoint files.
     """
@@ -519,7 +516,7 @@ class HierarchicalTandemLda(TandemLda):
     def _build_model(self, n_damage_sigs, n_misrepair_sigs, alpha_bias, psi_bias, beta_bias, 
                      phi_init=None, etaC_init=None, etaT_init=None,
                      phi_obs=None, etaC_obs=None, etaT_obs=None):
-        """Compile a PyMC3 model for mutation signature analysis.
+        """Compile a PyMC model for mutation signature analysis.
         
         Parameters 
         ----------
@@ -548,8 +545,8 @@ class HierarchicalTandemLda(TandemLda):
 
         Returns
         -------
-        pymc3.Model
-            Compiled PyMC3 model for mutation signature analysis.
+        pymc.Model
+            Compiled PyMC model for mutation signature analysis.
         """
         # latent dirichlet allocation with tandem signautres of damage and repair
         # and hirearchical tissue-specific priors

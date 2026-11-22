@@ -17,7 +17,7 @@ from scipy.optimize import linear_sum_assignment
 
 def dirichlet(node_name, a, shape, scale=1, initval=None, observed=None):
     """
-    Create a reparameterized Dirichlet distribution using Gamma variables for use in PyMC3 models.
+    Create a reparameterized Dirichlet distribution using Gamma variables for use in PyMC models.
 
     Parameters
     ----------
@@ -46,10 +46,10 @@ def dirichlet(node_name, a, shape, scale=1, initval=None, observed=None):
     return Y
 
     
-def save_checkpoint(fp, model, trace, dataset_args, model_args, pymc3_args, run_id): 
+def save_checkpoint(fp, model, trace, dataset_args, model_args, pymc_args, run_id):
     with open(f'{fp}', 'wb') as buff:
         pickle.dump({'model': model, 'trace': trace, 'dataset_args': dataset_args, 
-                     'model_args': model_args, 'pymc3_args': pymc3_args, 'run_id': run_id}, buff)
+                     'model_args': model_args, 'pymc_args': pymc_args, 'run_id': run_id}, buff)
     print(f'checkpoint saved to {fp}') 
        
 def load_checkpoint(fn):
@@ -57,7 +57,7 @@ def load_checkpoint(fn):
         data = pickle.load(buff)
         print(f'checkpoint loaded from {fn}') 
         wandb.init(id=data['run_id'], resume='allow')
-        return data['model'], data['trace'], data['dataset_args'], data['model_args'], data['pymc3_args'], data['run_id'] 
+        return data['model'], data['trace'], data['dataset_args'], data['model_args'], data['pymc_args'], data['run_id']
 
 def load_dataset(dataset_sel, counts_fp=None, annotation_fp=None, annotation_subset=None, seed=None,
                  data_seed = None, sig_defs_fp=None, sim_S=None, sim_N=None, sim_I=None, sim_tau_hyperprior=None,

@@ -184,10 +184,10 @@ class Model(ABC):
     
     Attributes
     ----------
-    model: pymc3.model.Model object
-        pymc3 model instance
-    approx: pymc3.variational.approximations object
-        pymc3 approximation object. Created via self.fit()
+    model: pymc.Model object
+        pymc model instance
+    approx: pymc.Approximation object
+        pymc approximation object. Created via self.fit()
      """
 
     def __init__(self, dataset: DataSet, opt_method: str, init_strategy: str, init_signatures: SignatureSet, seed: int):
@@ -228,7 +228,7 @@ class Model(ABC):
 
     @abstractmethod
     def _build_model(self, *args, **kwargs):
-        """Build the pymc3 model 
+        """Build the pymc model
         """
         pass
     
@@ -297,15 +297,15 @@ class Model(ABC):
             raise ValueError("This model instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.")
     
 
-    def fit(self, n, **pymc3_kwargs):
+    def fit(self, n, **pymc_kwargs):
         """Fit model to the dataset specified by self.dataset
         
         Parameters 
         ----------
         n: int
             Number of iterations 
-        **pymc3_kwargs:
-            More parameters to pass to pymc3.fit() (ex. callbacks)
+        **pymc_kwargs:
+            More parameters to pass to the inference object's fit() (ex. callbacks)
             
         Returns
         -------
@@ -317,7 +317,7 @@ class Model(ABC):
         
         with self.model:
             self._trace = self._opt(random_seed = self.seed)
-            self._trace.fit(n=n, **pymc3_kwargs)
+            self._trace.fit(n=n, **pymc_kwargs)
         
         self.approx = self._trace.approx
         #self._hat = self._sample(1)
