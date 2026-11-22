@@ -8,7 +8,7 @@
 *Damage and Misrepair Signatures: Compact Representations of Pan-cancer Mutational Processes*
 
 [![Documentation Status](https://readthedocs.org/projects/damuta/badge/?version=latest)](https://damuta.readthedocs.io/en/latest/?badge=latest)
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 [![PyPI version](https://badge.fury.io/py/damuta.svg)](https://badge.fury.io/py/damuta) 
 
@@ -41,7 +41,7 @@ nb. internally these signatures are referred to by their symbols in the graphica
 - [example notebooks](./docs/examples/) usage examples & tutorials
 - [manuscript code](./manuscript) code to reproduce experiments and plots reported in manuscript
 
-# Documention
+# Documentation
 
 DAMUTA documentation is hosted via [readthedocs](https://damuta.readthedocs.io)
 
@@ -50,13 +50,13 @@ DAMUTA documentation is hosted via [readthedocs](https://damuta.readthedocs.io)
 
 Recommended Requirements:
 
-* Unix-based system (tested on CentOS Linux 7)
+* Unix-based system
 * RAM: 16+ GB (for large-scale pan-cancer datasets)
 * CPU: 4+ cores, 3.0+ GHz/core
-* GPU: NVIDIA GPU with CUDA support (optional, for GPU acceleration via Theano)
+* GPU: NVIDIA GPU with CUDA support (optional, for GPU acceleration)
 
 
-Software dependencies are specified in (damuta_env.yml)[./damuta_env.yml]
+Software dependencies are specified in [damuta_env.yml](./damuta_env.yml)
 
 # Installation
 
@@ -77,18 +77,17 @@ pip install -e .
 pip install damuta
 ```
 
+## GPU (optional)
 
-## theanorc
+Support for NVIDIA GPUs on Linux is provided through the JAX backend
 
-To use the GPU, `~/.theanorc` should contain the following:
-
-```
-[global]
-floatX = float64
-device = cuda
+```bash
+pip install --upgrade "jax[cuda13]"
 ```
 
-Otherwise, device will default to CPU. 
+Running `jax.devices()` should list your GPU.
+If so, you can fit with `model.fit(n, backend="jax")`.
+
 
 ## Installation Time Estimates
 

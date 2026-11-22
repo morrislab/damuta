@@ -1,5 +1,5 @@
 import numpy as np
-import pymc3 as pm
+import pymc as pm
 import pandas as pd
 import warnings
 from sklearn.cluster import k_means
@@ -15,9 +15,9 @@ from scipy.optimize import linear_sum_assignment
 #M=3
 #P=2
 
-def dirichlet(node_name, a, shape, scale=1, testval=None, observed=None):
+def dirichlet(node_name, a, shape, scale=1, initval=None, observed=None):
     """
-    Create a reparameterized Dirichlet distribution using Gamma variables for use in PyMC3 models.
+    Create a reparameterized Dirichlet distribution using Gamma variables for use in PyMC models.
 
     Parameters
     ----------
@@ -29,8 +29,8 @@ def dirichlet(node_name, a, shape, scale=1, testval=None, observed=None):
         Shape of the resulting variable.
     scale : float, optional
         Scale parameter for the Gamma distribution (default: 1).
-    testval : array-like, optional
-        Test value for the variable.
+    initval : array-like, optional
+        Initial value for the variable.
     observed : array-like, optional
         Observed values for the variable.
 
@@ -41,15 +41,15 @@ def dirichlet(node_name, a, shape, scale=1, testval=None, observed=None):
     """
     # dirichlet reparameterized here because of stickbreaking bug
     # https://github.com/pymc-devs/pymc3/issues/4733
-    X = pm.Gamma(f'gamma_{node_name}', mu = a, sigma = scale, shape = shape, testval = testval, observed = observed)
+    X = pm.Gamma(f'gamma_{node_name}', mu = a, sigma = scale, shape = shape, initval = initval, observed = observed)
     Y = pm.Deterministic(node_name, (X/X.sum(axis = (X.ndim-1))[...,None]))
     return Y
 
     
-def save_checkpoint(fp, model, trace, dataset_args, model_args, pymc3_args, run_id): 
+def save_checkpoint(fp, model, trace, dataset_args, model_args, pymc_args, run_id):
     with open(f'{fp}', 'wb') as buff:
         pickle.dump({'model': model, 'trace': trace, 'dataset_args': dataset_args, 
-                     'model_args': model_args, 'pymc3_args': pymc3_args, 'run_id': run_id}, buff)
+                     'model_args': model_args, 'pymc_args': pymc_args, 'run_id': run_id}, buff)
     print(f'checkpoint saved to {fp}') 
        
 def load_checkpoint(fn):
@@ -57,7 +57,7 @@ def load_checkpoint(fn):
         data = pickle.load(buff)
         print(f'checkpoint loaded from {fn}') 
         wandb.init(id=data['run_id'], resume='allow')
-        return data['model'], data['trace'], data['dataset_args'], data['model_args'], data['pymc3_args'], data['run_id'] 
+        return data['model'], data['trace'], data['dataset_args'], data['model_args'], data['pymc_args'], data['run_id']
 
 def load_dataset(dataset_sel, counts_fp=None, annotation_fp=None, annotation_subset=None, seed=None,
                  data_seed = None, sig_defs_fp=None, sim_S=None, sim_N=None, sim_I=None, sim_tau_hyperprior=None,
